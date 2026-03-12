@@ -1,5 +1,7 @@
 package gamepanel;
 
+import tile.TileSetter;
+
 import java.awt.*;
 
 public class GamePanel extends Panel implements Runnable {
@@ -19,6 +21,7 @@ public class GamePanel extends Panel implements Runnable {
 
     //System
     Thread gameThread;
+    TileSetter tileSetter = new TileSetter(this);
 
 
     public GamePanel() {
@@ -54,6 +57,6 @@ public class GamePanel extends Panel implements Runnable {
         super.paintComponents(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
 
-
+        tileSetter.draw(graphics2D);
     }
 }
