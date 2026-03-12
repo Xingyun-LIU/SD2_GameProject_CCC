@@ -1,3 +1,5 @@
+import gamepanel.GamePanel;
+
 import javax.swing.*;
 
 public class Main {
