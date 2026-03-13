@@ -152,7 +152,6 @@ public class OpeningAnimationPanel extends JPanel implements KeyListener, MouseL
             if(startButton.contains(e.getPoint())){
 
                 frame.startGame();
-
             }
         }
     }

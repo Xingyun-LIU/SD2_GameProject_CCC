@@ -24,6 +24,12 @@ public class GamePanel extends JPanel implements Runnable {
     public final int worldCol = 128; //2048
     public final int worldRow = 128; //2048
 
+    // Game State
+    public int gameState;
+    public final int playing = 0;
+    public final int pausing = 1;
+
+
     Player player1;
     Player player2;
 
@@ -32,7 +38,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     TileManager tileManager;
     SplitScreenRenderer splitRenderer;
-    KeyHandler key = new KeyHandler();
+    KeyHandler key = new KeyHandler(this);
     Thread gameThread;
 
     public GamePanel() {
@@ -43,7 +49,13 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(key);
         setFocusable(true);
 
-        // initialize
+        setUpGame();
+
+        startThread();
+    }
+
+    public void setUpGame(){
+
         player1 = new Player(this, tileSize * 62, tileSize * 64, Color.BLUE);
         player2 = new Player(this, tileSize * 67, tileSize * 64, Color.RED);
         cam1 = new Camera(this);
@@ -51,14 +63,13 @@ public class GamePanel extends JPanel implements Runnable {
         tileManager = new TileManager(this);
         splitRenderer = new SplitScreenRenderer();
 
-        startThread();
+        gameState = playing;
     }
 
     public void startThread() {
 
         gameThread = new Thread(this);
         gameThread.start();
-
     }
 
     public void run() {
@@ -90,6 +101,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
+
         splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
 
     }
