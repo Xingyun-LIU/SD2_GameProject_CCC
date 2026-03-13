@@ -5,6 +5,7 @@ import Main.Camera;
 import Main.KeyHandler;
 import Main.SplitScreenRenderer;
 import Main.UI;
+import animation.OpeningAnimationPanel;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -38,13 +39,16 @@ public class GamePanel extends JPanel implements Runnable {
     Camera cam2;
 
     // System
+    GameFrame gameFrame;
     TileManager tileManager = new TileManager(this);
     SplitScreenRenderer splitRenderer = new SplitScreenRenderer();
-    KeyHandler key = new KeyHandler(this);
+    KeyHandler key;
     Thread gameThread;
     UI ui = new UI(this);
 
-    public GamePanel() {
+    public GamePanel(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
+        key = new KeyHandler(this, gameFrame);
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
@@ -52,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(key);
         setFocusable(true);
 
-        setUpGame();
+//        setUpGame();
 
         startThread();
     }
@@ -68,6 +72,7 @@ public class GamePanel extends JPanel implements Runnable {
         gameState = playing;
     }
 
+    /**each time gameThread.start() ,run() will be executed in the new thread*/
     public void startThread() {
 
         gameThread = new Thread(this);
@@ -110,6 +115,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
+
+        if (gameState == opening) {
+
+        }
 
         splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
 

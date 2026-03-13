@@ -40,6 +40,7 @@ public class UI {
         }
     }
 
+
     public void drawPauseState() {
 
         graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 80F));

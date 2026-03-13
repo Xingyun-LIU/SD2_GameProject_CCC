@@ -1,5 +1,6 @@
 package Main;
 
+import gamepanel.GameFrame;
 import gamepanel.GamePanel;
 
 import java.awt.event.*;
@@ -7,12 +8,14 @@ import java.awt.event.*;
 public class KeyHandler implements KeyListener {
 
     GamePanel gamePanel;
+    GameFrame gameFrame;
 
     public boolean w, a, s, d;
     public boolean up, down, left, right;
 
-    public KeyHandler(GamePanel gamePanel) {
+    public KeyHandler(GamePanel gamePanel, GameFrame gameFrame) {
         this.gamePanel = gamePanel;
+        this.gameFrame = gameFrame;
     }
 
     public void keyPressed(KeyEvent e) {
@@ -38,7 +41,8 @@ public class KeyHandler implements KeyListener {
             }
             if (code == KeyEvent.VK_R) {
                 //return to opening animation
-                gamePanel.setUpGame();
+                gamePanel.gameState = gamePanel.opening;
+                gameFrame.showOpening();
             }
         }
 
