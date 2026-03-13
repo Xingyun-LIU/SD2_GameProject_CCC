@@ -1,4 +1,6 @@
-package Main;
+package animation;
+import gamepanel.GameFrame;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -40,8 +42,12 @@ public class OpeningAnimationPanel extends JPanel implements KeyListener, MouseL
             sunX += 1;
         }
         //title fade in
-        if(time > 100 && titleAlpha < 1){
+        if(time > 100 && titleAlpha < 1.0f){
             titleAlpha += 0.02f;
+
+            if(titleAlpha > 1.0f) {
+                titleAlpha = 1.0f;
+            }
         }
         // show button after some time
         if(time > 100){
@@ -148,9 +154,7 @@ public class OpeningAnimationPanel extends JPanel implements KeyListener, MouseL
                 frame.startGame();
 
             }
-
         }
-
     }
 
     public void mousePressed(MouseEvent e){}

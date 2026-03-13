@@ -3,8 +3,8 @@ import java.awt.event.*;
 
 public class KeyHandler implements KeyListener {
 
-    boolean w,a,s,d;
-    boolean up,down,left,right;
+    public boolean w,a,s,d;
+    public boolean up,down,left,right;
 
     public void keyPressed(KeyEvent e){
 

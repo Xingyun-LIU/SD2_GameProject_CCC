@@ -1,4 +1,4 @@
-package Main;
+package Entity;
 
 import java.awt.*;
 public class NPC {
