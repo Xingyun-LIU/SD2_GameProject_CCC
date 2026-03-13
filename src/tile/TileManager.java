@@ -25,7 +25,7 @@ public class TileManager {
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
-        // 使用你定义的数组大小
+
         mapTileNum = new int[gp.worldCol][gp.worldRow];
         tiles = new Tile[20];
 

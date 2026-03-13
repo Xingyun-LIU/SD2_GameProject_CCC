@@ -63,7 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void run() {
 
-        while (true) {
+        while (gameThread != null) {
 
             //Update information
             update();
@@ -88,7 +88,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void paintComponent(Graphics graphics) {
 
-        super.paintComponents(graphics);
+        super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
         splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
 
