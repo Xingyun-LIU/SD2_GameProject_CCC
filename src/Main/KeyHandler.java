@@ -38,7 +38,7 @@ public class KeyHandler implements KeyListener {
             }
             if (code == KeyEvent.VK_R) {
                 //return to opening animation
-
+                gamePanel.setUpGame();
             }
         }
 

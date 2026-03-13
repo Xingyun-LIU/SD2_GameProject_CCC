@@ -24,6 +24,11 @@ public class UI {
         graphics2D.setFont(monospaced);
         graphics2D.setColor(Color.black);
 
+        // opening state
+        if (gamePanel.gameState == gamePanel.opening){
+
+        }
+
         // playing state
         if (gamePanel.gameState == gamePanel.playing) {
 
