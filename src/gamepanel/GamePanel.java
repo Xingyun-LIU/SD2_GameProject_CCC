@@ -4,6 +4,7 @@ import Entity.Player;
 import Main.Camera;
 import Main.KeyHandler;
 import Main.SplitScreenRenderer;
+import Main.UI;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -29,17 +30,18 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playing = 0;
     public final int pausing = 1;
 
-
+    // Player
     Player player1;
     Player player2;
-
     Camera cam1;
     Camera cam2;
 
-    TileManager tileManager;
-    SplitScreenRenderer splitRenderer;
+    // System
+    TileManager tileManager = new TileManager(this);
+    SplitScreenRenderer splitRenderer = new SplitScreenRenderer();
     KeyHandler key = new KeyHandler(this);
     Thread gameThread;
+    UI ui = new UI(this);
 
     public GamePanel() {
 
@@ -54,14 +56,13 @@ public class GamePanel extends JPanel implements Runnable {
         startThread();
     }
 
-    public void setUpGame(){
+    public void setUpGame() {
 
         player1 = new Player(this, tileSize * 62, tileSize * 64, Color.BLUE);
         player2 = new Player(this, tileSize * 67, tileSize * 64, Color.RED);
+
         cam1 = new Camera(this);
         cam2 = new Camera(this);
-        tileManager = new TileManager(this);
-        splitRenderer = new SplitScreenRenderer();
 
         gameState = playing;
     }
@@ -90,11 +91,18 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
 
-        player1.update(key, true);
-        player2.update(key, false);
 
-        cam1.follow(player1);
-        cam2.follow(player2);
+        if (gameState == playing) {
+            player1.update(key, true);
+            player2.update(key, false);
+
+            cam1.follow(player1);
+            cam2.follow(player2);
+        }
+
+        if (gameState == pausing) {
+            //do nothing
+        }
     }
 
     public void paintComponent(Graphics graphics) {
@@ -103,6 +111,8 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D graphics2D = (Graphics2D) graphics;
 
         splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
+
+        ui.draw(graphics2D);
 
     }
 

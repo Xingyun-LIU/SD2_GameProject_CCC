@@ -31,11 +31,38 @@ public class UI {
 
         //pausing state
         if (gamePanel.gameState == gamePanel.pausing) {
-
+            drawPauseState();
         }
     }
 
-    public void playOpeningAnimation() {
+    public void drawPauseState() {
 
+        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 80F));
+        graphics2D.setColor(new Color(40, 40, 40));
+
+        String text = "PAUSED";
+        int x = getCenteredTextX(text);
+        int y = gamePanel.screenHeight / 2;
+        graphics2D.drawString(text, x, y);
+
+        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 40F));
+
+        text = "Press 'C' to continue";
+        x = getCenteredTextX(text);
+        y += gamePanel.tileSize * 4;
+        graphics2D.drawString(text, x, y);
+
+        text = "Press 'R' to return to menu";
+        x = getCenteredTextX(text);
+        y += gamePanel.tileSize;
+        graphics2D.drawString(text, x, y);
+    }
+
+    public int getCenteredTextX(String text) {
+        int x;
+        int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
+        x = gamePanel.screenWidth / 2 - length / 2;
+
+        return x;
     }
 }
