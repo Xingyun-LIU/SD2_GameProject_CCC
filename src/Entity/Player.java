@@ -22,7 +22,7 @@ public class Player extends Entity {
         this.p1 = p1;
 
         // Define the collision area for player, cannot be tile size,it looks unnatural
-        solidArea = new Rectangle(12,18,24,24);
+        solidArea = new Rectangle(12, 18, 24, 24);
         setDefaultValue();
         getImage();
     }
@@ -58,16 +58,40 @@ public class Player extends Entity {
 
         if (p1) {
 
-            if (key.w) dy -= speed;
-            if (key.s) dy += speed;
-            if (key.a) dx -= speed;
-            if (key.d) dx += speed;
+            if (key.w) {
+                direction = "up";
+                dy -= speed;
+            }
+            if (key.s) {
+                direction = "down";
+                dy += speed;
+            }
+            if (key.a) {
+                direction = "left";
+                dx -= speed;
+            }
+            if (key.d) {
+                direction = "right";
+                dx += speed;
+            }
         } else {
 
-            if (key.up) dy -= speed;
-            if (key.down) dy += speed;
-            if (key.left) dx -= speed;
-            if (key.right) dx += speed;
+            if (key.up) {
+                direction = "up";
+                dy -= speed;
+            }
+            if (key.down) {
+                direction = "down";
+                dy += speed;
+            }
+            if (key.left) {
+                direction = "left";
+                dx -= speed;
+            }
+            if (key.right) {
+                direction = "right";
+                dx += speed;
+            }
         }
 
         worldX += dx;
