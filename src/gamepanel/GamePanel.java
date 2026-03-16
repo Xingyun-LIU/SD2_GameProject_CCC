@@ -63,8 +63,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setUpGame() {
 
-        player1 = new Player(this, tileSize * 62, tileSize * 64, Color.BLUE);
-        player2 = new Player(this, tileSize * 67, tileSize * 64, Color.RED);
+        player1 = new Player(this, true);
+        player2 = new Player(this, false);
 
         cam1 = new Camera(this);
         cam2 = new Camera(this);
@@ -99,8 +99,8 @@ public class GamePanel extends JPanel implements Runnable {
 
 
         if (gameState == playing) {
-            player1.update(key, true);
-            player2.update(key, false);
+            player1.update(key);
+            player2.update(key);
 
             cam1.follow(player1);
             cam2.follow(player2);

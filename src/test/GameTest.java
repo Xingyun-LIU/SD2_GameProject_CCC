@@ -19,9 +19,9 @@ class GameTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        BufferedImage fixedImage = ImageTool.fixImage(image, 40, 40);
+        BufferedImage fixedImage = ImageTool.fixImage(image, 80, 80);
 
-        assertEquals(40, fixedImage.getWidth());
-        assertEquals(40, fixedImage.getHeight());
+        assertEquals(80, fixedImage.getWidth());
+        assertEquals(80, fixedImage.getHeight());
     }
 }

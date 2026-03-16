@@ -2,8 +2,12 @@ package Entity;
 
 import Main.Camera;
 import gamepanel.GamePanel;
+import tool.ImageTool;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Entity {
 
@@ -13,8 +17,9 @@ public class Entity {
     public int worldY;
 
     public int speed = 4;
+    public String direction = "down";
 
-    public Rectangle solidArea = new Rectangle(0, 0, 32, 32);
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
 
     public boolean collision = false;
 
@@ -22,13 +27,16 @@ public class Entity {
         this.gamePanel = gamePanel;
     }
 
-    public void draw(Graphics g, Camera cam) {
+    public BufferedImage setup(String imagePath, int width, int height) {
 
-        int drawX = worldX - cam.x;
-        int drawY = worldY - cam.y;
-
-        g.fillRect(drawX, drawY, 32, 32);
-
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(getClass().getResourceAsStream(imagePath));
+            image = ImageTool.fixImage(image, width, height);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return image;
     }
 
 }
