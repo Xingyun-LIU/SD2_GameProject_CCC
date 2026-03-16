@@ -53,59 +53,75 @@ public class Player extends Entity {
 
     public void update(KeyHandler key) {
 
-        int dx = 0;
-        int dy = 0;
-
+        // first set the direction, then check collision, then move
         if (p1) {
 
             if (key.w) {
                 direction = "up";
-                dy -= speed;
             }
             if (key.s) {
                 direction = "down";
-                dy += speed;
             }
             if (key.a) {
                 direction = "left";
-                dx -= speed;
             }
             if (key.d) {
                 direction = "right";
-                dx += speed;
             }
         } else {
 
             if (key.up) {
                 direction = "up";
-                dy -= speed;
             }
             if (key.down) {
                 direction = "down";
-                dy += speed;
             }
             if (key.left) {
                 direction = "left";
-                dx -= speed;
             }
             if (key.right) {
                 direction = "right";
-                dx += speed;
             }
         }
 
-        worldX += dx;
-        worldY += dy;
+        // Check tile collision
+        collisionOn = false;
+        gamePanel.collisionChecker.checkTile(this);
 
-        if (dx != 0 || dy != 0) {
+        System.out.println(collisionOn);
+        if (!collisionOn) {
+            if (p1) {
 
-            spriteTimer++;
+                if (key.w) {
+                    worldY -= speed;
+                }
+                if (key.s) {
+                    worldY += speed;
+                }
+                if (key.a) {
+                    worldX -= speed;
+                }
+                if (key.d) {
+                    worldX += speed;
+                }
+            } else {
 
-            if (spriteTimer > 10) {
-                spriteIndex = (spriteIndex + 1) % 3;
-                spriteTimer = 0;
+                if (key.up) {
+                    worldY -= speed;
+                }
+                if (key.down) {
+                    worldY += speed;
+                }
+                if (key.left) {
+                    worldX -= speed;
+                }
+                if (key.right) {
+                    worldX += speed;
+                }
             }
         }
+
+
     }
 
     public void draw(Graphics2D graphics2D, Camera camera) {

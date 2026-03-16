@@ -30,6 +30,45 @@ public class CollisionChecker {
         int topRow = top / gamePanel.tileSize;
         int bottomRow = bottom / gamePanel.tileSize;
 
-//        switch ()
+        int tileNum1;
+        int tileNum2;
+
+        switch (entity.direction) {
+            case "up":
+                // Find the two tiles in front of the player
+                topRow = (top - entity.speed) / gamePanel.tileSize;
+                tileNum1 = gamePanel.tileManager.mapTileNum[leftCol][topRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[rightCol][topRow];
+                if (!gamePanel.tileManager.tiles[tileNum1].collision || !gamePanel.tileManager.tiles[tileNum2].collision) {
+                    entity.collisionOn = true;
+                }
+                break;
+            case "down":
+                bottomRow = (bottom - entity.speed) / gamePanel.tileSize;
+                tileNum1 = gamePanel.tileManager.mapTileNum[leftCol][bottomRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[rightCol][bottomRow];
+                if (!gamePanel.tileManager.tiles[tileNum1].collision || !gamePanel.tileManager.tiles[tileNum2].collision) {
+                    entity.collisionOn = true;
+                }
+                break;
+            case "left":
+                leftCol = (left - entity.speed) / gamePanel.tileSize;
+                tileNum1 = gamePanel.tileManager.mapTileNum[leftCol][topRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[leftCol][bottomRow];
+                if (!gamePanel.tileManager.tiles[tileNum1].collision || !gamePanel.tileManager.tiles[tileNum2].collision) {
+                    entity.collisionOn = true;
+                }
+                break;
+            case "right":
+                rightCol = (right - entity.speed) / gamePanel.tileSize;
+                tileNum1 = gamePanel.tileManager.mapTileNum[rightCol][topRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[rightCol][bottomRow];
+                if (!gamePanel.tileManager.tiles[tileNum1].collision || !gamePanel.tileManager.tiles[tileNum2].collision) {
+                    entity.collisionOn = true;
+                }
+                break;
+        }
     }
+
+
 }

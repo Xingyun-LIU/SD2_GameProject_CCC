@@ -22,6 +22,7 @@ public class Entity {
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
 
     public boolean collision = false;
+    public boolean collisionOn = false;
 
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;

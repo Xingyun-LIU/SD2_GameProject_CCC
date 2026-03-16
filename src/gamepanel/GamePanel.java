@@ -1,10 +1,7 @@
 package gamepanel;
 
 import Entity.Player;
-import Main.Camera;
-import Main.KeyHandler;
-import Main.SplitScreenRenderer;
-import Main.UI;
+import Main.*;
 import animation.OpeningAnimationPanel;
 import tile.TileManager;
 
@@ -40,8 +37,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     // System
     GameFrame gameFrame;
-    TileManager tileManager = new TileManager(this);
+    public TileManager tileManager = new TileManager(this);
     SplitScreenRenderer splitRenderer = new SplitScreenRenderer();
+    public CollisionChecker collisionChecker = new CollisionChecker(this);
     KeyHandler key;
     Thread gameThread;
     UI ui = new UI(this);

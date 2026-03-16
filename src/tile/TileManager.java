@@ -36,6 +36,7 @@ public class TileManager {
     //Put tiles into array
     public void getTileImage() {
         setUpTile(0, true, "/tiles/001.png");
+        setUpTile(1, false, "/tiles/002.png");
 
     }
 
