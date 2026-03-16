@@ -70,5 +70,43 @@ public class CollisionChecker {
         }
     }
 
+    // Check if this entity crush on a player(player1 crush on player2, monster crush on a player)
+    public void checkPlayer(Entity entity, Entity target) {
 
+//        boolean collisionPlayer = false;
+
+        // Calculate world position of solidArea
+        entity.solidArea.x = entity.solidArea.x + entity.worldX;
+        entity.solidArea.y = entity.solidArea.y + entity.worldY;
+
+        target.solidArea.x = target.solidArea.x + target.worldX;
+        target.solidArea.y = target.solidArea.y + target.worldY;
+
+        switch (entity.direction) {
+            case "up":
+                entity.solidArea.y -= entity.speed;
+                break;
+            case "down":
+                entity.solidArea.y += entity.speed;
+                break;
+            case "left":
+                entity.solidArea.x -= entity.speed;
+                break;
+            case "right":
+                entity.solidArea.x += entity.speed;
+                break;
+        }
+
+        // intersects() check if two rectangle crush
+        if (entity.solidArea.intersects(target.solidArea)) {
+            entity.collisionOn = true;
+        }
+
+        // Set back to default value
+        entity.solidArea.x = entity.originalSolidAreaX;
+        entity.solidArea.y = entity.originalSolidAreaY;
+        target.solidArea.x = target.originalSolidAreaX;
+        target.solidArea.y = target.originalSolidAreaY;
+
+    }
 }

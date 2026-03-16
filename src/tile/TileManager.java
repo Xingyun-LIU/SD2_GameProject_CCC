@@ -53,10 +53,6 @@ public class TileManager {
                 String line = br.readLine(); // read line of text
                 while (col < gp.worldCol) {
 
-//                    // split the string at a space, and translate them into an array
-//                    String numbers[] = line.split(" ");
-//                    int num = Integer.parseInt(numbers[col]);
-
                     // catch char
                     char c = line.charAt(col);
                     // Change string into integer

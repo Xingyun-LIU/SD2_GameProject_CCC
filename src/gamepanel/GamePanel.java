@@ -30,8 +30,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int pausing = 2;
 
     // Player
-    Player player1;
-    Player player2;
+    public Player player1;
+    public Player player2;
     Camera cam1;
     Camera cam2;
 
@@ -102,6 +102,8 @@ public class GamePanel extends JPanel implements Runnable {
 
             cam1.follow(player1);
             cam2.follow(player2);
+
+            System.out.println(player2.collisionOn);
         }
 
         if (gameState == pausing) {

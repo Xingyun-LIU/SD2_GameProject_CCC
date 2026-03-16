@@ -9,9 +9,6 @@ import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
 
-    int spriteIndex = 0;
-    int spriteTimer = 0;
-
     public boolean p1;
 
     public BufferedImage image;
@@ -23,6 +20,9 @@ public class Player extends Entity {
 
         // Define the collision area for player, cannot be tile size,it looks unnatural
         solidArea = new Rectangle(12, 18, 24, 24);
+        originalSolidAreaX = solidArea.x;
+        originalSolidAreaY = solidArea.y;
+
         setDefaultValue();
         getImage();
     }
@@ -88,7 +88,13 @@ public class Player extends Entity {
         collisionOn = false;
         gamePanel.collisionChecker.checkTile(this);
 
-        System.out.println(collisionOn);
+        // Check for collisions between players
+        if (p1) {
+            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
+        } else {
+            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
+        }
+
         if (!collisionOn) {
             if (p1) {
 
