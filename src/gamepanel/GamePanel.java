@@ -54,7 +54,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(key);
         setFocusable(true);
 
-//        setUpGame();
+        setUpGame();
+        gameState=opening;
 
         startThread();
     }
@@ -127,7 +128,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void drawWorld(Graphics2D graphics2D, Camera cam) {
-
         //Draw the map
         tileManager.draw(graphics2D, cam);
 

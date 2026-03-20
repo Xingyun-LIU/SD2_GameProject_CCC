@@ -4,6 +4,8 @@ import Entity.Player;
 import gamepanel.GamePanel;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+
 
 public class SplitScreenRenderer {
 
@@ -26,10 +28,10 @@ public class SplitScreenRenderer {
         if (split) {
 
             int half = panel.getWidth() / 2;
-
+            // left player1
             Graphics2D g1 = (Graphics2D) graphics2D.create(0, 0, half, panel.getHeight());
             panel.drawWorld(g1, cam1);
-
+            // right player2
             Graphics2D g2 = (Graphics2D) graphics2D.create(half, 0, half, panel.getHeight());
             panel.drawWorld(g2, cam2);
         }
@@ -44,4 +46,6 @@ public class SplitScreenRenderer {
 //
 //        }
     }
+
+
 }

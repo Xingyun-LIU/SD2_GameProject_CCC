@@ -25,6 +25,7 @@ public class OpeningAnimationPanel extends JPanel implements KeyListener, MouseL
         setFocusable(true);
         addKeyListener(this);
         addMouseListener(this);
+        SwingUtilities.invokeLater(() -> requestFocusInWindow());
         Timer timer = new Timer(16, e -> {
             update();
             repaint();
@@ -162,6 +163,7 @@ public class OpeningAnimationPanel extends JPanel implements KeyListener, MouseL
             }
         }
     }
+
 
     public void mousePressed(MouseEvent e) {
     }

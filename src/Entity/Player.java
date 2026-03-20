@@ -3,11 +3,15 @@ package Entity;
 import Main.Camera;
 import Main.KeyHandler;
 import gamepanel.GamePanel;
+import object.Inventory;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
+    public Inventory inventory=new Inventory();
+    public int selectedSlot = 0;
+    public int worldX, worldY;
 
     public boolean p1;
 

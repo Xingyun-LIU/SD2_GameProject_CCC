@@ -30,6 +30,7 @@ public class GameFrame extends JFrame {
 
         setLocationRelativeTo(null);
         layout.show(container, "opening");
+        opening.requestFocusInWindow();
         setVisible(true);
     }
 
@@ -37,11 +38,11 @@ public class GameFrame extends JFrame {
     public void startGame() {
 
         layout.show(container, "game");
-        gamePanel.requestFocus();
+        gamePanel.requestFocusInWindow();
 
         gamePanel.setUpGame();
         gamePanel.gameState = gamePanel.playing;
-
+        gamePanel.startThread();
     }
 
     // Switch back to opening state
