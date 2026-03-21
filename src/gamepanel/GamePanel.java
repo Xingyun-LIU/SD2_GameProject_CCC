@@ -10,6 +10,8 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
+    public final int FPS = 60;
+
     //Screen
     final int originalTileSize = 16;
     final int scale = 3;
@@ -54,8 +56,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(key);
         setFocusable(true);
 
-//        setUpGame();
-
         startThread();
     }
 
@@ -79,6 +79,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void run() {
 
+        double drawBreak = 1000000000 / FPS;
+        double nextDrawTime = System.nanoTime() + drawBreak;
+
         while (gameThread != null) {
 
             //Update information
@@ -87,8 +90,18 @@ public class GamePanel extends JPanel implements Runnable {
             repaint();
 
             try {
-                Thread.sleep(16);
-            } catch (Exception e) {
+//                Thread.sleep(16);
+                double remainingTime = nextDrawTime - System.nanoTime();
+                remainingTime /= 1000000;
+
+                if (remainingTime < 0) {
+                    remainingTime = 0;
+                }
+
+                Thread.sleep((long) remainingTime);
+                nextDrawTime += drawBreak;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
