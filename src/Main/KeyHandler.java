@@ -45,21 +45,6 @@ public class KeyHandler implements KeyListener {
                 gameFrame.showOpening();
             }
         }
-
-        // player 1 hotbar: 1~5
-        if(code == KeyEvent.VK_1) gamePanel.player1.selectedSlot = 0;
-        if(code == KeyEvent.VK_2) gamePanel.player1.selectedSlot = 1;
-        if(code == KeyEvent.VK_3) gamePanel.player1.selectedSlot = 2;
-        if(code == KeyEvent.VK_4) gamePanel.player1.selectedSlot = 3;
-        if(code == KeyEvent.VK_5) gamePanel.player1.selectedSlot = 4;
-
-        // player 2 hotbar: 6~0
-        if(code == KeyEvent.VK_6) gamePanel.player2.selectedSlot = 0;
-        if(code == KeyEvent.VK_7) gamePanel.player2.selectedSlot = 1;
-        if(code == KeyEvent.VK_8) gamePanel.player2.selectedSlot = 2;
-        if(code == KeyEvent.VK_9) gamePanel.player2.selectedSlot = 3;
-        if(code == KeyEvent.VK_0) gamePanel.player2.selectedSlot = 4;
-
     }
 
     public void keyReleased(KeyEvent e) {
@@ -81,26 +66,6 @@ public class KeyHandler implements KeyListener {
     public void keyTyped(KeyEvent e) {
     }
 
-
-    public void mouseWheelMoved(MouseWheelEvent e){
-
-        int rotation = e.getWheelRotation();
-        // player 1 hotbar selection with mouse wheel
-        if(rotation > 0){
-            gamePanel.player1.selectedSlot++;
-        }else{
-            gamePanel.player1.selectedSlot--;
-        }
-
-        //loop hotbar selection
-        if(gamePanel.player1.selectedSlot < 0){
-            gamePanel.player1.selectedSlot = 4;
-        }
-        //loop hotbar selection
-        if(gamePanel.player1.selectedSlot > 4){
-            gamePanel.player1.selectedSlot = 0;
-        }
-    }
 
 
 

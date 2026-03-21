@@ -7,6 +7,8 @@ import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -29,20 +31,20 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playing = 1;
     public final int pausing = 2;
 
+    // --- SYSTEM & COMPONENTS ---
+    GameFrame gameFrame;
+    public TileManager tileManager = new TileManager(this);
+    public SplitScreenRenderer splitRenderer = new SplitScreenRenderer();
+    public CollisionChecker collisionChecker = new CollisionChecker(this);
+    public KeyHandler key;
+    public UI ui = new UI(this);
+    Thread gameThread;
+
     // Player
     public Player player1;
     public Player player2;
     Camera cam1;
     Camera cam2;
-
-    // System
-    GameFrame gameFrame;
-    public TileManager tileManager = new TileManager(this);
-    SplitScreenRenderer splitRenderer = new SplitScreenRenderer();
-    public CollisionChecker collisionChecker = new CollisionChecker(this);
-    KeyHandler key;
-    Thread gameThread;
-    UI ui = new UI(this);
 
     public GamePanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
@@ -52,10 +54,9 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(Color.black);
         this.setFocusable(true); // JPanel can focus on receive key input
         this.addKeyListener(key);
-        setFocusable(true);
+        this.MouseListener();
 
-        setUpGame();
-        gameState=opening;
+//        setUpGame();
 
         startThread();
     }
@@ -78,21 +79,38 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
+    public void addNotify() {
+        super.addNotify();
+        this.requestFocusInWindow();
+    }
+
     public void run() {
+        double drawInterval = 1000.0 / 60; // 60 FPS
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
 
         while (gameThread != null) {
+            currentTime = System.nanoTime();
+            delta += (currentTime - lastTime) / drawInterval;
+            lastTime = currentTime;
 
-            //Update information
-            update();
-            //Draw the screen with the updated information
-            repaint();
+            if (delta >= 1) {
+                //Update information
+                update();
+                //Draw the screen with the updated information
+                repaint();
+                delta--;
+            }
 
             try {
-                Thread.sleep(16);
+                Thread.sleep(1);
             } catch (Exception e) {
             }
         }
     }
+
+
 
     public void update() {
 
@@ -118,16 +136,18 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D graphics2D = (Graphics2D) graphics;
 
         if (gameState == opening) {
+            ui.draw(graphics2D);
+        }else if (gameState == playing || gameState == pausing) {
+            splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
 
+            graphics2D.setClip(0, 0, screenWidth, screenHeight);
+            ui.draw(graphics2D);
         }
-
-        splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
-
-        ui.draw(graphics2D);
-
+        graphics2D.dispose();
     }
 
     public void drawWorld(Graphics2D graphics2D, Camera cam) {
+
         //Draw the map
         tileManager.draw(graphics2D, cam);
 
@@ -137,4 +157,29 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
+    public Rectangle startButtonRect =new Rectangle(0,0,0,0);
+    public void MouseListener() {
+
+
+   this.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+            int mx = e.getX();
+            int my = e.getY();
+
+            if(gameState == opening){
+
+                if(startButtonRect != null && startButtonRect.contains(mx, my)){
+                    gameState = playing;
+                    System.out.println("Start clicked");
+                }
+            }
+        }
+    });
+
+
+
+
+    }
 }
