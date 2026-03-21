@@ -86,7 +86,7 @@ public class TileManager {
         }
     }
 
-    public void draw(Graphics2D g2, Camera cam) {
+    public void draw(Graphics2D g2, Camera cam,int viewWidth) {
 
         int worldCol = 0;
         int worldRow = 0;
@@ -102,7 +102,7 @@ public class TileManager {
             int screenY = worldY - cam.y;
 
             if (worldX + gp.tileSize > cam.x &&
-                    worldX - gp.tileSize < cam.x + gp.screenWidth &&
+                    worldX - gp.tileSize < cam.x + viewWidth &&
                     worldY + gp.tileSize > cam.y &&
                     worldY - gp.tileSize < cam.y + gp.screenHeight) {
 

@@ -117,7 +117,6 @@ public class GamePanel extends JPanel implements Runnable {
             cam1.follow(player1);
             cam2.follow(player2);
 
-            System.out.println(player2.collisionOn);
         }
 
         if (gameState == pausing) {
@@ -140,10 +139,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
-    public void drawWorld(Graphics2D graphics2D, Camera cam) {
+    public void drawWorld(Graphics2D graphics2D, Camera cam, int viewWidth) {
 
         //Draw the map
-        tileManager.draw(graphics2D, cam);
+        tileManager.draw(graphics2D, cam, viewWidth);
 
         //Draw the player
         player1.draw(graphics2D, cam);
