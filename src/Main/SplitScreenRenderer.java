@@ -4,10 +4,14 @@ import Entity.Player;
 import gamepanel.GamePanel;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class SplitScreenRenderer {
 
     public boolean split = true;
+
+    private BufferedImage buffer1;
+    private BufferedImage buffer2;
 
     public void render(Graphics2D graphics2D,
                        GamePanel panel,
@@ -25,13 +29,39 @@ public class SplitScreenRenderer {
 
         if (split) {
 
+//            int half = panel.getWidth() / 2;
+//
+//            Graphics2D g1 = (Graphics2D) graphics2D.create(0, 0, half, panel.getHeight());
+//            panel.drawWorld(g1, cam1);
+//
+//            Graphics2D g2 = (Graphics2D) graphics2D.create(half, 0, half, panel.getHeight());
+//            panel.drawWorld(g2, cam2);
+
             int half = panel.getWidth() / 2;
+            int h = panel.getHeight();
 
-            Graphics2D g1 = (Graphics2D) graphics2D.create(0, 0, half, panel.getHeight());
-            panel.drawWorld(g1, cam1);
+            if (buffer1 == null || buffer1.getWidth() != half || buffer1.getHeight() != h) {
+                buffer1 = new BufferedImage(half, h, BufferedImage.TYPE_INT_RGB);
+                buffer2 = new BufferedImage(half, h, BufferedImage.TYPE_INT_RGB);
+            }
 
-            Graphics2D g2 = (Graphics2D) graphics2D.create(half, 0, half, panel.getHeight());
-            panel.drawWorld(g2, cam2);
+            Graphics2D g1 = buffer1.createGraphics();
+            g1.setColor(panel.getBackground());
+            g1.fillRect(0, 0, half, h);
+            panel.drawWorld(g1, cam1, half);
+            g1.dispose();
+
+            Graphics2D g2 = buffer2.createGraphics();
+            g2.setColor(panel.getBackground());
+            g2.fillRect(0, 0, half, h);
+            panel.drawWorld(g2, cam2, half);
+            g2.dispose();
+
+            graphics2D.drawImage(buffer1, 0, 0, null);
+            graphics2D.drawImage(buffer2, half, 0, null);
+
+            graphics2D.setColor(Color.DARK_GRAY);
+            graphics2D.fillRect(half - 1, 0, 2, h);
         }
 //        else {
 //
