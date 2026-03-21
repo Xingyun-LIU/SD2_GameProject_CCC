@@ -150,4 +150,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
+    public Object UI() {
+        return null;
+    }
 }
