@@ -38,7 +38,7 @@ public class SplitScreenRenderer {
 //            panel.drawWorld(g2, cam2);
 
             int half = panel.getWidth() / 2;
-            int h    = panel.getHeight();
+            int h = panel.getHeight();
 
             if (buffer1 == null || buffer1.getWidth() != half || buffer1.getHeight() != h) {
                 buffer1 = new BufferedImage(half, h, BufferedImage.TYPE_INT_RGB);
@@ -57,7 +57,7 @@ public class SplitScreenRenderer {
             panel.drawWorld(g2, cam2, half);
             g2.dispose();
 
-            graphics2D.drawImage(buffer1, 0,    0, null);
+            graphics2D.drawImage(buffer1, 0, 0, null);
             graphics2D.drawImage(buffer2, half, 0, null);
 
             graphics2D.setColor(Color.DARK_GRAY);
