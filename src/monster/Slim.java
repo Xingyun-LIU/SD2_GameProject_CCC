@@ -5,9 +5,9 @@ import gamepanel.GamePanel; // 确保 package 路径正确
 
 import java.util.Random;
 
-public class MON_GreenSlim extends Entity {
+public class Slim extends Entity {
 
-    public MON_GreenSlim(GamePanel gp) {
+    public Slim(GamePanel gp) {
         super(gp);
 
         name = "Green Slime";

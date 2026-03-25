@@ -2,7 +2,9 @@ package Main;
 
 import Entity.Player;
 import gamepanel.GamePanel;
-
+/**
+ * This class is used to mapping the worldX, worldY into screenX, screenY
+ * */
 public class Camera {
     public int x;
     public int y;
@@ -20,7 +22,6 @@ public class Camera {
             x += 2;
         }
     }
-
 
     public void follow(Player player) {
         int targetX = player.worldX - gamePanel.screenWidth / 4 + gamePanel.tileSize / 2;

@@ -13,6 +13,7 @@ public class SplitScreenRenderer {
     private BufferedImage buffer1;
     private BufferedImage buffer2;
 
+    /**Split panel into half, then draw each buffer base on the camera's position*/
     public void render(Graphics2D graphics2D,
                        GamePanel panel,
                        Player p1,
@@ -61,6 +62,7 @@ public class SplitScreenRenderer {
             graphics2D.drawImage(buffer2, half, 0, null);
 
             graphics2D.setColor(Color.DARK_GRAY);
+            // split row: 2px
             graphics2D.fillRect(half - 1, 0, 2, h);
         }
 //        else {

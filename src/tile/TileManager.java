@@ -58,6 +58,7 @@ public class TileManager {
 
     }
 
+    // Read the index of the tiles from a .txt file, then use these number to load the whole map
     public void loadMap() {
 
         try {
@@ -103,6 +104,7 @@ public class TileManager {
         }
     }
 
+    /** Split draw tiles in viewWidth by camera, tiles will not be drawn out of camera*/
     public void draw(Graphics2D g2, Camera cam,int viewWidth) {
 
         int worldCol = 0;

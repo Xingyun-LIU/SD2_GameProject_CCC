@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
     public TileManager tileManager = new TileManager(this);
     SplitScreenRenderer splitRenderer = new SplitScreenRenderer();
     public CollisionChecker collisionChecker = new CollisionChecker(this);
+    public EventChecker eventChecker = new EventChecker(this);
     KeyHandler key;
     Thread gameThread;
     UI ui = new UI(this);
@@ -128,10 +129,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
-
-        if (gameState == opening) {
-
-        }
 
         splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
 

@@ -3,13 +3,12 @@ package npc;
 import gamepanel.GamePanel;
 import Entity.Entity;
 import java.util.Random;
-import Entity.Player;
 
-public class NPC_OldMan extends Entity {
+public class OldMan extends Entity {
 
     private boolean alreadyTalkedOnce = false;
 
-    public NPC_OldMan(GamePanel gp) {
+    public OldMan(GamePanel gp) {
         super(gp);
         direction = "down";
         speed = 1;
