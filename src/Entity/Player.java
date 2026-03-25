@@ -30,11 +30,11 @@ public class Player extends Entity {
     public void setDefaultValue() {
 
         if (p1) {
-            worldX = gamePanel.tileSize * 62;
-            worldY = gamePanel.tileSize * 64;
+            worldX = gamePanel.tileSize * 30;
+            worldY = gamePanel.tileSize * 47;
         } else {
-            worldX = gamePanel.tileSize * 67;
-            worldY = gamePanel.tileSize * 64;
+            worldX = gamePanel.tileSize * 37;
+            worldY = gamePanel.tileSize * 47;
         }
 
     }

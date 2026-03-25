@@ -36,17 +36,24 @@ public class TileManager {
     //Put tiles into array
     public void getTileImage() {
         setUpTile(0, true, "/tiles/floor.png");
-        setUpTile(1, false, "/tiles/plant/tree.png");
         setUpTile(2, false, "/tiles/plant/treetop.png");
         setUpTile(3, false, "/tiles/plant/treebody.png");
 
+        setUpTile(1, true, "/tiles/runway/runway.png");
         setUpTile(4, true, "/tiles/runway/middlerunway.png");
         setUpTile(5, true, "/tiles/runway/crossrunway.png");
         setUpTile(6, true, "/tiles/runway/leftdownrunway.png");
         setUpTile(7, true, "/tiles/runway/leftuprunway.png");
         setUpTile(8, true, "/tiles/runway/rightdownrunway.png");
         setUpTile(9, true, "/tiles/runway/rightuprunway.png");
-        setUpTile(10, true, "/tiles/runway/middlerunway.png");
+
+        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
+        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
+        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
+        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
+        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
+        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
+
 
     }
 
@@ -63,10 +70,9 @@ public class TileManager {
                 String line = br.readLine(); // read line of text
                 while (col < gp.worldCol) {
 
-                    // catch char
-                    char c = line.charAt(col);
-                    // Change string into integer
-                    int num = Character.getNumericValue(c);
+                    String numbers[] = line.split(" ");
+
+                    int num = Integer.parseInt(numbers[col]);
 
                     mapTileNum[col][row] = num;
                     col++;
