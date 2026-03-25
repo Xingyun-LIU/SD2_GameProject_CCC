@@ -21,6 +21,7 @@ public class Camera {
         }
     }
 
+
     public void follow(Player player) {
         int targetX = player.worldX - gamePanel.screenWidth / 4 + gamePanel.tileSize / 2;
         int targetY = player.worldY - gamePanel.screenHeight / 2 + gamePanel.tileSize / 2;
