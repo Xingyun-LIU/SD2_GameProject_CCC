@@ -37,6 +37,16 @@ public class TileManager {
     public void getTileImage() {
         setUpTile(0, true, "/tiles/floor.png");
         setUpTile(1, false, "/tiles/plant/tree.png");
+        setUpTile(2, false, "/tiles/plant/treetop.png");
+        setUpTile(3, false, "/tiles/plant/treebody.png");
+
+        setUpTile(4, true, "/tiles/runway/middlerunway.png");
+        setUpTile(5, true, "/tiles/runway/crossrunway.png");
+        setUpTile(6, true, "/tiles/runway/leftdownrunway.png");
+        setUpTile(7, true, "/tiles/runway/leftuprunway.png");
+        setUpTile(8, true, "/tiles/runway/rightdownrunway.png");
+        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
+        setUpTile(10, true, "/tiles/runway/middlerunway.png");
 
     }
 
