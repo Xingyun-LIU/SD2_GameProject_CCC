@@ -47,13 +47,10 @@ public class TileManager {
         setUpTile(8, true, "/tiles/runway/rightdownrunway.png");
         setUpTile(9, true, "/tiles/runway/rightuprunway.png");
 
-        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
-        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
-        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
-        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
-        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
-        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
-
+        setUpTile(10, true, "/tiles/toilet/toiletfloor.png");
+        setUpTile(11, true, "/tiles/toilet/mop.png");
+        setUpTile(12, true, "/tiles/toilet/pail.png");
+        setUpTile(13, true, "/tiles/toilet/squat.png");
 
     }
 
@@ -68,9 +65,9 @@ public class TileManager {
 
             while (col < gp.worldCol && row < gp.worldRow) {
                 String line = br.readLine(); // read line of text
-                while (col < gp.worldCol) {
+                String numbers[] = line.split("\\s+");
 
-                    String numbers[] = line.split(" ");
+                while (col < gp.worldCol) {
 
                     int num = Integer.parseInt(numbers[col]);
 
