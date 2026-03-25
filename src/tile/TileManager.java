@@ -27,7 +27,7 @@ public class TileManager {
         this.gp = gp;
 
         mapTileNum = new int[gp.worldCol][gp.worldRow];
-        tiles = new Tile[20];
+        tiles = new Tile[30];
 
         getTileImage();
         loadMap();
@@ -51,6 +51,10 @@ public class TileManager {
         setUpTile(11, true, "/tiles/toilet/mop.png");
         setUpTile(12, true, "/tiles/toilet/pail.png");
         setUpTile(13, true, "/tiles/toilet/squat.png");
+
+        setUpTile(14, true, "/tiles/classroom/floor.png");
+
+        setUpTile(15, true, "/tiles/lab/labfloor.png");
 
     }
 
