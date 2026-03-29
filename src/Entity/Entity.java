@@ -36,6 +36,7 @@ public class Entity {
         this.gamePanel = gamePanel;
     }
 
+    /**Initialize entity image with specified size.*/
     public BufferedImage setup(String imagePath, int width, int height) {
 
         BufferedImage image = null;

@@ -28,8 +28,7 @@ public class Bro extends Entity {
         right2 = setup("/npc/bro.png", gamePanel.tileSize, gamePanel.tileSize);
     }
 
-
-
+    /**This method executed in update, npc will change it direction  each two second.*/
     public void setAction() {
         actionCounter++;
 
