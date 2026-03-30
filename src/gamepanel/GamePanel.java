@@ -1,5 +1,6 @@
 package gamepanel;
 
+import Entity.Entity;
 import Entity.Player;
 import Main.*;
 import animation.OpeningAnimationPanel;
@@ -37,6 +38,11 @@ public class GamePanel extends JPanel implements Runnable {
     Camera cam1;
     Camera cam2;
 
+    // Objects and NPC
+    public Entity[] objects = new Entity[20];
+    public Entity[] npc = new Entity[20];
+    public Entity[] monsters = new Entity[20];
+
     // System
     GameFrame gameFrame;
     public TileManager tileManager = new TileManager(this);
@@ -46,6 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler key;
     Thread gameThread;
     UI ui = new UI(this);
+    public Setter setter = new Setter(this);
 
     public GamePanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
@@ -68,6 +75,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         cam1 = new Camera(this);
         cam2 = new Camera(this);
+
+        setter.setObject();
+        setter.setNPC();
+        setter.setMonster();
 
         gameState = playing;
     }

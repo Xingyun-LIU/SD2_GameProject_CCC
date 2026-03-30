@@ -49,4 +49,17 @@ public class Entity {
         return image;
     }
 
+    // It will
+    public void setAction(){}
+
+    public void update(){
+
+        setAction();
+
+    }
+
+    public void draw(){
+
+    }
+
 }
