@@ -17,6 +17,12 @@ public class Player extends Entity {
 
     public BufferedImage image;
 
+    // EventChecker
+    // make sure the event will not repeatedly trigger in a short period of time.
+    public int eventPreviousX;
+    public int eventPreviousY;
+    public boolean canTouchEvent = true;
+
     public Player(GamePanel gamePanel, boolean p1) {
         super(gamePanel);
         this.gamePanel = gamePanel;
@@ -34,11 +40,11 @@ public class Player extends Entity {
     public void setDefaultValue() {
 
         if (p1) {
-            worldX = gamePanel.tileSize * 62;
-            worldY = gamePanel.tileSize * 64;
+            worldX = gamePanel.tileSize * 30;
+            worldY = gamePanel.tileSize * 47;
         } else {
-            worldX = gamePanel.tileSize * 67;
-            worldY = gamePanel.tileSize * 64;
+            worldX = gamePanel.tileSize * 37;
+            worldY = gamePanel.tileSize * 47;
         }
 
     }
@@ -98,6 +104,9 @@ public class Player extends Entity {
         } else {
             gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
         }
+
+        // Check event
+        gamePanel.eventChecker.checkEvent(this);
 
         if (!collisionOn) {
             if (p1) {

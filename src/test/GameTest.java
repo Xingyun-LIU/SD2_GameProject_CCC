@@ -15,7 +15,7 @@ class GameTest {
     void testFixImage() {
         BufferedImage image = null;
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/tiles/001.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/tiles/plant/tree.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -7,10 +7,10 @@ import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class GamePanel extends JPanel implements Runnable {
+
+    public final int FPS = 60;
 
     //Screen
     final int originalTileSize = 16;
@@ -22,8 +22,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int screenHeight = screenRow * tileSize;
 
     // World
-    public final int worldCol = 128; //2048
-    public final int worldRow = 128; //2048
+    public final int worldCol = 64; //2048
+    public final int worldRow = 64; //2048
 
     // Game State
     public int gameState;
@@ -31,20 +31,21 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playing = 1;
     public final int pausing = 2;
 
-    // --- SYSTEM & COMPONENTS ---
-    GameFrame gameFrame;
-    public TileManager tileManager = new TileManager(this);
-    public SplitScreenRenderer splitRenderer = new SplitScreenRenderer();
-    public CollisionChecker collisionChecker = new CollisionChecker(this);
-    public KeyHandler key;
-    public UI ui = new UI(this);
-    Thread gameThread;
-
     // Player
     public Player player1;
     public Player player2;
     Camera cam1;
     Camera cam2;
+
+    // System
+    GameFrame gameFrame;
+    public TileManager tileManager = new TileManager(this);
+    SplitScreenRenderer splitRenderer = new SplitScreenRenderer();
+    public CollisionChecker collisionChecker = new CollisionChecker(this);
+    public EventChecker eventChecker = new EventChecker(this);
+    KeyHandler key;
+    Thread gameThread;
+    UI ui = new UI(this);
 
     public GamePanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
@@ -52,11 +53,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
+        this.setDoubleBuffered(true);
         this.setFocusable(true); // JPanel can focus on receive key input
         this.addKeyListener(key);
-        this.MouseListener();
-
-//        setUpGame();
+        setFocusable(true);
 
         startThread();
     }
@@ -79,38 +79,34 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
-    public void addNotify() {
-        super.addNotify();
-        this.requestFocusInWindow();
-    }
-
     public void run() {
-        double drawInterval = 1000.0 / 60; // 60 FPS
-        double delta = 0;
-        long lastTime = System.nanoTime();
-        long currentTime;
+
+        double drawBreak = 1000000000 / FPS;
+        double nextDrawTime = System.nanoTime() + drawBreak;
 
         while (gameThread != null) {
-            currentTime = System.nanoTime();
-            delta += (currentTime - lastTime) / drawInterval;
-            lastTime = currentTime;
 
-            if (delta >= 1) {
-                //Update information
-                update();
-                //Draw the screen with the updated information
-                repaint();
-                delta--;
-            }
+            //Update information
+            update();
+            //Draw the screen with the updated information
+            repaint();
 
             try {
-                Thread.sleep(1);
-            } catch (Exception e) {
+//                Thread.sleep(16);
+                double remainingTime = nextDrawTime - System.nanoTime();
+                remainingTime /= 1000000;
+
+                if (remainingTime < 0) {
+                    remainingTime = 0;
+                }
+
+                Thread.sleep((long) remainingTime);
+                nextDrawTime += drawBreak;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
-
-
 
     public void update() {
 
@@ -122,7 +118,6 @@ public class GamePanel extends JPanel implements Runnable {
             cam1.follow(player1);
             cam2.follow(player2);
 
-            System.out.println(player2.collisionOn);
         }
 
         if (gameState == pausing) {
@@ -135,21 +130,16 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
 
-        if (gameState == opening) {
-            ui.draw(graphics2D);
-        }else if (gameState == playing || gameState == pausing) {
-            splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
+        splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
 
-            graphics2D.setClip(0, 0, screenWidth, screenHeight);
-            ui.draw(graphics2D);
-        }
-        graphics2D.dispose();
+        ui.draw(graphics2D);
+
     }
 
-    public void drawWorld(Graphics2D graphics2D, Camera cam) {
+    public void drawWorld(Graphics2D graphics2D, Camera cam, int viewWidth) {
 
         //Draw the map
-        tileManager.draw(graphics2D, cam);
+        tileManager.draw(graphics2D, cam, viewWidth);
 
         //Draw the player
         player1.draw(graphics2D, cam);
@@ -157,29 +147,4 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
-    public Rectangle startButtonRect =new Rectangle(0,0,0,0);
-    public void MouseListener() {
-
-
-   this.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-            int mx = e.getX();
-            int my = e.getY();
-
-            if(gameState == opening){
-
-                if(startButtonRect != null && startButtonRect.contains(mx, my)){
-                    gameState = playing;
-                    System.out.println("Start clicked");
-                }
-            }
-        }
-    });
-
-
-
-
-    }
 }

@@ -2,7 +2,9 @@ package Main;
 
 import Entity.Player;
 import gamepanel.GamePanel;
-
+/**
+ * This class is used to mapping the worldX, worldY into screenX, screenY
+ * */
 public class Camera {
     public int x;
     public int y;
