@@ -101,6 +101,15 @@ public class Player extends Entity {
             gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
         }
 
+        //check object collision
+        int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
+
+        //check npc collision
+        int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+
+        //check monster collision
+        int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+
         // Check event
         gamePanel.eventChecker.checkEvent(this);
 

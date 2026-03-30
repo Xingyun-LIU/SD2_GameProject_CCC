@@ -27,14 +27,14 @@ public class Egg extends Entity {
     }
 
     public void getImage() {
-        up1 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        up2 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        down1 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        down2 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        left1 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        left2 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        right1 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        right2 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        up1 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        up2 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        down1 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        down2 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        left1 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        left2 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        right1 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        right2 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
     }
 
     public void setAction() {
