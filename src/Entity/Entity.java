@@ -50,7 +50,7 @@ public class Entity {
         return image;
     }
 
-    // It will
+    // It will be executed automatically in subclasses.
     public void setAction() {
     }
 
@@ -64,10 +64,11 @@ public class Entity {
         gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
         gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
 
-        // the npc or monster collision with player
+        // The npc or monster collision with player
         boolean collisionPlayer1 = gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
         boolean collisionPlayer2 = gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
 
+        // If monster collision with the player, life decrease.
         if (this.type == 2 && collisionPlayer1) {
             gamePanel.player1.life -= 1;
         }
@@ -95,8 +96,36 @@ public class Entity {
 
     }
 
-    public void draw() {
+    public void draw(Graphics2D graphics2D, Camera cam, int viewWidth) {
 
+        BufferedImage image = null;
+
+        // Same render logic with TileManager.
+        int screenX = worldX - cam.x;
+        int screenY = worldY - cam.y;
+        if (worldX + gamePanel.tileSize > cam.x &&
+                worldX - gamePanel.tileSize < cam.x + viewWidth &&
+                worldY + gamePanel.tileSize > cam.y &&
+                worldY - gamePanel.tileSize < cam.y + gamePanel.screenHeight) {
+            switch (direction) {
+
+                //set different picture when moving different direction
+                case "up":
+                    image = up1;
+                    break;
+                case "down":
+                    image = down1;
+                    break;
+                case "left":
+                    image = left1;
+                    break;
+                case "right":
+                    image = right1;
+                    break;
+            }
+
+            graphics2D.drawImage(image, screenX, screenY, null);
+        }
     }
 
 }
