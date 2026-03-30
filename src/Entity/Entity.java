@@ -61,6 +61,8 @@ public class Entity {
         collisionOn = false;
         gamePanel.collisionChecker.checkTile(this);
         gamePanel.collisionChecker.checkObject(this, false);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
 
         // the npc or monster collision with player
         boolean collisionPlayer1 = gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);

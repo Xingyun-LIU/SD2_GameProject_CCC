@@ -168,4 +168,56 @@ public class CollisionChecker {
         }
         return index;
     }
+
+    /**
+     * Check if one entity crush on target entity, return the index of target.
+     * */
+    public int checkEntity(Entity entity, Entity[] target) {
+
+        int index = 999;
+
+        for (int i = 0; i < target.length; i++) {
+            if (target[i] != null) {
+
+                // Get solid entity area position
+                entity.solidArea.x = entity.solidArea.x + entity.worldX;
+                entity.solidArea.y = entity.solidArea.y + entity.worldY;
+
+                // Get object solid area position
+                target[i].solidArea.x = target[i].worldX + target[i].solidArea.x;
+                target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
+
+                switch (entity.direction) {
+                    case "up":
+                        entity.solidArea.y -= entity.speed;
+                        break;
+                    case "down":
+                        entity.solidArea.y += entity.speed;
+                        break;
+                    case "left":
+                        entity.solidArea.x -= entity.speed;
+                        break;
+                    case "right":
+                        entity.solidArea.x += entity.speed;
+                        break;
+                }
+
+                if (entity.solidArea.intersects(target[i].solidArea)) {
+
+                    // if entity not equals to itself, set true
+                    if (target[i] != entity) {
+                        entity.collisionOn = true;
+                        index = i;
+                    }
+                }
+
+                entity.solidArea.x = entity.originalSolidAreaX;
+                entity.solidArea.y = entity.originalSolidAreaY;
+                target[i].solidArea.x = target[i].originalSolidAreaX;
+                target[i].solidArea.y = target[i].originalSolidAreaY;
+            }
+
+        }
+        return index;
+    }
 }
