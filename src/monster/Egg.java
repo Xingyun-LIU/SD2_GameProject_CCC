@@ -11,6 +11,7 @@ public class Egg extends Entity {
         super(gp);
 
         name = "Green Slime";
+        type = 2;
         speed = 1;
         maxLife = 4;
         life = maxLife;
@@ -26,12 +27,12 @@ public class Egg extends Entity {
     }
 
     public void getImage() {
-        up1 = setup(   "/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        up2 = setup(   "/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        down1 = setup( "/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        down2 = setup( "/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        left1 = setup( "/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
-        left2 = setup( "/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        up1 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        up2 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        down1 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        down2 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        left1 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        left2 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
         right1 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
         right2 = setup("/moster/egg.png", gamePanel.tileSize, gamePanel.tileSize);
     }
@@ -43,10 +44,15 @@ public class Egg extends Entity {
             Random random = new Random();
             int i = random.nextInt(100) + 1;
 
-            if (i <= 25) { direction = "up"; }
-            else if (i <= 50) { direction = "down"; }
-            else if (i <= 75) { direction = "left"; }
-            else { direction = "right"; }
+            if (i <= 25) {
+                direction = "up";
+            } else if (i <= 50) {
+                direction = "down";
+            } else if (i <= 75) {
+                direction = "left";
+            } else {
+                direction = "right";
+            }
 
             actionCounter = 0;
         }
