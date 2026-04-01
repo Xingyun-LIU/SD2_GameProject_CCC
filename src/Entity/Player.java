@@ -57,14 +57,14 @@ public class Player extends Entity {
             right1 = setup("/player/player1_right1.png", gamePanel.tileSize, gamePanel.tileSize);
             right2 = setup("/player/player1_right2.png", gamePanel.tileSize, gamePanel.tileSize);
         } else {
-            up1 = setup("/player/player2.png", gamePanel.tileSize, gamePanel.tileSize);
-            up2 = setup("/player/player2.png", gamePanel.tileSize, gamePanel.tileSize);
-            down1 = setup("/player/player2.png", gamePanel.tileSize, gamePanel.tileSize);
-            down2 = setup("/player/player2.png", gamePanel.tileSize, gamePanel.tileSize);
-            left1 = setup("/player/player2.png", gamePanel.tileSize, gamePanel.tileSize);
-            left2 = setup("/player/player2.png", gamePanel.tileSize, gamePanel.tileSize);
-            right1 = setup("/player/player2.png", gamePanel.tileSize, gamePanel.tileSize);
-            right2 = setup("/player/player2.png", gamePanel.tileSize, gamePanel.tileSize);
+            up1 = setup("/player/player2_up1.png", gamePanel.tileSize, gamePanel.tileSize);
+            up2 = setup("/player/player2_up2.png", gamePanel.tileSize, gamePanel.tileSize);
+            down1 = setup("/player/player2_down1.png", gamePanel.tileSize, gamePanel.tileSize);
+            down2 = setup("/player/player2_down2.png", gamePanel.tileSize, gamePanel.tileSize);
+            left1 = setup("/player/player2_left1.png", gamePanel.tileSize, gamePanel.tileSize);
+            left2 = setup("/player/player2_left2.png", gamePanel.tileSize, gamePanel.tileSize);
+            right1 = setup("/player/player2_right1.png", gamePanel.tileSize, gamePanel.tileSize);
+            right2 = setup("/player/player2_right2.png", gamePanel.tileSize, gamePanel.tileSize);
         }
 
     }
