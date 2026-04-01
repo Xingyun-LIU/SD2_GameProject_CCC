@@ -1,7 +1,7 @@
 package monster;
 
 import Entity.Entity;
-import gamepanel.GamePanel; // 确保 package 路径正确
+import gamepanel.GamePanel;
 
 import java.util.Random;
 
