@@ -17,6 +17,9 @@ public class Player extends Entity {
     public int eventPreviousY;
     public boolean canTouchEvent = true;
 
+    int p1SpriteCounter = 0;
+    int p2SpriteCounter = 0;
+
     public Player(GamePanel gamePanel, boolean p1) {
         super(gamePanel);
         this.gamePanel = gamePanel;
@@ -71,10 +74,10 @@ public class Player extends Entity {
 
     public void update(KeyHandler key) {
 
-        if (key.w || key.s || key.d || key.a || key.up || key.down || key.left || key.right) {
-            // first set the direction, then check collision, then move
-            if (p1) {
+        // first set the direction, then check collision, then move
+        if (p1) {
 
+            if (key.w || key.s || key.d || key.a) {
                 if (key.w) {
                     direction = "up";
                 }
@@ -87,8 +90,21 @@ public class Player extends Entity {
                 if (key.d) {
                     direction = "right";
                 }
-            } else {
 
+                // Walk step by step
+                p1SpriteCounter++;
+                if (p1SpriteCounter > 12) {
+                    if (spriteNum == 1) {
+                        spriteNum = 2;
+                    } else if (spriteNum == 2) {
+                        spriteNum = 1;
+                    }
+                    p1SpriteCounter = 0;
+                }
+            }
+
+        } else {
+            if (key.up || key.down || key.left || key.right) {
                 if (key.up) {
                     direction = "up";
                 }
@@ -101,72 +117,71 @@ public class Player extends Entity {
                 if (key.right) {
                     direction = "right";
                 }
+
+                p2SpriteCounter++;
+                if (p2SpriteCounter > 12) {
+                    if (spriteNum == 1) {
+                        spriteNum = 2;
+                    } else if (spriteNum == 2) {
+                        spriteNum = 1;
+                    }
+                    p2SpriteCounter = 0;
+                }
             }
+        }
 
-            // Check tile collision
-            collisionOn = false;
-            gamePanel.collisionChecker.checkTile(this);
+        // Check tile collision
+        collisionOn = false;
+        gamePanel.collisionChecker.checkTile(this);
 
-            // Check for collisions between players
+        // Check for collisions between players
+        if (p1) {
+            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
+        } else {
+            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
+        }
+
+        //check object collision
+        int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
+
+        //check npc collision
+        int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+
+        //check monster collision
+        int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+
+        // Check event
+        gamePanel.eventChecker.checkEvent(this);
+
+        if (!collisionOn) {
             if (p1) {
-                gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
+
+                if (key.w) {
+                    worldY -= speed;
+                }
+                if (key.s) {
+                    worldY += speed;
+                }
+                if (key.a) {
+                    worldX -= speed;
+                }
+                if (key.d) {
+                    worldX += speed;
+                }
             } else {
-                gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
-            }
 
-            //check object collision
-            int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
-
-            //check npc collision
-            int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
-
-            //check monster collision
-            int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
-
-            // Check event
-            gamePanel.eventChecker.checkEvent(this);
-
-            if (!collisionOn) {
-                if (p1) {
-
-                    if (key.w) {
-                        worldY -= speed;
-                    }
-                    if (key.s) {
-                        worldY += speed;
-                    }
-                    if (key.a) {
-                        worldX -= speed;
-                    }
-                    if (key.d) {
-                        worldX += speed;
-                    }
-                } else {
-
-                    if (key.up) {
-                        worldY -= speed;
-                    }
-                    if (key.down) {
-                        worldY += speed;
-                    }
-                    if (key.left) {
-                        worldX -= speed;
-                    }
-                    if (key.right) {
-                        worldX += speed;
-                    }
+                if (key.up) {
+                    worldY -= speed;
                 }
-            }
-
-            // Walk step by step
-            spriteCounter++;
-            if (spriteCounter > 12) {
-                if (spriteNum == 1) {
-                    spriteNum = 2;
-                } else if (spriteNum == 2) {
-                    spriteNum = 1;
+                if (key.down) {
+                    worldY += speed;
                 }
-                spriteCounter = 0;
+                if (key.left) {
+                    worldX -= speed;
+                }
+                if (key.right) {
+                    worldX += speed;
+                }
             }
         }
 
