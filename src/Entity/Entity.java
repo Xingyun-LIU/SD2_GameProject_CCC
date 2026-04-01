@@ -25,12 +25,17 @@ public class Entity {
     public int maxLife;
     public int life;
 
+    // Action
+    public int spriteNum = 1;
+
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int originalSolidAreaX;
     public int originalSolidAreaY;
     public boolean collision = false;
     public boolean collisionOn = false;
 
+    // Counter
+    public int spriteCounter = 0;
     public int actionCounter = 0;
 
     public Entity(GamePanel gamePanel) {

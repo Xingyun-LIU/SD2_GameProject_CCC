@@ -36,6 +36,7 @@ public class Bro extends Entity {
             Random random = new Random();
             int i = random.nextInt(100) + 1;
 
+
             if (i <= 25) {
                 direction = "up";
             }
