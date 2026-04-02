@@ -1,5 +1,6 @@
 package gamepanel;
 
+import Entity.Entity;
 import Entity.Player;
 import Main.*;
 import animation.OpeningAnimationPanel;
@@ -7,6 +8,9 @@ import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -37,6 +41,12 @@ public class GamePanel extends JPanel implements Runnable {
     Camera cam1;
     Camera cam2;
 
+    // Objects and NPC
+    public Entity[] objects = new Entity[20];
+    public Entity[] npc = new Entity[20];
+    public Entity[] monsters = new Entity[20];
+    ArrayList<Entity> entities = new ArrayList<>();
+
     // System
     GameFrame gameFrame;
     public TileManager tileManager = new TileManager(this);
@@ -46,6 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler key;
     Thread gameThread;
     UI ui = new UI(this);
+    public Setter setter = new Setter(this);
 
     public GamePanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
@@ -68,6 +79,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         cam1 = new Camera(this);
         cam2 = new Camera(this);
+
+        setter.setObject();
+        setter.setNPC();
+        setter.setMonster();
 
         gameState = playing;
     }
@@ -110,14 +125,27 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
 
-
         if (gameState == playing) {
+            // player
             player1.update(key);
             player2.update(key);
 
             cam1.follow(player1);
             cam2.follow(player2);
 
+            // npc
+            for (int i = 0; i < npc.length; i++) {
+                if (npc[i] != null) {
+                    npc[i].update();
+                }
+            }
+
+            // monster
+            for (int i = 0; i < monsters.length; i++) {
+                if (monsters[i] != null) {
+                    monsters[i].update();
+                }
+            }
         }
 
         if (gameState == pausing) {
@@ -130,10 +158,45 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
 
-        splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
+        if (gameState == playing) {
 
-        ui.draw(graphics2D);
+            splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
 
+//        // Add entities to the list
+//        for (int i = 0; i < npc.length; i++) {
+//            if (npc[i] != null) {
+//                entities.add(npc[i]);
+//            }
+//        }
+//        for (int i = 0; i < objects.length; i++) {
+//            if (objects[i] != null) {
+//                entities.add(objects[i]);
+//            }
+//        }
+//        for (int i = 0; i < monsters.length; i++) {
+//            if (monsters[i] != null) {
+//                entities.add(monsters[i]);
+//            }
+//        }
+//
+//        // Sort entity list by worldY
+//        Collections.sort(entities, new Comparator<Entity>() {
+//            @Override
+//            public int compare(Entity e1, Entity e2) {
+//                int result = Integer.compare(e1.worldY, e2.worldY);
+//                return result;
+//            }
+//        });
+//
+//        // draw entities
+//        for (int i = 0; i < entities.size(); i++) {
+//            entities.get(i).draw(graphics2D,cam);
+//        }
+//
+//        ui.draw(graphics2D);
+        }
+
+        graphics2D.dispose();
     }
 
     public void drawWorld(Graphics2D graphics2D, Camera cam, int viewWidth) {
@@ -144,6 +207,42 @@ public class GamePanel extends JPanel implements Runnable {
         //Draw the player
         player1.draw(graphics2D, cam);
         player2.draw(graphics2D, cam);
+
+        // Add entities to the list
+        for (int i = 0; i < npc.length; i++) {
+            if (npc[i] != null) {
+                entities.add(npc[i]);
+            }
+        }
+        for (int i = 0; i < objects.length; i++) {
+            if (objects[i] != null) {
+                entities.add(objects[i]);
+            }
+        }
+        for (int i = 0; i < monsters.length; i++) {
+            if (monsters[i] != null) {
+                entities.add(monsters[i]);
+            }
+        }
+
+        // Sort entity list by worldY
+        Collections.sort(entities, new Comparator<Entity>() {
+            @Override
+            public int compare(Entity e1, Entity e2) {
+                int result = Integer.compare(e1.worldY, e2.worldY);
+                return result;
+            }
+        });
+
+        // Draw entities
+        for (int i = 0; i < entities.size(); i++) {
+            entities.get(i).draw(graphics2D, cam, viewWidth);
+        }
+
+        // Ensure that entities will load again every frame.
+        entities.clear();
+
+        ui.draw(graphics2D);
 
     }
 

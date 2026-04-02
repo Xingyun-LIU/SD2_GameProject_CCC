@@ -18,14 +18,14 @@ public class Bro extends Entity {
 
     private void loadPics() {
 
-        up1    = setup("/npc/bro.png", gamePanel.tileSize, gamePanel.tileSize);
-        up2    = setup("/npc/bro.png", gamePanel.tileSize, gamePanel.tileSize);
-        down1  = setup("/npc/bro.png",gamePanel.tileSize, gamePanel.tileSize);
-        down2  = setup("/npc/bro.png", gamePanel.tileSize, gamePanel.tileSize);
-        left1  = setup("/npc/bro.png", gamePanel.tileSize, gamePanel.tileSize);
-        left2  = setup("/npc/bro.png", gamePanel.tileSize, gamePanel.tileSize);
-        right1 = setup("/npc/bro.png", gamePanel.tileSize, gamePanel.tileSize);
-        right2 = setup("/npc/bro.png", gamePanel.tileSize, gamePanel.tileSize);
+        up1    = setup("/npcs/bro.png", gamePanel.tileSize, gamePanel.tileSize);
+        up2    = setup("/npcs/bro.png", gamePanel.tileSize, gamePanel.tileSize);
+        down1  = setup("/npcs/bro.png",gamePanel.tileSize, gamePanel.tileSize);
+        down2  = setup("/npcs/bro.png", gamePanel.tileSize, gamePanel.tileSize);
+        left1  = setup("/npcs/bro.png", gamePanel.tileSize, gamePanel.tileSize);
+        left2  = setup("/npcs/bro.png", gamePanel.tileSize, gamePanel.tileSize);
+        right1 = setup("/npcs/bro.png", gamePanel.tileSize, gamePanel.tileSize);
+        right2 = setup("/npcs/bro.png", gamePanel.tileSize, gamePanel.tileSize);
     }
 
     /**This method executed in update, npc will change it direction  each two second.*/
@@ -35,6 +35,7 @@ public class Bro extends Entity {
         if (actionCounter == 120) {
             Random random = new Random();
             int i = random.nextInt(100) + 1;
+
 
             if (i <= 25) {
                 direction = "up";

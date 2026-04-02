@@ -42,7 +42,7 @@ public class EventChecker {
         int xDistance = Math.abs(player.worldX - player.eventPreviousX);
         int yDistance = Math.abs(player.worldY - player.eventPreviousY);
         int distance = Math.max(xDistance, yDistance);
-        System.out.println(distance);
+
         if (distance > gamePanel.tileSize) {
             player.canTouchEvent = true;
         }

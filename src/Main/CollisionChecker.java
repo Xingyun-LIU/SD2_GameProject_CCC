@@ -70,10 +70,12 @@ public class CollisionChecker {
         }
     }
 
-    // Check if this entity crush on a player(player1 crush on player2, monster crush on a player)
-    public void checkPlayer(Entity entity, Entity target) {
+    /**
+     * Check if this entity crush on a player(player1 crush on player2, monster crush on a player)
+     * */
+    public boolean checkPlayer(Entity entity, Entity target) {
 
-//        boolean collisionPlayer = false;
+        boolean collisionPlayer = false;
 
         // Calculate world position of solidArea
         entity.solidArea.x = entity.solidArea.x + entity.worldX;
@@ -100,6 +102,7 @@ public class CollisionChecker {
         // intersects() check if two rectangle crush
         if (entity.solidArea.intersects(target.solidArea)) {
             entity.collisionOn = true;
+            collisionPlayer = true;
         }
 
         // Set back to default value
@@ -108,5 +111,113 @@ public class CollisionChecker {
         target.solidArea.x = target.originalSolidAreaX;
         target.solidArea.y = target.originalSolidAreaY;
 
+        return collisionPlayer;
+    }
+
+    /**
+     * If one of player crush on object, return its index in array, if a monster or npc crush on
+     * object do nothing
+     * */
+    public int checkObject(Entity entity, boolean player) {
+        //initial return index
+        int index = 999;
+
+        for (int i = 0; i < gamePanel.objects.length; i++) {
+            if (gamePanel.objects[i] != null) {
+
+                // Get solid entity area position
+                entity.solidArea.x = entity.solidArea.x + entity.worldX;
+                entity.solidArea.y = entity.solidArea.y + entity.worldY;
+
+                // Get object solid area position
+                gamePanel.objects[i].solidArea.x = gamePanel.objects[i].worldX + gamePanel.objects[i].solidArea.x;
+                gamePanel.objects[i].solidArea.y = gamePanel.objects[i].worldY + gamePanel.objects[i].solidArea.y;
+
+                // Predict the position of the next frame
+                switch (entity.direction) {
+                    case "up":
+                        entity.solidArea.y -= entity.speed;
+                        break;
+                    case "down":
+                        entity.solidArea.y += entity.speed;
+                        break;
+                    case "left":
+                        entity.solidArea.x -= entity.speed;
+                        break;
+                    case "right":
+                        entity.solidArea.x += entity.speed;
+                        break;
+                }
+
+                // intersects() check if two rectangle crush
+                if (entity.solidArea.intersects(gamePanel.objects[i].solidArea)) {
+                    if (gamePanel.objects[i].collision) {
+                        entity.collisionOn = true;
+                    }
+                    if (player) {
+                        index = i;
+                    }
+                }
+
+                // Set back to default
+                entity.solidArea.x = entity.originalSolidAreaX;
+                entity.solidArea.y = entity.originalSolidAreaY;
+                gamePanel.objects[i].solidArea.x = gamePanel.objects[i].originalSolidAreaX;
+                gamePanel.objects[i].solidArea.y = gamePanel.objects[i].originalSolidAreaY;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * Check if one entity crush on target entity, return the index of target.
+     * */
+    public int checkEntity(Entity entity, Entity[] target) {
+
+        int index = 999;
+
+        for (int i = 0; i < target.length; i++) {
+            if (target[i] != null) {
+
+                // Get solid entity area position
+                entity.solidArea.x = entity.solidArea.x + entity.worldX;
+                entity.solidArea.y = entity.solidArea.y + entity.worldY;
+
+                // Get object solid area position
+                target[i].solidArea.x = target[i].worldX + target[i].solidArea.x;
+                target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
+
+                switch (entity.direction) {
+                    case "up":
+                        entity.solidArea.y -= entity.speed;
+                        break;
+                    case "down":
+                        entity.solidArea.y += entity.speed;
+                        break;
+                    case "left":
+                        entity.solidArea.x -= entity.speed;
+                        break;
+                    case "right":
+                        entity.solidArea.x += entity.speed;
+                        break;
+                }
+
+                if (entity.solidArea.intersects(target[i].solidArea)) {
+
+                    // if entity not equals to itself, set true
+                    if (target[i] != entity) {
+                        entity.collisionOn = true;
+                        index = i;
+                    }
+                }
+
+                entity.solidArea.x = entity.originalSolidAreaX;
+                entity.solidArea.y = entity.originalSolidAreaY;
+                target[i].solidArea.x = target[i].originalSolidAreaX;
+                target[i].solidArea.y = target[i].originalSolidAreaY;
+            }
+
+        }
+        return index;
     }
 }
