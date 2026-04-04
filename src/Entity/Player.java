@@ -13,6 +13,7 @@ public class Player extends Entity {
 
     // EventChecker
     // make sure the event will not repeatedly trigger in a short period of time.
+    public int currentMap = 0;
     public int eventPreviousX;
     public int eventPreviousY;
     public boolean canTouchEvent = true;

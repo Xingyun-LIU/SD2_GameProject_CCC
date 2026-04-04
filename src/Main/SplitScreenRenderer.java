@@ -49,13 +49,13 @@ public class SplitScreenRenderer {
             Graphics2D g1 = buffer1.createGraphics();
             g1.setColor(panel.getBackground());
             g1.fillRect(0, 0, half, h);
-            panel.drawWorld(g1, cam1, half);
+            panel.drawWorld(g1, cam1, half, panel.player1.currentMap);
             g1.dispose();
 
             Graphics2D g2 = buffer2.createGraphics();
             g2.setColor(panel.getBackground());
             g2.fillRect(0, 0, half, h);
-            panel.drawWorld(g2, cam2, half);
+            panel.drawWorld(g2, cam2, half, panel.player2.currentMap);
             g2.dispose();
 
             graphics2D.drawImage(buffer1, 0, 0, null);

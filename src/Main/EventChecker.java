@@ -64,7 +64,7 @@ public class EventChecker {
         boolean touch = false;
 
         // If the event not belongs to the current map, will not trigger the event.
-        if (map == gamePanel.currentMap) {
+        if (map == player.currentMap) {
             player.solidArea.x = player.solidArea.x + player.worldX;
             player.solidArea.y = player.solidArea.y + player.worldY;
             eventRectangle[map][col][row].x = col * gamePanel.tileSize + eventRectangle[map][col][row].x;
@@ -93,7 +93,7 @@ public class EventChecker {
     // The player will teleport to (col, row)
     public void teleport(Player player, int map, int col, int row) {
 
-        gamePanel.currentMap = map;
+        player.currentMap = map;
 
         player.worldX = col * gamePanel.tileSize;
         player.worldY = row * gamePanel.tileSize;

@@ -135,17 +135,20 @@ public class GamePanel extends JPanel implements Runnable {
             cam1.follow(player1);
             cam2.follow(player2);
 
-            // npc
-            for (int i = 0; i < npc[1].length; i++) {
-                if (npc[currentMap][i] != null) {
-                    npc[currentMap][i].update();
+            // Update all maps
+            for (int m = 0; m < totalMap; m++) {
+                // npc
+                for (int i = 0; i < npc[m].length; i++) {
+                    if (npc[m][i] != null) {
+                        npc[m][i].update();
+                    }
                 }
-            }
 
-            // monster
-            for (int i = 0; i < monsters[1].length; i++) {
-                if (monsters[currentMap][i] != null) {
-                    monsters[currentMap][i].update();
+                // monster
+                for (int i = 0; i < monsters[1].length; i++) {
+                    if (monsters[m][i] != null) {
+                        monsters[m][i].update();
+                    }
                 }
             }
         }
@@ -201,10 +204,10 @@ public class GamePanel extends JPanel implements Runnable {
         graphics2D.dispose();
     }
 
-    public void drawWorld(Graphics2D graphics2D, Camera cam, int viewWidth) {
+    public void drawWorld(Graphics2D graphics2D, Camera cam, int viewWidth, int currentMap) {
 
         //Draw the map
-        tileManager.draw(graphics2D, cam, viewWidth);
+        tileManager.draw(graphics2D, cam, viewWidth, currentMap);
 
         //Draw the player
         player1.draw(graphics2D, cam);

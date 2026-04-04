@@ -107,14 +107,14 @@ public class TileManager {
     }
 
     /** Split draw tiles in viewWidth by camera, tiles will not be drawn out of camera*/
-    public void draw(Graphics2D g2, Camera cam, int viewWidth) {
+    public void draw(Graphics2D g2, Camera cam, int viewWidth, int currentMap) {
 
         int worldCol = 0;
         int worldRow = 0;
 
         while (worldCol < gp.worldCol && worldRow < gp.worldRow) {
 
-            int tileNum = mapTileNum[gp.currentMap][worldCol][worldRow];
+            int tileNum = mapTileNum[currentMap][worldCol][worldRow];
 
             int worldX = worldCol * gp.tileSize;
             int worldY = worldRow * gp.tileSize;
