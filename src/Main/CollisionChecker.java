@@ -151,7 +151,7 @@ public class CollisionChecker {
 
                 // intersects() check if two rectangle crush
                 if (entity.solidArea.intersects(gamePanel.objects[gamePanel.currentMap][i].solidArea)) {
-                    if (gamePanel.objects[gamePanel.currentMap][i].collision) {
+                    if (gamePanel.objects[gamePanel.currentMap][i].collisionOn) {
                         entity.collisionOn = true;
                     }
                     if (player) {

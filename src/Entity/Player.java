@@ -9,6 +9,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
+    public int maxLife = 6;
+    public int life = 6;
+    public int score = 0;
     public Inventory inventory=new Inventory();
     public int selectedSlot = 0;
     public int worldX, worldY;
