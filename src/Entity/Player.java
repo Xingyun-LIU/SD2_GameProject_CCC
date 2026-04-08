@@ -11,7 +11,15 @@ public class Player extends Entity {
 
     public boolean p1;
 
-    public BufferedImage image;
+    // EventChecker
+    // make sure the event will not repeatedly trigger in a short period of time.
+    public int currentMap = 0;
+    public int eventPreviousX;
+    public int eventPreviousY;
+    public boolean canTouchEvent = true;
+
+    int p1SpriteCounter = 0;
+    int p2SpriteCounter = 0;
 
     public Player(GamePanel gamePanel, boolean p1) {
         super(gamePanel);
@@ -30,11 +38,11 @@ public class Player extends Entity {
     public void setDefaultValue() {
 
         if (p1) {
-            worldX = gamePanel.tileSize * 62;
-            worldY = gamePanel.tileSize * 64;
+            worldX = gamePanel.tileSize * 30;
+            worldY = gamePanel.tileSize * 47;
         } else {
-            worldX = gamePanel.tileSize * 67;
-            worldY = gamePanel.tileSize * 64;
+            worldX = gamePanel.tileSize * 37;
+            worldY = gamePanel.tileSize * 47;
         }
 
     }
@@ -44,9 +52,23 @@ public class Player extends Entity {
         System.out.println("Loading image: " + (p1 ? "P1" : "P2"));
 
         if (p1) {
-            image = setup("/player/player1.png", gamePanel.tileSize, gamePanel.tileSize);
+            up1 = setup("/player/player1_up1.png", gamePanel.tileSize, gamePanel.tileSize);
+            up2 = setup("/player/player1_up2.png", gamePanel.tileSize, gamePanel.tileSize);
+            down1 = setup("/player/player1_down1.png", gamePanel.tileSize, gamePanel.tileSize);
+            down2 = setup("/player/player1_down2.png", gamePanel.tileSize, gamePanel.tileSize);
+            left1 = setup("/player/player1_left1.png", gamePanel.tileSize, gamePanel.tileSize);
+            left2 = setup("/player/player1_left2.png", gamePanel.tileSize, gamePanel.tileSize);
+            right1 = setup("/player/player1_right1.png", gamePanel.tileSize, gamePanel.tileSize);
+            right2 = setup("/player/player1_right2.png", gamePanel.tileSize, gamePanel.tileSize);
         } else {
-            image = setup("/player/player2.png", gamePanel.tileSize, gamePanel.tileSize);
+            up1 = setup("/player/player2_up1.png", gamePanel.tileSize, gamePanel.tileSize);
+            up2 = setup("/player/player2_up2.png", gamePanel.tileSize, gamePanel.tileSize);
+            down1 = setup("/player/player2_down1.png", gamePanel.tileSize, gamePanel.tileSize);
+            down2 = setup("/player/player2_down2.png", gamePanel.tileSize, gamePanel.tileSize);
+            left1 = setup("/player/player2_left1.png", gamePanel.tileSize, gamePanel.tileSize);
+            left2 = setup("/player/player2_left2.png", gamePanel.tileSize, gamePanel.tileSize);
+            right1 = setup("/player/player2_right1.png", gamePanel.tileSize, gamePanel.tileSize);
+            right2 = setup("/player/player2_right2.png", gamePanel.tileSize, gamePanel.tileSize);
         }
 
     }
@@ -56,31 +78,56 @@ public class Player extends Entity {
         // first set the direction, then check collision, then move
         if (p1) {
 
-            if (key.w) {
-                direction = "up";
-            }
-            if (key.s) {
-                direction = "down";
-            }
-            if (key.a) {
-                direction = "left";
-            }
-            if (key.d) {
-                direction = "right";
-            }
-        } else {
+            if (key.w || key.s || key.d || key.a) {
+                if (key.w) {
+                    direction = "up";
+                }
+                if (key.s) {
+                    direction = "down";
+                }
+                if (key.a) {
+                    direction = "left";
+                }
+                if (key.d) {
+                    direction = "right";
+                }
 
-            if (key.up) {
-                direction = "up";
+                // Walk step by step
+                p1SpriteCounter++;
+                if (p1SpriteCounter > 12) {
+                    if (spriteNum == 1) {
+                        spriteNum = 2;
+                    } else if (spriteNum == 2) {
+                        spriteNum = 1;
+                    }
+                    p1SpriteCounter = 0;
+                }
             }
-            if (key.down) {
-                direction = "down";
-            }
-            if (key.left) {
-                direction = "left";
-            }
-            if (key.right) {
-                direction = "right";
+
+        } else {
+            if (key.up || key.down || key.left || key.right) {
+                if (key.up) {
+                    direction = "up";
+                }
+                if (key.down) {
+                    direction = "down";
+                }
+                if (key.left) {
+                    direction = "left";
+                }
+                if (key.right) {
+                    direction = "right";
+                }
+
+                p2SpriteCounter++;
+                if (p2SpriteCounter > 12) {
+                    if (spriteNum == 1) {
+                        spriteNum = 2;
+                    } else if (spriteNum == 2) {
+                        spriteNum = 1;
+                    }
+                    p2SpriteCounter = 0;
+                }
             }
         }
 
@@ -94,6 +141,18 @@ public class Player extends Entity {
         } else {
             gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
         }
+
+        //check object collision
+        int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
+
+        //check npc collision
+        int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+
+        //check monster collision
+        int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+
+        // Check event
+        gamePanel.eventChecker.checkEvent(this);
 
         if (!collisionOn) {
             if (p1) {
@@ -127,15 +186,56 @@ public class Player extends Entity {
             }
         }
 
-
     }
 
     public void draw(Graphics2D graphics2D, Camera camera) {
 
+        BufferedImage image = null;
+
         int drawX = worldX - camera.x;
         int drawY = worldY - camera.y;
 
-        graphics2D.drawImage(image, drawX, drawY, null);
+        switch (direction) {
 
+            //set different picture when moving different direction
+            case "up":
+                if (spriteNum == 1) {
+                    image = up1;
+                }
+                if (spriteNum == 2) {
+                    image = up2;
+                }
+                break;
+
+            case "down":
+                if (spriteNum == 1) {
+                    image = down1;
+                }
+                if (spriteNum == 2) {
+                    image = down2;
+                }
+                break;
+
+            case "left":
+                if (spriteNum == 1) {
+                    image = left1;
+                }
+                if (spriteNum == 2) {
+                    image = left2;
+                }
+                break;
+
+            case "right":
+                if (spriteNum == 1) {
+                    image = right1;
+                }
+                if (spriteNum == 2) {
+                    image = right2;
+                }
+                break;
+
+        }
+
+        graphics2D.drawImage(image, drawX, drawY, null);
     }
 }

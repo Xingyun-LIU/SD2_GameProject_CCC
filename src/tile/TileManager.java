@@ -21,29 +21,50 @@ public class TileManager {
 
     GamePanel gp;
     public Tile[] tiles;
-    public int[][] mapTileNum;
+    public int[][][] mapTileNum;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        mapTileNum = new int[gp.worldCol][gp.worldRow];
-        tiles = new Tile[20];
+        mapTileNum = new int[gp.totalMap][gp.worldCol][gp.worldRow];
+        tiles = new Tile[30];
 
         getTileImage();
-        loadMap();
+        loadMap("/maps/world0.txt", 0);
+        loadMap("/maps/world1.txt", 1);
     }
 
     //Put tiles into array
     public void getTileImage() {
-        setUpTile(0, true, "/tiles/001.png");
-        setUpTile(1, false, "/tiles/002.png");
+        setUpTile(0, true, "/tiles/plant/grass.png");
+        setUpTile(2, false, "/tiles/plant/treetop.png");
+        setUpTile(3, false, "/tiles/plant/treebody.png");
+
+        setUpTile(1, true, "/tiles/runway/runway.png");
+        setUpTile(4, true, "/tiles/runway/middlerunway.png");
+        setUpTile(5, true, "/tiles/runway/crossrunway.png");
+        setUpTile(6, true, "/tiles/runway/leftdownrunway.png");
+        setUpTile(7, true, "/tiles/runway/leftuprunway.png");
+        setUpTile(8, true, "/tiles/runway/rightdownrunway.png");
+        setUpTile(9, true, "/tiles/runway/rightuprunway.png");
+
+        setUpTile(10, true, "/tiles/toilet/toiletfloor.png");
+        setUpTile(11, true, "/tiles/toilet/mop.png");
+        setUpTile(12, true, "/tiles/toilet/pail.png");
+        setUpTile(13, true, "/tiles/toilet/squat.png");
+
+        setUpTile(14, true, "/tiles/classroom/floor.png");
+
+        setUpTile(15, true, "/tiles/lab/labfloor.png");
 
     }
 
-    public void loadMap() {
+    // Read the index of the tiles from a .txt file, then use these number to load the whole map,
+    // map is the number of current map.
+    public void loadMap(String filePath, int map) {
 
         try {
-            InputStream is = getClass().getResourceAsStream("/maps/testworld.txt");
+            InputStream is = getClass().getResourceAsStream(filePath);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             int col = 0;
@@ -51,14 +72,13 @@ public class TileManager {
 
             while (col < gp.worldCol && row < gp.worldRow) {
                 String line = br.readLine(); // read line of text
+                String numbers[] = line.split("\\s+");
+
                 while (col < gp.worldCol) {
 
-                    // catch char
-                    char c = line.charAt(col);
-                    // Change string into integer
-                    int num = Character.getNumericValue(c);
+                    int num = Integer.parseInt(numbers[col]);
 
-                    mapTileNum[col][row] = num;
+                    mapTileNum[map][col][row] = num;
                     col++;
                 }
                 if (col == gp.worldCol) {
@@ -86,14 +106,15 @@ public class TileManager {
         }
     }
 
-    public void draw(Graphics2D g2, Camera cam,int viewWidth) {
+    /** Split draw tiles in viewWidth by camera, tiles will not be drawn out of camera*/
+    public void draw(Graphics2D g2, Camera cam, int viewWidth, int currentMap) {
 
         int worldCol = 0;
         int worldRow = 0;
 
         while (worldCol < gp.worldCol && worldRow < gp.worldRow) {
 
-            int tileNum = mapTileNum[worldCol][worldRow];
+            int tileNum = mapTileNum[currentMap][worldCol][worldRow];
 
             int worldX = worldCol * gp.tileSize;
             int worldY = worldRow * gp.tileSize;

@@ -25,7 +25,7 @@ public class UI {
         graphics2D.setColor(Color.black);
 
         // opening state
-        if (gamePanel.gameState == gamePanel.opening){
+        if (gamePanel.gameState == gamePanel.opening) {
 
         }
 
