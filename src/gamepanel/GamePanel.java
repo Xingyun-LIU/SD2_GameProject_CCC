@@ -49,7 +49,6 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[][] monsters = new Entity[totalMap][20];
     ArrayList<Entity> entities = new ArrayList<>();
 
-
     // System
     GameFrame gameFrame;
     public TileManager tileManager = new TileManager(this);
@@ -73,7 +72,6 @@ public class GamePanel extends JPanel implements Runnable {
         setFocusable(true);
 
         startThread();
-        this.gameState = opening;
     }
 
     public void setUpGame() {
@@ -93,16 +91,14 @@ public class GamePanel extends JPanel implements Runnable {
 
     /**each time gameThread.start() ,run() will be executed in the new thread*/
     public void startThread() {
-        if (gameThread == null) {
-            gameThread = new Thread(this);
-            gameThread.start();
-        }
+
+        gameThread = new Thread(this);
+        gameThread.start();
     }
 
     public void run() {
 
         double drawBreak = 1000000000 / FPS;
-
         double nextDrawTime = System.nanoTime() + drawBreak;
 
         while (gameThread != null) {

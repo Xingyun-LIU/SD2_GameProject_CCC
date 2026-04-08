@@ -55,6 +55,7 @@ public class KeyHandler implements KeyListener {
                 gameFrame.showOpening();
             }
         }
+
     }
 
     public void keyReleased(KeyEvent e) {
@@ -78,9 +79,5 @@ public class KeyHandler implements KeyListener {
 
     public void keyTyped(KeyEvent e) {
     }
-
-
-
-
 
 }
