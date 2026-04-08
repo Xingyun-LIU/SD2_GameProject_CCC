@@ -30,6 +30,7 @@ public class Entity {
     public int spriteNum = 1;
 
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+    public Rectangle attackArea = new Rectangle(0,0,0,0);
     public int originalSolidAreaX;
     public int originalSolidAreaY;
     public boolean collision = false;
