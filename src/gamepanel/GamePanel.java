@@ -28,6 +28,8 @@ public class GamePanel extends JPanel implements Runnable {
     // World
     public final int worldCol = 64; //2048
     public final int worldRow = 64; //2048
+    public final int totalMap = 10;
+    public int currentMap = 0;
 
     // Game State
     public int gameState;
@@ -42,9 +44,9 @@ public class GamePanel extends JPanel implements Runnable {
     Camera cam2;
 
     // Objects and NPC
-    public Entity[] objects = new Entity[20];
-    public Entity[] npc = new Entity[20];
-    public Entity[] monsters = new Entity[20];
+    public Entity[][] objects = new Entity[totalMap][20];
+    public Entity[][] npc = new Entity[totalMap][20];
+    public Entity[][] monsters = new Entity[totalMap][20];
     ArrayList<Entity> entities = new ArrayList<>();
 
     // System
@@ -133,17 +135,20 @@ public class GamePanel extends JPanel implements Runnable {
             cam1.follow(player1);
             cam2.follow(player2);
 
-            // npc
-            for (int i = 0; i < npc.length; i++) {
-                if (npc[i] != null) {
-                    npc[i].update();
+            // Update all maps
+            for (int m = 0; m < totalMap; m++) {
+                // npc
+                for (int i = 0; i < npc[m].length; i++) {
+                    if (npc[m][i] != null) {
+                        npc[m][i].update();
+                    }
                 }
-            }
 
-            // monster
-            for (int i = 0; i < monsters.length; i++) {
-                if (monsters[i] != null) {
-                    monsters[i].update();
+                // monster
+                for (int i = 0; i < monsters[1].length; i++) {
+                    if (monsters[m][i] != null) {
+                        monsters[m][i].update();
+                    }
                 }
             }
         }
@@ -199,29 +204,29 @@ public class GamePanel extends JPanel implements Runnable {
         graphics2D.dispose();
     }
 
-    public void drawWorld(Graphics2D graphics2D, Camera cam, int viewWidth) {
+    public void drawWorld(Graphics2D graphics2D, Camera cam, int viewWidth, int currentMap) {
 
         //Draw the map
-        tileManager.draw(graphics2D, cam, viewWidth);
+        tileManager.draw(graphics2D, cam, viewWidth, currentMap);
 
         //Draw the player
         player1.draw(graphics2D, cam);
         player2.draw(graphics2D, cam);
 
         // Add entities to the list
-        for (int i = 0; i < npc.length; i++) {
-            if (npc[i] != null) {
-                entities.add(npc[i]);
+        for (int i = 0; i < npc[1].length; i++) {
+            if (npc[currentMap][i] != null) {
+                entities.add(npc[currentMap][i]);
             }
         }
-        for (int i = 0; i < objects.length; i++) {
-            if (objects[i] != null) {
-                entities.add(objects[i]);
+        for (int i = 0; i < objects[1].length; i++) {
+            if (objects[currentMap][i] != null) {
+                entities.add(objects[currentMap][i]);
             }
         }
-        for (int i = 0; i < monsters.length; i++) {
-            if (monsters[i] != null) {
-                entities.add(monsters[i]);
+        for (int i = 0; i < monsters[1].length; i++) {
+            if (monsters[currentMap][i] != null) {
+                entities.add(monsters[currentMap][i]);
             }
         }
 

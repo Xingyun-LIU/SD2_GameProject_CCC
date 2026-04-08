@@ -18,27 +18,27 @@ public class Setter {
         this.gamePanel = gamePanel;
     }
 
-    // Set objects position
+    // Set objects position: objects[mapNumber][index]
     public void setObject() {
 
-        gamePanel.objects[0] = new Brick(gamePanel);
-        gamePanel.objects[0].worldX = 35 * gamePanel.tileSize;
-        gamePanel.objects[0].worldY = 37 * gamePanel.tileSize;
+        gamePanel.objects[0][0] = new Brick(gamePanel);
+        gamePanel.objects[0][0].worldX = 35 * gamePanel.tileSize;
+        gamePanel.objects[0][0].worldY = 37 * gamePanel.tileSize;
     }
 
-    // Set npc initial position
+    // Set npc initial position: npc[npcNumber][index]
     public void setNPC() {
 
-        gamePanel.npc[0] = new Bro(gamePanel);
-        gamePanel.npc[0].worldX = 35 * gamePanel.tileSize;
-        gamePanel.npc[0].worldY = 40 * gamePanel.tileSize;
+        gamePanel.npc[0][0] = new Bro(gamePanel);
+        gamePanel.npc[0][0].worldX = 35 * gamePanel.tileSize;
+        gamePanel.npc[0][0].worldY = 40 * gamePanel.tileSize;
     }
 
-    // Set monsters initial position
+    // Set monsters initial position: monster[monsterNumber][index]
     public void setMonster() {
 
-        gamePanel.monsters[0] = new Egg(gamePanel);
-        gamePanel.monsters[0].worldX = 35 * gamePanel.tileSize;
-        gamePanel.monsters[0].worldY = 48 * gamePanel.tileSize;
+        gamePanel.monsters[0][0] = new Egg(gamePanel);
+        gamePanel.monsters[0][0].worldX = 35 * gamePanel.tileSize;
+        gamePanel.monsters[0][0].worldY = 48 * gamePanel.tileSize;
     }
 }
