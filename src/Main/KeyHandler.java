@@ -12,6 +12,7 @@ public class KeyHandler implements KeyListener {
 
     public boolean w, a, s, d;
     public boolean up, down, left, right;
+    public boolean space, numpad0;
 
     public KeyHandler(GamePanel gamePanel, GameFrame gameFrame) {
         this.gamePanel = gamePanel;
@@ -20,6 +21,7 @@ public class KeyHandler implements KeyListener {
 
     public void keyPressed(KeyEvent e) {
 
+        // Play State
         int code = e.getKeyCode();
         if (gamePanel.gameState == gamePanel.playing) {
             if (code == KeyEvent.VK_W) w = true;
@@ -35,7 +37,15 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_ESCAPE) {
                 gamePanel.gameState = gamePanel.pausing;
             }
-        } else if (gamePanel.gameState == gamePanel.pausing) {
+
+            // attack
+            if (code == KeyEvent.VK_SPACE) space = true;
+            if(code == KeyEvent.VK_NUMPAD0) numpad0 = true;
+
+        }
+
+        // Pause State
+        else if (gamePanel.gameState == gamePanel.pausing) {
             if (code == KeyEvent.VK_C) {
                 gamePanel.gameState = gamePanel.playing;
             }

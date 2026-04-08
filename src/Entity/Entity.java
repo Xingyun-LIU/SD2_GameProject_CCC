@@ -14,6 +14,7 @@ public class Entity {
     public GamePanel gamePanel;
 
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+    public BufferedImage upAttack1, upAttack2, downAttack1, downAttack2, leftAttack1, leftAttack2, rightAttack1, rightAttack2;
 
     public int worldX;
     public int worldY;
@@ -33,6 +34,7 @@ public class Entity {
     public int originalSolidAreaY;
     public boolean collision = false;
     public boolean collisionOn = false;
+    boolean attacking = false;
 
     // Counter
     public int spriteCounter = 0;

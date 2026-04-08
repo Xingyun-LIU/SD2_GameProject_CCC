@@ -55,7 +55,7 @@ public class GamePanel extends JPanel implements Runnable {
     SplitScreenRenderer splitRenderer = new SplitScreenRenderer();
     public CollisionChecker collisionChecker = new CollisionChecker(this);
     public EventChecker eventChecker = new EventChecker(this);
-    KeyHandler key;
+    public KeyHandler key;
     Thread gameThread;
     UI ui = new UI(this);
     public Setter setter = new Setter(this);
