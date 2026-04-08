@@ -260,7 +260,7 @@ public class Player extends Entity {
         // Check event
         gamePanel.eventChecker.checkEvent(this);
 
-        if (!collisionOn) {
+        if (!collisionOn && !attacking) {
             if (p1) {
 
                 if (key.w) {
