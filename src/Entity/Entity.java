@@ -33,7 +33,6 @@ public class Entity {
     public Rectangle attackArea = new Rectangle(0,0,0,0);
     public int originalSolidAreaX;
     public int originalSolidAreaY;
-    public boolean collision = false;
     public boolean collisionOn = false;
     boolean attacking = false;
 
