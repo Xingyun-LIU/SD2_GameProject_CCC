@@ -54,7 +54,19 @@ public class Map extends TileManager {
         int height = 850;
         int x = gamePanel.screenWidth / 2 - width / 2;
         int y = gamePanel.screenHeight / 2 - height / 2;
-
         graphics2D.drawImage(worldMap[gamePanel.player1.currentMap], x, y, width, height, null);
+
+        // Draw Player with the exact scale
+        double scale = (double) (gamePanel.tileSize * gamePanel.worldCol) / width;
+
+        int player1X = (int) (x + gamePanel.player1.worldX / scale);
+        int player1Y = (int) (y + gamePanel.player1.worldY / scale);
+        int player2X = (int) (x + gamePanel.player2.worldX / scale);
+        int player2Y = (int) (y + gamePanel.player2.worldY / scale);
+
+        int playerSize = (int) (gamePanel.tileSize / scale);
+
+        graphics2D.drawImage(gamePanel.player1.down1, player1X, player1Y, playerSize, playerSize, null);
+        graphics2D.drawImage(gamePanel.player2.down1, player2X, player2Y, playerSize, playerSize, null);
     }
 }
