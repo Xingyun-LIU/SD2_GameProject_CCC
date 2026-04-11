@@ -2,12 +2,14 @@ package tile;
 
 import gamepanel.GamePanel;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**This class is used to show whole map by a miniMap, It is depended on where the player1 in.*/
 public class Map extends TileManager {
 
     GamePanel gamePanel;
+    // Store all maps.
     BufferedImage worldMap[];
     public boolean showMiniMap = false;
 
@@ -16,6 +18,40 @@ public class Map extends TileManager {
         this.gamePanel = gamePanel;
     }
 
+    public void createWorldMap() {
 
+        worldMap = new BufferedImage[gamePanel.totalMap];
+        int worldMapWidth = gamePanel.worldCol * gamePanel.tileSize;
+        int worldMapHeight = gamePanel.worldRow * gamePanel.tileSize;
 
+        for (int i = 0; i < gamePanel.totalMap; i++) {
+
+            worldMap[i] = new BufferedImage(worldMapWidth, worldMapHeight, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics2D = (Graphics2D) worldMap[i].createGraphics();
+
+            for (int j = 0; j < gamePanel.worldRow; j++) {
+                for (int k = 0; k < gamePanel.worldCol; k++) {
+
+                    int tileNum = mapTileNum[i][k][j];
+                    graphics2D.drawImage(tiles[tileNum].image, gamePanel.tileSize * k, gamePanel.tileSize * j, null);
+
+                }
+            }
+        }
+    }
+
+    public void drawMiniMap(Graphics2D graphics2D) {
+
+        // Draw Background
+        graphics2D.setColor(Color.black);
+        graphics2D.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
+
+        // Draw Map
+        int width = 500;
+        int height = 500;
+        int x = gamePanel.screenWidth / 2 - width / 2;
+        int y = gamePanel.screenHeight / 2 - height / 2;
+
+        graphics2D.drawImage(worldMap[gamePanel.currentMap], x, y, width, height, null);
+    }
 }
