@@ -37,13 +37,14 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_ESCAPE) {
                 gamePanel.gameState = gamePanel.pausing;
             }
+            if (code == KeyEvent.VK_M) {
+                gamePanel.gameState = gamePanel.mapState;
+            }
 
             // attack
             if (code == KeyEvent.VK_J) j = true;
             if (code == KeyEvent.VK_NUMPAD1) numpad1 = true;
-
         }
-
         // Pause State
         else if (gamePanel.gameState == gamePanel.pausing) {
             if (code == KeyEvent.VK_C) {
@@ -54,6 +55,14 @@ public class KeyHandler implements KeyListener {
                 gamePanel.gameState = gamePanel.opening;
                 gameFrame.showOpening();
             }
+        }
+        // Map State
+        else if (gamePanel.gameState == gamePanel.mapState) {
+
+            if (code == KeyEvent.VK_M) {
+                gamePanel.gameState = gamePanel.playing;
+            }
+
         }
 
     }
