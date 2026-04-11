@@ -166,68 +166,61 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
 
-        if (gameState == playing) {
-
+        // Play State
+        if (gameState == playing || gameState == pausing) {
             splitRenderer.render(graphics2D, this, player1, player2, cam1, cam2);
-
+        }
+        // Map State
+        else if (gameState == mapState) {
+            map.drawMiniMap(graphics2D);
         }
 
+        ui.draw(graphics2D);
         graphics2D.dispose();
     }
 
     public void drawWorld(Graphics2D graphics2D, Camera cam, int viewWidth, int currentMap) {
 
-        // Map State
-        if (gameState == mapState) {
+        //Draw the map
+        tileManager.draw(graphics2D, cam, viewWidth, currentMap);
 
-            map.drawMiniMap(graphics2D);
+        //Draw the player
+        player1.draw(graphics2D, cam);
+        player2.draw(graphics2D, cam);
+
+        // Add entities to the list
+        for (int i = 0; i < npc[1].length; i++) {
+            if (npc[currentMap][i] != null) {
+                entities.add(npc[currentMap][i]);
+            }
+        }
+        for (int i = 0; i < objects[1].length; i++) {
+            if (objects[currentMap][i] != null) {
+                entities.add(objects[currentMap][i]);
+            }
+        }
+        for (int i = 0; i < monsters[1].length; i++) {
+            if (monsters[currentMap][i] != null) {
+                entities.add(monsters[currentMap][i]);
+            }
         }
 
-        // Play State
-        else {
-            //Draw the map
-            tileManager.draw(graphics2D, cam, viewWidth, currentMap);
-
-            //Draw the player
-            player1.draw(graphics2D, cam);
-            player2.draw(graphics2D, cam);
-
-            // Add entities to the list
-            for (int i = 0; i < npc[1].length; i++) {
-                if (npc[currentMap][i] != null) {
-                    entities.add(npc[currentMap][i]);
-                }
+        // Sort entity list by worldY
+        Collections.sort(entities, new Comparator<Entity>() {
+            @Override
+            public int compare(Entity e1, Entity e2) {
+                int result = Integer.compare(e1.worldY, e2.worldY);
+                return result;
             }
-            for (int i = 0; i < objects[1].length; i++) {
-                if (objects[currentMap][i] != null) {
-                    entities.add(objects[currentMap][i]);
-                }
-            }
-            for (int i = 0; i < monsters[1].length; i++) {
-                if (monsters[currentMap][i] != null) {
-                    entities.add(monsters[currentMap][i]);
-                }
-            }
+        });
 
-            // Sort entity list by worldY
-            Collections.sort(entities, new Comparator<Entity>() {
-                @Override
-                public int compare(Entity e1, Entity e2) {
-                    int result = Integer.compare(e1.worldY, e2.worldY);
-                    return result;
-                }
-            });
-
-            // Draw entities
-            for (int i = 0; i < entities.size(); i++) {
-                entities.get(i).draw(graphics2D, cam, viewWidth);
-            }
-
-            // Ensure that entities will load again every frame.
-            entities.clear();
-
-            ui.draw(graphics2D);
+        // Draw entities
+        for (int i = 0; i < entities.size(); i++) {
+            entities.get(i).draw(graphics2D, cam, viewWidth);
         }
+
+        // Ensure that entities will load again every frame.
+        entities.clear();
 
     }
 

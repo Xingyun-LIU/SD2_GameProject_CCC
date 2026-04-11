@@ -16,6 +16,8 @@ public class Map extends TileManager {
     public Map(GamePanel gamePanel) {
         super(gamePanel);
         this.gamePanel = gamePanel;
+
+        createWorldMap();
     }
 
     public void createWorldMap() {
@@ -42,16 +44,17 @@ public class Map extends TileManager {
 
     public void drawMiniMap(Graphics2D graphics2D) {
 
+        System.out.println("in");
         // Draw Background
         graphics2D.setColor(Color.black);
         graphics2D.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
 
         // Draw Map
-        int width = 500;
-        int height = 500;
+        int width = 850;
+        int height = 850;
         int x = gamePanel.screenWidth / 2 - width / 2;
         int y = gamePanel.screenHeight / 2 - height / 2;
 
-        graphics2D.drawImage(worldMap[gamePanel.currentMap], x, y, width, height, null);
+        graphics2D.drawImage(worldMap[gamePanel.player1.currentMap], x, y, width, height, null);
     }
 }
