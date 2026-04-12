@@ -55,6 +55,11 @@ public class Player extends Entity {
             worldY = gamePanel.tileSize * 47;
         }
 
+        //Player States
+        speed = 4;
+        maxLife = 6;
+        life = maxLife;
+
     }
 
     public void getImage() {
@@ -175,14 +180,14 @@ public class Player extends Entity {
         }
     }
 
-    public void damageMonster(int i){
-        if (i != 999){
-            if (!gamePanel.monsters[gamePanel.currentMap][i].invincible){
-                gamePanel.monsters[currentMap][i].life -=1;
+    public void damageMonster(int i) {
+        if (i != 999) {
+            if (!gamePanel.monsters[gamePanel.currentMap][i].invincible) {
+                gamePanel.monsters[currentMap][i].life -= 1;
                 System.out.println(gamePanel.monsters[currentMap][i].life);
                 gamePanel.monsters[currentMap][i].invincible = true;
 
-                if (gamePanel.monsters[gamePanel.currentMap][i].life<=0){
+                if (gamePanel.monsters[gamePanel.currentMap][i].life <= 0) {
                     gamePanel.monsters[gamePanel.currentMap][i].dying = true;
                 }
             }
@@ -190,10 +195,10 @@ public class Player extends Entity {
     }
 
     // Pick up objects
-    public void pickUpObject(int i){
-        if (i!= 999){
-            if (gamePanel.objects[gamePanel.currentMap][i] != null){
-                if (gamePanel.objects[gamePanel.currentMap][i].name.equals("Brick")){
+    public void pickUpObject(int i) {
+        if (i != 999) {
+            if (gamePanel.objects[gamePanel.currentMap][i] != null) {
+                if (gamePanel.objects[gamePanel.currentMap][i].name.equals("Brick")) {
                     gamePanel.objects[gamePanel.currentMap][i] = null;
                     hasBrick = true;
                 }
@@ -201,14 +206,17 @@ public class Player extends Entity {
         }
     }
 
-    public void interactNPC(int i){
+    public void interactNPC(int i) {
 
     }
 
-    public void contactMonster(int i){
-        if (i != 999){
-            life-=1;
-            System.out.println(this.life);
+    public void contactMonster(int i) {
+        if (i != 999) {
+            if (!invincible) {
+                life -= 1;
+                invincible = true;
+                System.out.println(this.life);
+            }
         }
     }
 
@@ -332,9 +340,9 @@ public class Player extends Entity {
             }
         }
 
-        if (invincible){
+        if (invincible) {
             invincibleCounter++;
-            if (invincibleCounter > gamePanel.FPS){
+            if (invincibleCounter > gamePanel.FPS) {
                 invincible = false;
                 invincibleCounter = 0;
             }

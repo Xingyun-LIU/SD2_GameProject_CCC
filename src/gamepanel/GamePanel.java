@@ -12,6 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
 import inventory.Item;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -60,8 +61,8 @@ public class GamePanel extends JPanel implements Runnable {
     public EventChecker eventChecker = new EventChecker(this);
     public KeyHandler key;
     public Thread gameThread;
-    Map map = new Map(this);
-    UI ui = new UI(this);
+    public Map map = new Map(this);
+    public UI ui = new UI(this);
     public Setter setter = new Setter(this);
 
     public GamePanel(GameFrame gameFrame) {
@@ -93,7 +94,9 @@ public class GamePanel extends JPanel implements Runnable {
         gameState = playing;
     }
 
-    /**each time gameThread.start() ,run() will be executed in the new thread*/
+    /**
+     * each time gameThread.start() ,run() will be executed in the new thread
+     */
     public void startThread() {
 
         gameThread = new Thread(this);
@@ -151,11 +154,11 @@ public class GamePanel extends JPanel implements Runnable {
                 // monster
                 for (int i = 0; i < monsters[m].length; i++) {
                     if (monsters[m][i] != null) {
-                        if (monsters[m][i].alive || !monsters[m][i].dying){
+                        if (monsters[m][i].alive || !monsters[m][i].dying) {
                             monsters[m][i].update();
                         }
 
-                        if (!monsters[m][i].alive || monsters[m][i].dying){
+                        if (!monsters[m][i].alive || monsters[m][i].dying) {
                             monsters[m][i] = null;
                         }
                     }
@@ -182,7 +185,7 @@ public class GamePanel extends JPanel implements Runnable {
             map.drawMiniMap(graphics2D);
         }
 
-        ui.draw(graphics2D, player1, player2);
+        ui.drawFullScreen(graphics2D);
         graphics2D.dispose();
     }
 
@@ -228,12 +231,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Ensure that entities will load again every frame.
         entities.clear();
-
-        ui.draw(graphics2D, player1, player2);
-
-
     }
 
-    public ArrayList<Item> itemList=new ArrayList<>();
+    public ArrayList<Item> itemList = new ArrayList<>();
 
 }

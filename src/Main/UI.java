@@ -3,6 +3,7 @@ package Main;
 import gamepanel.GamePanel;
 
 import java.awt.*;
+
 import Entity.Entity;
 import Entity.Player;
 import inventory.Item;
@@ -26,34 +27,32 @@ public class UI {
         this.graphics2D = graphics2D;
     }
 
-
-    public void draw(Graphics2D graphics2D,Player player1, Player player2) {
+    public void drawSplitScreen(Graphics2D graphics2D, Player player, boolean isLeft) {
         this.graphics2D = graphics2D;
 
         graphics2D.setFont(monospaced);
         graphics2D.setColor(Color.black);
 
-        // opening state
-        if (gamePanel.gameState == gamePanel.opening) {
-
-        }
-
         // playing state
         if (gamePanel.gameState == gamePanel.playing) {
-            drawInventory(gamePanel.player1, true);
-            drawInventory(gamePanel.player2, false);
+
+            drawPlayerHUD(player, isLeft);
+            drawInventory(player, isLeft);
         }
+    }
+
+    public void drawFullScreen(Graphics2D graphics2D) {
+
+        this.graphics2D = graphics2D;
+
+        graphics2D.setFont(monospaced);
+        graphics2D.setColor(Color.black);
 
         //pausing state
         if (gamePanel.gameState == gamePanel.pausing) {
             drawPauseState();
         }
-
-        if (gamePanel.gameState == gamePanel.playing) {
-            drawHUD();
-        }
     }
-
 
     public void drawPauseState() {
 
@@ -79,23 +78,19 @@ public class UI {
     }
 
     // Draw the inventory bar for the player. This will show the items in the player's inventory and highlight the selected item.
-    public void drawInventory( Player p, boolean isLeft) {
+    public void drawInventory(Player p, boolean isLeft) {
 
         if (p == null || p.inventory == null) return;
         int slotSize = 50;
         int spacing = 10;
         int totalSlots = Math.min(5, p.inventory.length);
-
         int totalWidth = totalSlots * slotSize + (totalSlots - 1) * spacing;
 
-        int startX = isLeft
-                ? gamePanel.screenWidth / 4 - totalWidth / 2
-                : gamePanel.screenWidth * 3 / 4 - totalWidth / 2;
+        int startX = gamePanel.screenWidth / 4 - totalWidth / 2;
 
         int y = gamePanel.screenHeight - slotSize - 100;
 
         for (int i = 0; i < totalSlots; i++) {
-
 
             int x = startX + i * (slotSize + spacing);
 
@@ -130,68 +125,33 @@ public class UI {
         return (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
     }
 
-    // =============================
-// HUD for 2 Players
-// =============================
+    // For test use
     public void drawHUD() {
-        this.graphics2D = graphics2D;
         drawPlayerHUD(gamePanel.player1, true);  // Left side
         drawPlayerHUD(gamePanel.player2, false);// Right side
     }
 
+    // HUD for 2 players
     public void drawPlayerHUD(Object player, boolean isLeft) {
 
-        int x;
+        int x = gamePanel.tileSize / 2;
         int y = gamePanel.tileSize;
 
-        // Left or Right side positioning
-        if (isLeft) {
-            x = gamePanel.tileSize / 2;
-        } else {
-            x = gamePanel.screenWidth / 2 + gamePanel.tileSize / 2;
-        }
+        Player p = (Player) player;
 
-        // Cast
-       Player p = (Player) player;
+//        graphics2D.setFont(monospaced);
+//        graphics2D.setColor(Color.WHITE);
+//        graphics2D.drawString(isLeft ? "P1 HP: " + p.life : "P2 HP: " + p.life, x, y);
 
-        // Draw HP label
-        graphics2D.setFont(monospaced);
-        graphics2D.setColor(Color.WHITE);
-        graphics2D.drawString(isLeft ? "P1 HP: " + p.life : "P2 HP: " + p.life, x, y);
-
-
-        // Draw HP blocks
         for (int i = 0; i < p.maxLife; i++) {
-
-            if (i < p.life) {
-                graphics2D.setColor(Color.RED);
-            } else {
-                graphics2D.setColor(Color.GRAY);
-            }
-
+            graphics2D.setColor(i < p.life ? Color.RED : Color.GRAY);
             graphics2D.fillRect(x, y - 30, 20, 20);
             x += 25;
         }
 
-        // Draw Score
-        graphics2D.setColor(Color.WHITE);
-        graphics2D.setFont(monospaced);
-
-        String text = (isLeft ? "P1 Score: 5" : "P2 Score:5 ");
-
-        int textX;
-        if (isLeft) {
-            textX = gamePanel.tileSize / 2;
-        } else {
-            textX = gamePanel.screenWidth - getTextWidth(text) - gamePanel.tileSize / 2;
-        }
-
-        int textY = y + gamePanel.tileSize;
-        graphics2D.drawString(isLeft ? "P1 Score: 5" : "P2 Score:5 ",x, textY);
-
-
-        drawInventory(p, isLeft);
-
-
+//        graphics2D.setColor(Color.WHITE);
+//        graphics2D.setFont(monospaced);
+//        y = y + gamePanel.tileSize;
+//        graphics2D.drawString(isLeft ? "P1 Score: 5" : "P2 Score: 5", x, y);
     }
 }

@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
 import inventory.Item;
 
 public class Entity {
@@ -37,7 +38,7 @@ public class Entity {
     public int spriteNum = 1;
 
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
-    public Rectangle attackArea = new Rectangle(0,0,0,0);
+    public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     public int originalSolidAreaX;
     public int originalSolidAreaY;
     public boolean collision = false;
@@ -51,9 +52,14 @@ public class Entity {
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
-    public int getSelectedItem() { return selectedItem; }
 
-    /**Initialize entity image with specified size.*/
+    public int getSelectedItem() {
+        return selectedItem;
+    }
+
+    /**
+     * Initialize entity image with specified size.
+     */
     public BufferedImage setup(String imagePath, int width, int height) {
 
         BufferedImage image = null;
@@ -86,10 +92,16 @@ public class Entity {
 
         // If monster collision with the player, life decrease.
         if (this.type == 2 && collisionPlayer1) {
-            gamePanel.player1.life -= 1;
+            if (!gamePanel.player1.invincible) {
+                gamePanel.player1.life -= 1;
+                gamePanel.player1.invincible = true;
+            }
         }
         if (this.type == 2 && collisionPlayer2) {
-            gamePanel.player2.life -= 1;
+            if (!gamePanel.player2.invincible) {
+                gamePanel.player2.life -= 1;
+                gamePanel.player2.invincible = true;
+            }
         }
 
         //if collision is false move, true don't move
@@ -110,9 +122,9 @@ public class Entity {
             }
         }
 
-        if (invincible){
+        if (invincible) {
             invincibleCounter++;
-            if (invincibleCounter>40){
+            if (invincibleCounter > 40) {
                 invincible = false;
                 invincibleCounter = 0;
             }
@@ -156,6 +168,7 @@ public class Entity {
     public class Item {
         public Image image;
     }
+
     public Item[] inventory = new Item[5];
     public int selectedItem = 0;
 

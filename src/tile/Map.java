@@ -44,7 +44,6 @@ public class Map extends TileManager {
 
     public void drawMiniMap(Graphics2D graphics2D) {
 
-        System.out.println("in");
         // Draw Background
         graphics2D.setColor(Color.black);
         graphics2D.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
