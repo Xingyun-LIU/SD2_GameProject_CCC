@@ -4,6 +4,7 @@ import gamepanel.GamePanel;
 
 import java.awt.*;
 import Entity.Player;
+import inventory.Inventory;
 
 public class UI {
 
@@ -20,6 +21,11 @@ public class UI {
         largeFont = new Font("Monospaced", Font.BOLD, 80);
         mediumFont = new Font("Monospaced", Font.BOLD, 40);
     }
+
+    public void setGraphics2D(Graphics2D g2) {
+        this.g2 = g2;
+    }
+
 
     public void draw(Graphics2D g2) {
         this.g2 = g2;
@@ -164,9 +170,57 @@ public class UI {
         int textY = y + gamePanel.tileSize;
 
         g2.drawString(text, textX, textY);
+        drawInventory(p, isLeft);
     }
+    // Overloaded method to allow custom Y position for inventory
+    public void drawInventory(Entity.Entity p, boolean isLeft) {
+        if (p == null || p.inventory == null) return;
+        int slotSize = 50;
+        int spacing = 10;
+        int totalSlots =Math.min(5, p.inventory.length);
 
+        int totalWidth = totalSlots * slotSize + (totalSlots - 1) * spacing;
 
+        int startX;
 
+        if (isLeft) {
+            startX = gamePanel.screenWidth / 4 - totalWidth / 2;
+        } else {
+            startX = gamePanel.screenWidth * 3 / 4 - totalWidth / 2;
+        }
 
+        int y = gamePanel.screenHeight - slotSize - 20;
+
+        for (int i = 0; i < totalSlots; i++) {
+
+            int x = startX + i * (slotSize + spacing);
+
+            //background
+            g2.setColor(new Color(0, 0, 0, 180));
+            g2.fillRect(x, y, slotSize, slotSize);
+
+            //border
+            if (i == p.selectedItem) {
+                g2.setColor(Color.YELLOW);
+                g2.setStroke(new BasicStroke(3));
+            } else {
+                g2.setColor(Color.WHITE);
+                g2.setStroke(new BasicStroke(2));
+            }
+
+            g2.drawRect(x, y, slotSize, slotSize);
+
+            //draw item if exists
+            if (p.inventory[i] != null) {
+                g2.drawImage(
+                        p.inventory[i].image,
+                        x + 5,
+                        y + 5,
+                        slotSize - 10,
+                        slotSize - 10,
+                        null
+                );
+            }
+        }
+    }
 }

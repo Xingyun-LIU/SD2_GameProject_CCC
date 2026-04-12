@@ -11,6 +11,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import inventory.Item;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -254,5 +255,7 @@ public class GamePanel extends JPanel implements Runnable {
         ui.draw(graphics2D);
 
     }
+
+    public ArrayList<Item> itemList=new ArrayList<>();
 
 }

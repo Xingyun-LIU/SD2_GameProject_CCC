@@ -193,6 +193,7 @@ public class Player extends Entity {
             }
         }
 
+
     }
 
     public void draw(Graphics2D graphics2D, Camera camera) {
