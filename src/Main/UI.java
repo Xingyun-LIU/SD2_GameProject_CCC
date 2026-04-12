@@ -92,11 +92,10 @@ public class UI {
                 ? gamePanel.screenWidth / 4 - totalWidth / 2
                 : gamePanel.screenWidth * 3 / 4 - totalWidth / 2;
 
-        int y = gamePanel.screenHeight - slotSize - 20;
+        int y = gamePanel.screenHeight - slotSize - 100;
 
         for (int i = 0; i < totalSlots; i++) {
 
-            System.out.println("in");
 
             int x = startX + i * (slotSize + spacing);
 
@@ -111,7 +110,7 @@ public class UI {
                 graphics2D.setStroke(new BasicStroke(2));
             }
 
-            graphics2D.drawRect(500, 500, 48, 48);
+            graphics2D.drawRect(x, y, slotSize, slotSize);
 
             if (p.inventory[i] != null && p.inventory[i].image != null) {
                 graphics2D.drawImage(p.inventory[i].image, x + 5, y + 5,
@@ -149,7 +148,7 @@ public class UI {
         if (isLeft) {
             x = gamePanel.tileSize / 2;
         } else {
-            x = gamePanel.screenWidth - gamePanel.tileSize * 5;
+            x = gamePanel.screenWidth / 2 + gamePanel.tileSize / 2;
         }
 
         // Cast
@@ -158,9 +157,8 @@ public class UI {
         // Draw HP label
         graphics2D.setFont(monospaced);
         graphics2D.setColor(Color.WHITE);
-        graphics2D.drawString(isLeft ? "P1 HP:5" : "P2 HP:5", x, y);
+        graphics2D.drawString(isLeft ? "P1 HP: " + p.life : "P2 HP: " + p.life, x, y);
 
-        x += gamePanel.tileSize;
 
         // Draw HP blocks
         for (int i = 0; i < p.maxLife; i++) {
@@ -189,8 +187,9 @@ public class UI {
         }
 
         int textY = y + gamePanel.tileSize;
+        graphics2D.drawString(isLeft ? "P1 Score: 5" : "P2 Score:5 ",x, textY);
 
-        graphics2D.drawString(text, textX, textY);
+
         drawInventory(p, isLeft);
 
 
