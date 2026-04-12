@@ -223,6 +223,9 @@ public class GamePanel extends JPanel implements Runnable {
         // Ensure that entities will load again every frame.
         entities.clear();
 
+        ui.draw(graphics2D, player1, player2);
+
+
     }
 
     public ArrayList<Item> itemList=new ArrayList<>();

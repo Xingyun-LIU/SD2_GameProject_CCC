@@ -40,7 +40,8 @@ public class UI {
 
         // playing state
         if (gamePanel.gameState == gamePanel.playing) {
-
+            drawInventory(gamePanel.player1, true);
+            drawInventory(gamePanel.player2, false);
         }
 
         //pausing state
@@ -81,7 +82,6 @@ public class UI {
     public void drawInventory( Player p, boolean isLeft) {
 
         if (p == null || p.inventory == null) return;
-
         int slotSize = 50;
         int spacing = 10;
         int totalSlots = Math.min(5, p.inventory.length);
@@ -96,6 +96,8 @@ public class UI {
 
         for (int i = 0; i < totalSlots; i++) {
 
+            System.out.println("in");
+
             int x = startX + i * (slotSize + spacing);
 
             graphics2D.setColor(new Color(0, 0, 0, 180));
@@ -109,7 +111,7 @@ public class UI {
                 graphics2D.setStroke(new BasicStroke(2));
             }
 
-            graphics2D.drawRect(x, y, slotSize, slotSize);
+            graphics2D.drawRect(500, 500, 48, 48);
 
             if (p.inventory[i] != null && p.inventory[i].image != null) {
                 graphics2D.drawImage(p.inventory[i].image, x + 5, y + 5,
