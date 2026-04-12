@@ -23,6 +23,9 @@ class TestPlayer {
         this.gamePanel = gp;
     }
 
+    // =============================
+    // selectedItem: 0-4
+    // =============================
     public void pickUpItem(Item item) {
 
         for (int i = 0; i < inventory.length; i++) {
@@ -44,6 +47,9 @@ class TestPlayer {
         printInventory();
     }
 
+    // =============================
+    // dropItem
+    // =============================
     public void dropItem(int index) {
 
         if (inventory[index] == null) return;
@@ -62,6 +68,9 @@ class TestPlayer {
         printInventory();
     }
 
+    // =============================
+    // change selected item
+    // =============================
     public void nextItem() {
         selectedItem = (selectedItem + 1) % inventory.length;
         System.out.println("Selected: " + selectedItem);
@@ -72,6 +81,9 @@ class TestPlayer {
         System.out.println("Selected: " + selectedItem);
     }
 
+    // =============================
+    // print inventory
+    // =============================
     public void printInventory() {
 
         System.out.print("Inventory: ");
