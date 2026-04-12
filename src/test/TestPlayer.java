@@ -24,7 +24,7 @@ class TestPlayer {
     }
 
     // =============================
-    // 拾取
+    // selectedItem: 0-4
     // =============================
     public void pickUpItem(Item item) {
 
@@ -48,7 +48,7 @@ class TestPlayer {
     }
 
     // =============================
-    // 丢弃
+    // dropItem
     // =============================
     public void dropItem(int index) {
 
@@ -69,7 +69,7 @@ class TestPlayer {
     }
 
     // =============================
-    // 切换
+    // change selected item
     // =============================
     public void nextItem() {
         selectedItem = (selectedItem + 1) % inventory.length;
@@ -82,7 +82,7 @@ class TestPlayer {
     }
 
     // =============================
-    // 打印
+    // print inventory
     // =============================
     public void printInventory() {
 
