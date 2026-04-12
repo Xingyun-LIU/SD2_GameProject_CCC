@@ -12,6 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import inventory.Item;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -181,7 +182,7 @@ public class GamePanel extends JPanel implements Runnable {
             map.drawMiniMap(graphics2D);
         }
 
-        ui.draw(graphics2D);
+        ui.draw(graphics2D, player1, player2);
         graphics2D.dispose();
     }
 
@@ -228,6 +229,11 @@ public class GamePanel extends JPanel implements Runnable {
         // Ensure that entities will load again every frame.
         entities.clear();
 
+        ui.draw(graphics2D, player1, player2);
+
+
     }
+
+    public ArrayList<Item> itemList=new ArrayList<>();
 
 }
