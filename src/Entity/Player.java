@@ -13,7 +13,7 @@ public class Player extends Entity {
 
     // State
     boolean invincible = false;
-    boolean hasBrick = false;
+    public boolean hasBrick = false;
 
     // EventChecker
     // make sure the event will not repeatedly trigger in a short period of time.
