@@ -11,6 +11,10 @@ public class Player extends Entity {
 
     public boolean p1;
 
+    // State
+    boolean invincible = false;
+    boolean hasBrick = false;
+
     // EventChecker
     // make sure the event will not repeatedly trigger in a short period of time.
     public int currentMap = 0;
@@ -18,8 +22,10 @@ public class Player extends Entity {
     public int eventPreviousY;
     public boolean canTouchEvent = true;
 
+    // Counter
     int p1SpriteCounter = 0;
     int p2SpriteCounter = 0;
+    int invincibleCounter = 0;
 
     public Player(GamePanel gamePanel, boolean p1) {
         super(gamePanel);
@@ -153,13 +159,7 @@ public class Player extends Entity {
 
             // Check monster collision
             int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
-
-            //TODO:damageMonster();
-            if (monsterIndex != 999) {
-                System.out.println("attack!");
-            } else {
-                System.out.println("miss");
-            }
+            damageMonster(monsterIndex);
 
             // Reset to the original data.
             worldX = currentWorldX;
@@ -172,6 +172,43 @@ public class Player extends Entity {
             spriteNum = 1;
             spriteCounter = 0;
             attacking = false;
+        }
+    }
+
+    public void damageMonster(int i){
+        if (i != 999){
+            if (!gamePanel.monsters[gamePanel.currentMap][i].invincible){
+                gamePanel.monsters[currentMap][i].life -=1;
+                System.out.println(gamePanel.monsters[currentMap][i].life);
+                gamePanel.monsters[currentMap][i].invincible = true;
+
+                if (gamePanel.monsters[gamePanel.currentMap][i].life<=0){
+                    gamePanel.monsters[gamePanel.currentMap][i].dying = true;
+                }
+            }
+        }
+    }
+
+    // Pick up objects
+    public void pickUpObject(int i){
+        if (i!= 999){
+            if (gamePanel.objects[gamePanel.currentMap][i] != null){
+                if (gamePanel.objects[gamePanel.currentMap][i].name.equals("Brick")){
+                    gamePanel.objects[gamePanel.currentMap][i] = null;
+                    hasBrick = true;
+                }
+            }
+        }
+    }
+
+    public void interactNPC(int i){
+
+    }
+
+    public void contactMonster(int i){
+        if (i != 999){
+            life-=1;
+            System.out.println(this.life);
         }
     }
 
@@ -249,13 +286,16 @@ public class Player extends Entity {
 
         //check object collision
         int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
+        pickUpObject(objectIndex);
 
         //check npc collision
         int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+        interactNPC(npcIndex);
         attack();
 
         //check monster collision
         int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+        contactMonster(monsterIndex);
 
         // Check event
         gamePanel.eventChecker.checkEvent(this);
@@ -289,6 +329,14 @@ public class Player extends Entity {
                 if (key.right) {
                     worldX += speed;
                 }
+            }
+        }
+
+        if (invincible){
+            invincibleCounter++;
+            if (invincibleCounter > gamePanel.FPS){
+                invincible = false;
+                invincibleCounter = 0;
             }
         }
 

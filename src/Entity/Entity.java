@@ -25,6 +25,12 @@ public class Entity {
     public String direction = "down";
     public int maxLife;
     public int life;
+    public boolean invincible = false;
+    public boolean dying = false;
+    public boolean alive = true;
+
+    // Counter
+    int invincibleCounter = 0;
 
     // Action
     public int spriteNum = 1;
@@ -99,6 +105,14 @@ public class Entity {
                 case "right":
                     worldX += speed;
                     break;
+            }
+        }
+
+        if (invincible){
+            invincibleCounter++;
+            if (invincibleCounter>40){
+                invincible = false;
+                invincibleCounter = 0;
             }
         }
 
