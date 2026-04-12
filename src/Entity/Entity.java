@@ -178,4 +178,55 @@ public class Entity {
             graphics2D.drawImage(image, screenX, screenY, null);
         }
     }
+
+    // This class represents an item that can be picked up by the player.
+    public class Item {
+        public Image image;
+    }
+    public Item[] inventory = new Item[5];
+    public int selectedItem = 0;
+
+    //switch to next item (right)
+    public void nextItem() {
+        selectedItem++;
+        if (selectedItem >= inventory.length) {
+            selectedItem = 0;
+        }
+    }
+
+    //switch to previous item (left)
+    public void previousItem() {
+        selectedItem--;
+        if (selectedItem < 0) {
+            selectedItem = inventory.length - 1;
+        }
+
+
+    }
+
+    public void pickUpItem(Item item) {
+
+        //first check if there is empty slot in inventory
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] == null) {
+                inventory[i] = item;
+                return;
+            }
+        }
+
+        // If inventory is full, drop the currently selected item
+        dropItem(selectedItem);
+
+        // Add the new item to the now-empty slot
+        inventory[selectedItem] = item;
+    }
+
+    public void dropItem(int index) {
+
+        if (inventory[index] == null) return;
+
+        Item dropped = inventory[index];
+        inventory[index] = null;
+    }
+
 }
