@@ -3,224 +3,72 @@ package Main;
 import gamepanel.GamePanel;
 
 import java.awt.*;
-import Entity.Player;
-import inventory.Inventory;
 
 public class UI {
 
     GamePanel gamePanel;
-    Graphics2D g2;
+    Graphics2D graphics2D;
 
-    Font largeFont;
-    Font mediumFont;
+    Font monospaced;
 
     public UI(GamePanel gamePanel) {
+
         this.gamePanel = gamePanel;
 
-        // Initialize fonts
-        largeFont = new Font("Monospaced", Font.BOLD, 80);
-        mediumFont = new Font("Monospaced", Font.BOLD, 40);
+        monospaced = new Font("Monospaced", Font.BOLD, 80);
     }
 
-    public void setGraphics2D(Graphics2D g2) {
-        this.g2 = g2;
-    }
+    public void draw(Graphics2D graphics2D) {
+        this.graphics2D = graphics2D;
 
+        graphics2D.setFont(monospaced);
+        graphics2D.setColor(Color.black);
 
-    public void draw(Graphics2D g2) {
-        this.g2 = g2;
-
-        // Opening state (e.g. title screen or intro video trigger)
+        // opening state
         if (gamePanel.gameState == gamePanel.opening) {
-            drawOpeningState();
+
         }
 
-        // Playing state (nothing UI-heavy yet)
+        // playing state
         if (gamePanel.gameState == gamePanel.playing) {
-            // You can add HUD here later (HP, score, etc.)
+
         }
 
-        // Pausing state
+        //pausing state
         if (gamePanel.gameState == gamePanel.pausing) {
             drawPauseState();
         }
-
-        if (gamePanel.gameState == gamePanel.playing) {
-            drawHUD();
-        }
-
-    }
-    // Opening Screen
-    public void drawOpeningState() {
-
-        g2.setFont(largeFont);
-        g2.setColor(Color.BLACK);
-
-        String text = "MY GAME";
-        int x = getCenteredTextX(text);
-        int y = gamePanel.screenHeight / 2;
-
-        g2.drawString(text, x, y);
-
-        g2.setFont(mediumFont);
-
-        text = "Press ENTER to Start";
-        x = getCenteredTextX(text);
-        y += gamePanel.tileSize * 2;
-
-        g2.drawString(text, x, y);
     }
 
-    // Pause Screen
+
     public void drawPauseState() {
 
-        // Draw semi-transparent overlay (better UX)
-        g2.setColor(new Color(0, 0, 0, 150));
-        g2.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
-
-        // Draw "PAUSED"
-        g2.setFont(largeFont);
-        g2.setColor(new Color(200, 200, 200));
+        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 80F));
+        graphics2D.setColor(new Color(40, 40, 40));
 
         String text = "PAUSED";
         int x = getCenteredTextX(text);
         int y = gamePanel.screenHeight / 2;
+        graphics2D.drawString(text, x, y);
 
-        g2.drawString(text, x, y);
-
-        // Draw instructions
-        g2.setFont(mediumFont);
+        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 40F));
 
         text = "Press 'C' to continue";
         x = getCenteredTextX(text);
-        y += gamePanel.tileSize * 2;
-        g2.drawString(text, x, y);
+        y += gamePanel.tileSize * 4;
+        graphics2D.drawString(text, x, y);
 
         text = "Press 'R' to return to menu";
         x = getCenteredTextX(text);
         y += gamePanel.tileSize;
-        g2.drawString(text, x, y);
+        graphics2D.drawString(text, x, y);
     }
 
-    // Utility: Center text horizontally
     public int getCenteredTextX(String text) {
-        int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-        return gamePanel.screenWidth / 2 - length / 2;
-    }
-    public int getTextWidth(String text) {
-        return (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-    }
-
-    // =============================
-// HUD for 2 Players
-// =============================
-    public void drawHUD() {
-
-        drawPlayerHUD(gamePanel.player1, true);  // Left side
-        drawPlayerHUD(gamePanel.player2, false);// Right side
-    }
-    public void drawPlayerHUD(Object player, boolean isLeft) {
-
         int x;
-        int y = gamePanel.tileSize;
+        int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
+        x = gamePanel.screenWidth / 2 - length / 2;
 
-        // Left or Right side positioning
-        if (isLeft) {
-            x = gamePanel.tileSize / 2;
-        } else {
-            x = gamePanel.screenWidth - gamePanel.tileSize * 5;
-        }
-
-        // Cast
-        Entity.Entity p = (Entity.Entity) player;
-
-        // Draw HP label
-        g2.setFont(mediumFont);
-        g2.setColor(Color.WHITE);
-        g2.drawString(isLeft ? "P1 HP:" : "P2 HP:", x, y);
-
-        x += gamePanel.tileSize;
-
-        // Draw HP blocks
-        for (int i = 0; i < p.maxLife; i++) {
-
-            if (i < p.life) {
-                g2.setColor(Color.RED);
-            } else {
-                g2.setColor(Color.GRAY);
-            }
-
-            g2.fillRect(x, y - 30, 20, 20);
-            x += 25;
-        }
-
-        // Draw Score
-        g2.setColor(Color.WHITE);
-        g2.setFont(mediumFont);
-
-        String text = (isLeft ? "P1 Score: " : "P2 Score: ");
-
-        int textX;
-        if (isLeft) {
-            textX = gamePanel.tileSize / 2;
-        } else {
-            textX = gamePanel.screenWidth - getTextWidth(text) - gamePanel.tileSize / 2;
-        }
-
-        int textY = y + gamePanel.tileSize;
-
-        g2.drawString(text, textX, textY);
-        drawInventory(p, isLeft);
-    }
-    // Overloaded method to allow custom Y position for inventory
-    public void drawInventory(Entity.Entity p, boolean isLeft) {
-        if (p == null || p.inventory == null) return;
-        int slotSize = 50;
-        int spacing = 10;
-        int totalSlots =Math.min(5, p.inventory.length);
-
-        int totalWidth = totalSlots * slotSize + (totalSlots - 1) * spacing;
-
-        int startX;
-
-        if (isLeft) {
-            startX = gamePanel.screenWidth / 4 - totalWidth / 2;
-        } else {
-            startX = gamePanel.screenWidth * 3 / 4 - totalWidth / 2;
-        }
-
-        int y = gamePanel.screenHeight - slotSize - 20;
-
-        for (int i = 0; i < totalSlots; i++) {
-
-            int x = startX + i * (slotSize + spacing);
-
-            //background
-            g2.setColor(new Color(0, 0, 0, 180));
-            g2.fillRect(x, y, slotSize, slotSize);
-
-            //border
-            if (i == p.selectedItem) {
-                g2.setColor(Color.YELLOW);
-                g2.setStroke(new BasicStroke(3));
-            } else {
-                g2.setColor(Color.WHITE);
-                g2.setStroke(new BasicStroke(2));
-            }
-
-            g2.drawRect(x, y, slotSize, slotSize);
-
-            //draw item if exists
-            if (p.inventory[i] != null) {
-                g2.drawImage(
-                        p.inventory[i].image,
-                        x + 5,
-                        y + 5,
-                        slotSize - 10,
-                        slotSize - 10,
-                        null
-                );
-            }
-        }
+        return x;
     }
 }
