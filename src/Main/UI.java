@@ -77,7 +77,8 @@ public class UI {
         graphics2D.drawString(text, x, y);
     }
 
-    // Draw the inventory bar for the player. This will show the items in the player's inventory and highlight the selected item.
+    // Draw the inventory bar for the player.
+    // This will show the items in the player's inventory and highlight the selected item.
     public void drawInventory(Player p, boolean isLeft) {
 
         if (p == null || p.inventory == null) return;
@@ -151,7 +152,7 @@ public class UI {
 
 //        graphics2D.setColor(Color.WHITE);
 //        graphics2D.setFont(monospaced);
-//        y = y + gamePanel.tileSize;
-//        graphics2D.drawString(isLeft ? "P1 Score: 5" : "P2 Score: 5", x, y);
+//        int textY = y + gamePanel.tileSize;
+//        graphics2D.drawString(isLeft ? "P1 Score: 5" : "P2 Score: 5", x, textY);
     }
 }

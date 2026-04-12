@@ -21,6 +21,7 @@ public class Entity {
     public int worldX;
     public int worldY;
 
+    // State
     public String name;
     public int type; // player = 0, npc = 1, monster = 2
     public int speed = 4;
@@ -30,13 +31,16 @@ public class Entity {
     public boolean invincible = false;
     public boolean dying = false;
     public boolean alive = true;
+    public boolean hpBarOn = false;
 
     // Counter
     int invincibleCounter = 0;
+    public int spriteCounter = 0;
+    public int actionCounter = 0;
+    public int hpBarCounter = 0;
 
     // Action
     public int spriteNum = 1;
-
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     public int originalSolidAreaX;
@@ -45,16 +49,8 @@ public class Entity {
     public boolean collisionOn = false;
     public boolean attacking = false;
 
-    // Counter
-    public int spriteCounter = 0;
-    public int actionCounter = 0;
-
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-    }
-
-    public int getSelectedItem() {
-        return selectedItem;
     }
 
     /**
@@ -123,6 +119,8 @@ public class Entity {
         }
 
         if (invincible) {
+            hpBarOn = true;
+            hpBarCounter = 0; // reset the counter if player attack the monster in 5s again
             invincibleCounter++;
             if (invincibleCounter > 40) {
                 invincible = false;
@@ -160,59 +158,24 @@ public class Entity {
                     break;
             }
 
+            // monster HP bar
+            if (type == 2 && hpBarOn) {
+
+                hpBarCounter++;
+
+                graphics2D.setColor(new Color(35, 35, 35));
+                graphics2D.fillRect(screenX - 1, screenY - 16, gamePanel.tileSize + 2, 12);
+
+                graphics2D.setColor(new Color(255, 0, 30));
+                graphics2D.fillRect(screenX, screenY - 15, gamePanel.tileSize * life / maxLife, 10);
+
+                if (hpBarCounter == 300) {
+                    hpBarCounter = 0;
+                    hpBarOn = false;
+                }
+            }
+
             graphics2D.drawImage(image, screenX, screenY, null);
         }
     }
-
-    // This class represents an item that can be picked up by the player.
-    public class Item {
-        public Image image;
-    }
-
-    public Item[] inventory = new Item[5];
-    public int selectedItem = 0;
-
-    //switch to next item (right)
-    public void nextItem() {
-        selectedItem++;
-        if (selectedItem >= inventory.length) {
-            selectedItem = 0;
-        }
-    }
-
-    //switch to previous item (left)
-    public void previousItem() {
-        selectedItem--;
-        if (selectedItem < 0) {
-            selectedItem = inventory.length - 1;
-        }
-
-
-    }
-
-    public void pickUpItem(Item item) {
-
-        //first check if there is empty slot in inventory
-        for (int i = 0; i < inventory.length; i++) {
-            if (inventory[i] == null) {
-                inventory[i] = item;
-                return;
-            }
-        }
-
-        // If inventory is full, drop the currently selected item
-        dropItem(selectedItem);
-
-        // Add the new item to the now-empty slot
-        inventory[selectedItem] = item;
-    }
-
-    public void dropItem(int index) {
-
-        if (inventory[index] == null) return;
-
-        Item dropped = inventory[index];
-        inventory[index] = null;
-    }
-
 }
