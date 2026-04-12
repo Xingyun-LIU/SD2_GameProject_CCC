@@ -140,7 +140,10 @@ public class UI {
     }
 
     public void drawPlayerHUD(Object player, boolean isLeft) {
-
+        if (this.graphics2D == null) {
+            System.out.println("Warning: graphics2D is null!");
+            return;
+        }
         int x;
         int y = gamePanel.tileSize;
 
