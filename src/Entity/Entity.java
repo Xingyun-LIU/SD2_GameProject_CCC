@@ -35,7 +35,7 @@ public class Entity {
     public int originalSolidAreaY;
     public boolean collision = false;
     public boolean collisionOn = false;
-    boolean attacking = false;
+    public boolean attacking = false;
 
     // Counter
     public int spriteCounter = 0;
