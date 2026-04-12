@@ -30,10 +30,10 @@ public class UITest {
 
         //create a mock Graphics2D object using BufferedImage
         BufferedImage img = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = img.createGraphics();
+        Graphics2D graphics2D = img.createGraphics();
 
         // inject the mock Graphics2D into UI
-        ui.setGraphics2D(g2);
+        ui.setGraphics2D(graphics2D);
 
         assertDoesNotThrow(() -> ui.drawHUD());
     }
