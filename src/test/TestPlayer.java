@@ -23,9 +23,6 @@ class TestPlayer {
         this.gamePanel = gp;
     }
 
-    // =============================
-    // 拾取
-    // =============================
     public void pickUpItem(Item item) {
 
         for (int i = 0; i < inventory.length; i++) {
@@ -47,9 +44,6 @@ class TestPlayer {
         printInventory();
     }
 
-    // =============================
-    // 丢弃
-    // =============================
     public void dropItem(int index) {
 
         if (inventory[index] == null) return;
@@ -68,9 +62,6 @@ class TestPlayer {
         printInventory();
     }
 
-    // =============================
-    // 切换
-    // =============================
     public void nextItem() {
         selectedItem = (selectedItem + 1) % inventory.length;
         System.out.println("Selected: " + selectedItem);
@@ -81,9 +72,6 @@ class TestPlayer {
         System.out.println("Selected: " + selectedItem);
     }
 
-    // =============================
-    // 打印
-    // =============================
     public void printInventory() {
 
         System.out.print("Inventory: ");
