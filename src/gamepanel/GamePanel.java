@@ -176,7 +176,7 @@ public class GamePanel extends JPanel implements Runnable {
             map.drawMiniMap(graphics2D);
         }
 
-        ui.draw(graphics2D);
+        ui.draw(graphics2D, player1, player2);
         graphics2D.dispose();
     }
 

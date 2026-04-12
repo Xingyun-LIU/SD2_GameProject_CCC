@@ -3,6 +3,10 @@ package Main;
 import gamepanel.GamePanel;
 
 import java.awt.*;
+import Entity.Entity;
+import Entity.Player;
+import inventory.Item;
+import inventory.Inventory;
 
 public class UI {
 
@@ -18,7 +22,12 @@ public class UI {
         monospaced = new Font("Monospaced", Font.PLAIN, 20);
     }
 
-    public void draw(Graphics2D graphics2D) {
+    public void setGraphics2D(Graphics2D g2) {
+        this.graphics2D = graphics2D;
+    }
+
+
+    public void draw(Graphics2D graphics2D,Player player1, Player player2) {
         this.graphics2D = graphics2D;
 
         graphics2D.setFont(monospaced);
@@ -37,6 +46,10 @@ public class UI {
         //pausing state
         if (gamePanel.gameState == gamePanel.pausing) {
             drawPauseState();
+        }
+
+        if (gamePanel.gameState == gamePanel.playing) {
+            drawHUD();
         }
     }
 
@@ -65,7 +78,7 @@ public class UI {
     }
 
     // Draw the inventory bar for the player. This will show the items in the player's inventory and highlight the selected item.
-    public void drawInventory(Entity.Entity p, boolean isLeft) {
+    public void drawInventory( Player p, boolean isLeft) {
 
         if (p == null || p.inventory == null) return;
 
@@ -120,7 +133,7 @@ public class UI {
 // HUD for 2 Players
 // =============================
     public void drawHUD() {
-
+        this.graphics2D = graphics2D;
         drawPlayerHUD(gamePanel.player1, true);  // Left side
         drawPlayerHUD(gamePanel.player2, false);// Right side
     }
@@ -138,7 +151,7 @@ public class UI {
         }
 
         // Cast
-        Entity.Entity p = (Entity.Entity) player;
+       Player p = (Player) player;
 
         // Draw HP label
         graphics2D.setFont(monospaced);

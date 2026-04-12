@@ -45,6 +45,7 @@ public class Entity {
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
+    public int getSelectedItem() { return selectedItem; }
 
     /**Initialize entity image with specified size.*/
     public BufferedImage setup(String imagePath, int width, int height) {
