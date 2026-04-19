@@ -63,6 +63,15 @@ public class Boss extends Entity {
         if (attackCooldown > 0) attackCooldown--;
         if (teleportCooldown > 0) teleportCooldown--;
 
+        if (invincible) {
+            invincibleCounter++;
+            if (invincibleCounter > 40) {
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
+
+
         // Find the nearest player
         Player target = getNearestPlayer();
         if (target == null) return;

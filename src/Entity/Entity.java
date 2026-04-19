@@ -34,7 +34,7 @@ public class Entity {
     public boolean hpBarOn = false;
 
     // Counter
-    int invincibleCounter = 0;
+    public int invincibleCounter = 0;
     public int spriteCounter = 0;
     public int actionCounter = 0;
     public int hpBarCounter = 0;
