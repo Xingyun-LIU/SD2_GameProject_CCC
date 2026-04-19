@@ -3,6 +3,7 @@ package monster;
 import Entity.Entity;
 import Entity.Player;
 import gamepanel.GamePanel;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class Boss extends Entity {
     private enum State {
         IDLE, CHASE, MELEE_ATTACK, RANGED_ATTACK, TELEPORT, PHASE_TRANSITION
     }
+
     private State currentState = State.IDLE;
 
     // Counter
@@ -106,7 +108,7 @@ public class Boss extends Entity {
 
         // Check collision
         collisionOn = false;
-        gamePanel.collisionChecker.checkTile(this);
+        gamePanel.collisionChecker.checkTile(this, 1);
     }
 
     private void updateIdle(Player target) {
@@ -163,10 +165,18 @@ public class Boss extends Entity {
             meleeActive = true;
             int mx = worldX, my = worldY;
             switch (direction) {
-                case "up":    my -= gamePanel.tileSize; break;
-                case "down":  my += gamePanel.tileSize; break;
-                case "left":  mx -= gamePanel.tileSize; break;
-                case "right": mx += gamePanel.tileSize; break;
+                case "up":
+                    my -= gamePanel.tileSize;
+                    break;
+                case "down":
+                    my += gamePanel.tileSize;
+                    break;
+                case "left":
+                    mx -= gamePanel.tileSize;
+                    break;
+                case "right":
+                    mx += gamePanel.tileSize;
+                    break;
             }
             meleeHitBox.x = mx;
             meleeHitBox.y = my;
@@ -271,10 +281,18 @@ public class Boss extends Entity {
 
         if (!collisionOn) {
             switch (direction) {
-                case "up":    worldY -= speed; break;
-                case "down":  worldY += speed; break;
-                case "left":  worldX -= speed; break;
-                case "right": worldX += speed; break;
+                case "up":
+                    worldY -= speed;
+                    break;
+                case "down":
+                    worldY += speed;
+                    break;
+                case "left":
+                    worldX -= speed;
+                    break;
+                case "right":
+                    worldX += speed;
+                    break;
             }
         }
     }
@@ -361,7 +379,7 @@ public class Boss extends Entity {
 
         float ratio = (float) life / maxLife;
         g2.setColor(phase == 1 ? Color.GREEN : Color.ORANGE);
-        g2.fillRect(screenX, barY, (int)(barWidth * ratio), barHeight);
+        g2.fillRect(screenX, barY, (int) (barWidth * ratio), barHeight);
 
         g2.setColor(Color.WHITE);
         g2.drawRect(screenX, barY, barWidth, barHeight);
