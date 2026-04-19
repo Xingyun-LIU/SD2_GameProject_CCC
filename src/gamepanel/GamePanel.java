@@ -87,9 +87,11 @@ public class GamePanel extends JPanel implements Runnable {
         cam1 = new Camera(this);
         cam2 = new Camera(this);
 
+        // Set monster
         setter.setObject();
         setter.setNPC();
         setter.setMonster();
+        setter.setBoss();
 
         gameState = playing;
     }
