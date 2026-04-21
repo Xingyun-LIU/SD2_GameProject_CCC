@@ -40,6 +40,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playing = 1;
     public final int pausing = 2;
     public final int mapState = 3;
+    public final int gameOverState = 4;
 
     // Player
     public Player player1;
@@ -138,6 +139,10 @@ public class GamePanel extends JPanel implements Runnable {
             // player
             player1.update(key);
             player2.update(key);
+            // Check if player life is 0, if yes, change to game over state
+            if (player1.life <= 0 || player2.life <= 0) {
+                gameState = gameOverState;
+            }
 
             cam1.follow(player1);
             cam2.follow(player2);
