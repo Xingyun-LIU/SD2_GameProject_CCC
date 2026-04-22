@@ -1,9 +1,10 @@
 package monster;
 
 import Entity.Entity;
-import gamepanel.GamePanel; // 确保 package 路径正确
-
+import gamepanel.GamePanel;
 import java.util.Random;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Egg extends Entity {
 
@@ -58,4 +59,8 @@ public class Egg extends Entity {
         }
     }
 
+    public void test() {
+        System.out.println("Egg" + life);
+        System.out.println("Egg" + worldX + ", " + worldY);
+    }
 }

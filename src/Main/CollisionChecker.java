@@ -110,7 +110,6 @@ public class CollisionChecker {
         entity.solidArea.y = entity.originalSolidAreaY;
         target.solidArea.x = target.originalSolidAreaX;
         target.solidArea.y = target.originalSolidAreaY;
-
         return collisionPlayer;
     }
 
