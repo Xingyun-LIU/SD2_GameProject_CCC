@@ -50,7 +50,7 @@ public class EventChecker {
 
         if (player.canTouchEvent) {
             if (touch(player, 0, 37, 43, "any")) {
-                teleport(player, 1, 5, 5);
+                teleport(player, 2, 30, 30);
             } else if (touch(player, 1, 5, 5, "any")) {
                 teleport(player, 0, 37, 43);
             }
