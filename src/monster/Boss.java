@@ -430,40 +430,42 @@ public class Boss extends Entity {
         int screenX = worldX - cam.x;
         int screenY = worldY - cam.y;
 
-        if (worldX + gamePanel.tileSize <= cam.x ||
+        boolean bossVisible = !(worldX + gamePanel.tileSize <= cam.x ||
                 worldX - gamePanel.tileSize >= cam.x + viewWidth ||
                 worldY + gamePanel.tileSize <= cam.y ||
-                worldY - gamePanel.tileSize >= cam.y + gamePanel.screenHeight) return;
+                worldY - gamePanel.tileSize >= cam.y + gamePanel.screenHeight);
 
-        // phase one: red phase two: purple
-        g2.setColor(phase == 1 ? Color.RED : new Color(120, 0, 180));
+        if (bossVisible) {
+            // phase one: red phase two: purple
+            g2.setColor(phase == 1 ? Color.RED : new Color(120, 0, 180));
 
-        // Flashing during the second-stage transition
-        if (currentState == State.PHASE_TRANSITION && transitionTimer % 10 < 5) {
-            g2.setColor(Color.WHITE);
-        }
+            // Flashing during the second-stage transition
+            if (currentState == State.PHASE_TRANSITION && transitionTimer % 10 < 5) {
+                g2.setColor(Color.WHITE);
+            }
 
-        g2.fillRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
-
-        // Transparent during teleportation
-        if (currentState == State.TELEPORT && stateTimer < 20) {
-            g2.setColor(new Color(150, 0, 255, 100));
             g2.fillRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
-        }
 
-        if (currentState == State.BULLET_HELL && bulletHellActive) {
-            g2.setColor(new Color(255, 220, 120, 80));
-            g2.fillOval(screenX - 18, screenY - 18, gamePanel.tileSize + 36, gamePanel.tileSize + 36);
-        }
+            // Transparent during teleportation
+            if (currentState == State.TELEPORT && stateTimer < 20) {
+                g2.setColor(new Color(150, 0, 255, 100));
+                g2.fillRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
+            }
 
-        // HpBar
-        drawHealthBar(g2, screenX, screenY);
+            if (currentState == State.BULLET_HELL && bulletHellActive) {
+                g2.setColor(new Color(255, 220, 120, 80));
+                g2.fillOval(screenX - 18, screenY - 18, gamePanel.tileSize + 36, gamePanel.tileSize + 36);
+            }
 
-        // Melee hitbox, for debug use---------------------------------
-        if (meleeActive) {
-            g2.setColor(new Color(255, 0, 0, 80));
-            g2.fillRect(meleeHitBox.x - cam.x, meleeHitBox.y - cam.y,
-                    meleeHitBox.width, meleeHitBox.height);
+            // HpBar
+            drawHealthBar(g2, screenX, screenY);
+
+            // Melee hitbox, for debug use---------------------------------
+            if (meleeActive) {
+                g2.setColor(new Color(255, 0, 0, 80));
+                g2.fillRect(meleeHitBox.x - cam.x, meleeHitBox.y - cam.y,
+                        meleeHitBox.width, meleeHitBox.height);
+            }
         }
 
         for (BossProjectile p : projectiles) {
