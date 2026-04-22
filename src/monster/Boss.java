@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Boss extends Entity {
-
     // Boss stage
     public int phase = 1;
+    private final int mapIndex;
 
     // Boss behavior status
     private enum State {
@@ -44,8 +44,10 @@ public class Boss extends Entity {
     private double hellSpinAngle = 0;
     private boolean bulletHellActive = false;
 
-    public Boss(GamePanel gamePanel) {
+    // mapIndex here is used to enable projectiles collision checking.
+    public Boss(GamePanel gamePanel, int mapIndex) {
         super(gamePanel);
+        this.mapIndex = mapIndex;
 
         this.type = 2; // monster
         this.maxLife = 20;
@@ -117,12 +119,12 @@ public class Boss extends Entity {
 
         // Check collision
         collisionOn = false;
-        gamePanel.collisionChecker.checkTile(this, 1);
+        gamePanel.collisionChecker.checkTile(this, mapIndex);
     }
 
     private void updateIdle(Player target) {
         stateTimer++;
-        if (stateTimer > 60) { 
+        if (stateTimer > 60) {
             stateTimer = 0;
             currentState = State.CHASE;
         }
@@ -355,10 +357,6 @@ public class Boss extends Entity {
         }
     }
 
-    private void fireProjectileByAngle(double angleRadians) {
-        fireProjectileByAngle(angleRadians, 6, 1, 8, Color.MAGENTA);
-    }
-
     private void fireProjectileByAngle(double angleRadians, int speed, int damage, int radius, Color color) {
         projectiles.add(new BossProjectile(
                 gamePanel,
@@ -368,7 +366,8 @@ public class Boss extends Entity {
                 speed,
                 damage,
                 radius,
-                color
+                color,
+                mapIndex
         ));
     }
 

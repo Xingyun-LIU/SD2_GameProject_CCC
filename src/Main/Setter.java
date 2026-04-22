@@ -45,7 +45,7 @@ public class Setter {
 
     // Set boss
     public void setBoss() {
-        gamePanel.monsters[2][0] = new Boss(gamePanel);
+        gamePanel.monsters[2][0] = new Boss(gamePanel, 2);
         gamePanel.monsters[2][0].worldX = gamePanel.tileSize * 32;
         gamePanel.monsters[2][0].worldY = gamePanel.tileSize * 32;
     }
