@@ -196,9 +196,13 @@ public class GamePanel extends JPanel implements Runnable {
         //Draw the map
         tileManager.draw(graphics2D, cam, viewWidth, currentMap);
 
-        //Draw the player
-        player1.draw(graphics2D, cam);
-        player2.draw(graphics2D, cam);
+        // Only draw players that are actually in this map
+        if (player1.currentMap == currentMap) {
+            player1.draw(graphics2D, cam);
+        }
+        if (player2.currentMap == currentMap) {
+            player2.draw(graphics2D, cam);
+        }
 
         // Add entities to the list
         for (int i = 0; i < npc[1].length; i++) {
