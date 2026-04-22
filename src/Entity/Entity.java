@@ -34,7 +34,7 @@ public class Entity {
     public boolean hpBarOn = false;
 
     // Counter
-    int invincibleCounter = 0;
+    public int invincibleCounter = 0;
     public int spriteCounter = 0;
     public int actionCounter = 0;
     public int hpBarCounter = 0;
@@ -77,10 +77,10 @@ public class Entity {
         setAction();
 
         collisionOn = false;
-        gamePanel.collisionChecker.checkTile(this);
+        gamePanel.collisionChecker.checkTile(this, gamePanel.currentMap);
         gamePanel.collisionChecker.checkObject(this, false);
-        gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
-        gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.npc, gamePanel.currentMap);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters, gamePanel.currentMap);
 
         // The npc or monster collision with player
         boolean collisionPlayer1 = gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);

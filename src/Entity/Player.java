@@ -163,7 +163,7 @@ public class Player extends Entity {
             solidArea.height = attackArea.height;
 
             // Check monster collision
-            int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+            int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters, currentMap);
             damageMonster(monsterIndex);
 
             // Reset to the original data.
@@ -182,13 +182,13 @@ public class Player extends Entity {
 
     public void damageMonster(int i) {
         if (i != 999) {
-            if (!gamePanel.monsters[gamePanel.currentMap][i].invincible) {
+            if (!gamePanel.monsters[currentMap][i].invincible) {
                 gamePanel.monsters[currentMap][i].life -= 1;
                 System.out.println(gamePanel.monsters[currentMap][i].life);
                 gamePanel.monsters[currentMap][i].invincible = true;
 
-                if (gamePanel.monsters[gamePanel.currentMap][i].life <= 0) {
-                    gamePanel.monsters[gamePanel.currentMap][i].dying = true;
+                if (gamePanel.monsters[currentMap][i].life <= 0) {
+                    gamePanel.monsters[currentMap][i].dying = true;
                 }
             }
         }
@@ -197,9 +197,9 @@ public class Player extends Entity {
     // Pick up objects
     public void pickUpObject(int i) {
         if (i != 999) {
-            if (gamePanel.objects[gamePanel.currentMap][i] != null) {
-                if (gamePanel.objects[gamePanel.currentMap][i].name.equals("Brick")) {
-                    gamePanel.objects[gamePanel.currentMap][i] = null;
+            if (gamePanel.objects[currentMap][i] != null) {
+                if (gamePanel.objects[currentMap][i].name.equals("Brick")) {
+                    gamePanel.objects[currentMap][i] = null;
                     hasBrick = true;
                 }
             }
@@ -283,26 +283,44 @@ public class Player extends Entity {
 
         // Check tile collision
         collisionOn = false;
-        gamePanel.collisionChecker.checkTile(this);
+        gamePanel.collisionChecker.checkTile(this, currentMap);
 
-        // Check for collisions between players
+        // Check player collision only when both players are in the same map
         if (p1) {
-            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
+            if (this.currentMap == gamePanel.player2.currentMap) {
+                gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
+            }
         } else {
-            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
+            if (this.currentMap == gamePanel.player1.currentMap) {
+                gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
+            }
         }
+
+//        // Check for collisions between players
+//        if (p1) {
+//            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
+//        } else {
+//            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
+//        }
+
+        // Temporarily sync gamePanel.currentMap so old checkObject logic uses the right map
+        int previousMap = gamePanel.currentMap;
+        gamePanel.currentMap = this.currentMap;
 
         //check object collision
         int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
         pickUpObject(objectIndex);
 
+        // Restore
+        gamePanel.currentMap = previousMap;
+
         //check npc collision
-        int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+        int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc, currentMap);
         interactNPC(npcIndex);
         attack();
 
         //check monster collision
-        int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+        int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters, currentMap);
         contactMonster(monsterIndex);
 
         // Check event

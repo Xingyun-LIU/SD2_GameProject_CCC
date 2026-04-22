@@ -16,7 +16,7 @@ public class CollisionChecker {
     }
 
     // Check if the entity is collided with an entity that cannot be collided with
-    public void checkTile(Entity entity) {
+    public void checkTile(Entity entity, int currentMap) {
 
         // Calculate world position of entity's solidArea
         int left = entity.worldX + entity.solidArea.x;
@@ -37,32 +37,32 @@ public class CollisionChecker {
             case "up":
                 // Find the two tiles in front of the player
                 topRow = (top - entity.speed) / gamePanel.tileSize;
-                tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
-                tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
+                tileNum1 = gamePanel.tileManager.mapTileNum[currentMap][leftCol][topRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[currentMap][rightCol][topRow];
                 if (!gamePanel.tileManager.tiles[tileNum1].collision || !gamePanel.tileManager.tiles[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
                 break;
             case "down":
                 bottomRow = (bottom - entity.speed) / gamePanel.tileSize;
-                tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
-                tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
+                tileNum1 = gamePanel.tileManager.mapTileNum[currentMap][leftCol][bottomRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[currentMap][rightCol][bottomRow];
                 if (!gamePanel.tileManager.tiles[tileNum1].collision || !gamePanel.tileManager.tiles[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
                 break;
             case "left":
                 leftCol = (left - entity.speed) / gamePanel.tileSize;
-                tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
-                tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
+                tileNum1 = gamePanel.tileManager.mapTileNum[currentMap][leftCol][topRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[currentMap][leftCol][bottomRow];
                 if (!gamePanel.tileManager.tiles[tileNum1].collision || !gamePanel.tileManager.tiles[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
                 break;
             case "right":
                 rightCol = (right - entity.speed) / gamePanel.tileSize;
-                tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
-                tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
+                tileNum1 = gamePanel.tileManager.mapTileNum[currentMap][rightCol][topRow];
+                tileNum2 = gamePanel.tileManager.mapTileNum[currentMap][rightCol][bottomRow];
                 if (!gamePanel.tileManager.tiles[tileNum1].collision || !gamePanel.tileManager.tiles[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
@@ -171,20 +171,20 @@ public class CollisionChecker {
     /**
      * Check if one entity crush on target entity, return the index of target.
      * */
-    public int checkEntity(Entity entity, Entity[][] target) {
+    public int checkEntity(Entity entity, Entity[][] target, int currentMap) {
 
         int index = 999;
 
-        for (int i = 0; i < target[1].length; i++) {
-            if (target[gamePanel.currentMap][i] != null) {
+        for (int i = 0; i < target[currentMap].length; i++) {
+            if (target[currentMap][i] != null) {
 
                 // Get solid entity area position
                 entity.solidArea.x = entity.solidArea.x + entity.worldX;
                 entity.solidArea.y = entity.solidArea.y + entity.worldY;
 
                 // Get object solid area position
-                target[gamePanel.currentMap][i].solidArea.x = target[gamePanel.currentMap][i].worldX + target[gamePanel.currentMap][i].solidArea.x;
-                target[gamePanel.currentMap][i].solidArea.y = target[gamePanel.currentMap][i].worldY + target[gamePanel.currentMap][i].solidArea.y;
+                target[currentMap][i].solidArea.x = target[currentMap][i].worldX + target[currentMap][i].solidArea.x;
+                target[currentMap][i].solidArea.y = target[currentMap][i].worldY + target[currentMap][i].solidArea.y;
 
                 switch (entity.direction) {
                     case "up":
@@ -201,10 +201,10 @@ public class CollisionChecker {
                         break;
                 }
 
-                if (entity.solidArea.intersects(target[gamePanel.currentMap][i].solidArea)) {
+                if (entity.solidArea.intersects(target[currentMap][i].solidArea)) {
 
                     // if entity not equals to itself, set true
-                    if (target[gamePanel.currentMap][i] != entity) {
+                    if (target[currentMap][i] != entity) {
                         entity.collisionOn = true;
                         index = i;
                     }
@@ -212,8 +212,8 @@ public class CollisionChecker {
 
                 entity.solidArea.x = entity.originalSolidAreaX;
                 entity.solidArea.y = entity.originalSolidAreaY;
-                target[gamePanel.currentMap][i].solidArea.x = target[gamePanel.currentMap][i].originalSolidAreaX;
-                target[gamePanel.currentMap][i].solidArea.y = target[gamePanel.currentMap][i].originalSolidAreaY;
+                target[currentMap][i].solidArea.x = target[currentMap][i].originalSolidAreaX;
+                target[currentMap][i].solidArea.y = target[currentMap][i].originalSolidAreaY;
             }
 
         }

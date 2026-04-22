@@ -20,8 +20,10 @@ class GameTest {
 
     static VirtualGamePanel gamePanel;
 
-    /**The current environment does not have a monitor, keyboard, or mouse;
-     *  please do not attempt to access these hardware resources.*/
+    /**
+     * The current environment does not have a monitor, keyboard, or mouse;
+     * please do not attempt to access these hardware resources.
+     */
     @BeforeAll
     static void setUpEnvironment() {
         System.setProperty("java.awt.headless", "true");
@@ -180,7 +182,7 @@ class GameTest {
         targets[gamePanel.currentMap][3].originalSolidAreaX = 0;
         targets[gamePanel.currentMap][3].originalSolidAreaY = 0;
 
-        int index = checker.checkEntity(mover, targets);
+        int index = checker.checkEntity(mover, targets, 0);
 
         assertEquals(3, index);
     }
