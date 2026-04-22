@@ -7,30 +7,68 @@ import java.awt.*;
 public class BossProjectile extends Entity {
 
     public boolean active = true;
-    int dirX, dirY;
+    private double exactX, exactY;
+    private double velocityX, velocityY;
+    private final int damage;
+    private final int radius;
+    private final Color color;
 
     public BossProjectile(GamePanel gamePanel, int startX, int startY, int targetX, int targetY) {
+        this(gamePanel, startX, startY, targetX, targetY, 6, 1, 8, Color.MAGENTA);
+    }
+
+    public BossProjectile(GamePanel gamePanel, int startX, int startY, double angleRadians) {
+        this(gamePanel, startX, startY, angleRadians, 6, 1, 8, Color.MAGENTA);
+    }
+
+    public BossProjectile(GamePanel gamePanel, int startX, int startY, int targetX, int targetY,
+                          int speed, int damage, int radius, Color color) {
         super(gamePanel);
         this.worldX = startX;
         this.worldY = startY;
-        this.speed = 6;
+        this.exactX = startX;
+        this.exactY = startY;
+        this.speed = speed;
         this.type = 3; // projectile type
-        this.solidArea = new Rectangle(8, 8, 16, 16);
+        this.damage = damage;
+        this.radius = radius;
+        this.color = color;
+        this.solidArea = new Rectangle(16 - radius, 16 - radius, radius * 2, radius * 2);
         this.originalSolidAreaX = solidArea.x;
         this.originalSolidAreaY = solidArea.y;
 
-        // Initialize the flight direction
         int dx = targetX - startX;
         int dy = targetY - startY;
         double dist = Math.sqrt(dx * dx + dy * dy);
         if (dist == 0) dist = 1;
-        dirX = (int) (dx / dist * speed);
-        dirY = (int) (dy / dist * speed);
+        velocityX = dx / dist * speed;
+        velocityY = dy / dist * speed;
+    }
+
+    public BossProjectile(GamePanel gamePanel, int startX, int startY, double angleRadians,
+                          int speed, int damage, int radius, Color color) {
+        super(gamePanel);
+        this.worldX = startX;
+        this.worldY = startY;
+        this.exactX = startX;
+        this.exactY = startY;
+        this.speed = speed;
+        this.type = 3; // projectile type
+        this.damage = damage;
+        this.radius = radius;
+        this.color = color;
+        this.solidArea = new Rectangle(16 - radius, 16 - radius, radius * 2, radius * 2);
+        this.originalSolidAreaX = solidArea.x;
+        this.originalSolidAreaY = solidArea.y;
+        this.velocityX = Math.cos(angleRadians) * speed;
+        this.velocityY = Math.sin(angleRadians) * speed;
     }
 
     public void update() {
-        worldX += dirX;
-        worldY += dirY;
+        exactX += velocityX;
+        exactY += velocityY;
+        worldX = (int) Math.round(exactX);
+        worldY = (int) Math.round(exactY);
 
         // Check if hit the player
         checkHitPlayer(gamePanel.player1);
@@ -56,7 +94,7 @@ public class BossProjectile extends Entity {
         );
 
         if (solidArea.intersects(playerArea)) {
-            player.life -= 1;
+            player.life -= damage;
             active = false;
         }
 
@@ -68,7 +106,7 @@ public class BossProjectile extends Entity {
         if (!active) return;
         int screenX = worldX - cam.x;
         int screenY = worldY - cam.y;
-        g2.setColor(Color.MAGENTA);
-        g2.fillOval(screenX + 8, screenY + 8, 16, 16);
+        g2.setColor(color);
+        g2.fillOval(screenX + 16 - radius, screenY + 16 - radius, radius * 2, radius * 2);
     }
 }

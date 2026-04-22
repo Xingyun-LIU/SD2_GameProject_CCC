@@ -15,7 +15,7 @@ public class Boss extends Entity {
 
     // Boss behavior status
     private enum State {
-        IDLE, CHASE, MELEE_ATTACK, RANGED_ATTACK, TELEPORT, PHASE_TRANSITION
+        IDLE, CHASE, MELEE_ATTACK, RANGED_ATTACK, BULLET_HELL, TELEPORT, PHASE_TRANSITION
     }
 
     private State currentState = State.IDLE;
@@ -29,6 +29,10 @@ public class Boss extends Entity {
     // Attack range
     private final int MELEE_RANGE = 80;   // Melee attack range
     private final int RANGED_RANGE = 400; // Remote attack range
+    private final double DEGREE = Math.PI / 180.0;
+    private final Color HELL_RING_COLOR = new Color(255, 210, 90);
+    private final Color HELL_CORE_COLOR = new Color(255, 120, 40);
+    private final Color HELL_SNIPE_COLOR = new Color(180, 255, 255);
 
     // Projectile list
     public List<BossProjectile> projectiles = new ArrayList<>();
@@ -36,6 +40,9 @@ public class Boss extends Entity {
     // Attack solid area (melee)
     public Rectangle meleeHitBox = new Rectangle(0, 0, 0, 0);
     private boolean meleeActive = false;
+    private int rangedVolleyIndex = 0;
+    private double hellSpinAngle = 0;
+    private boolean bulletHellActive = false;
 
     public Boss(GamePanel gamePanel) {
         super(gamePanel);
@@ -73,7 +80,6 @@ public class Boss extends Entity {
             }
         }
 
-
         // Find the nearest player
         Player target = getNearestPlayer();
         if (target == null) return;
@@ -91,6 +97,9 @@ public class Boss extends Entity {
                 break;
             case RANGED_ATTACK:
                 updateRangedAttack(target);
+                break;
+            case BULLET_HELL:
+                updateBulletHell(target);
                 break;
             case TELEPORT:
                 updateTeleport(target);
@@ -113,7 +122,7 @@ public class Boss extends Entity {
 
     private void updateIdle(Player target) {
         stateTimer++;
-        if (stateTimer > 60) { // 静止 1 秒后开始追击
+        if (stateTimer > 60) { 
             stateTimer = 0;
             currentState = State.CHASE;
         }
@@ -134,7 +143,13 @@ public class Boss extends Entity {
 
         // In long range
         if (dist < RANGED_RANGE && attackCooldown == 0) {
-            int chance = (phase == 1) ? 120 : 60; // 二阶段更频繁
+            if (phase == 2 && actionCounter % 180 == 0) {
+                currentState = State.BULLET_HELL;
+                stateTimer = 0;
+                return;
+            }
+
+            int chance = (phase == 1) ? 120 : 60; // Phase two fires more often
             if (actionCounter % chance == 0) {
                 currentState = State.RANGED_ATTACK;
                 stateTimer = 0;
@@ -144,7 +159,7 @@ public class Boss extends Entity {
 
         // Random teleport
         if (phase == 2 && teleportCooldown == 0) {
-            int teleportChance = 300; // 每300帧有一次机会
+            int teleportChance = 300; // Roughly one teleport chance every 300 frames
             if (actionCounter % teleportChance == 0) {
                 currentState = State.TELEPORT;
                 stateTimer = 0;
@@ -195,23 +210,66 @@ public class Boss extends Entity {
         }
     }
 
-    // Launch projectiles, followed by a second phase launching three shotgun shells
+    // Charge briefly, then release several fan-shaped volleys toward the player.
     private void updateRangedAttack(Player target) {
         stateTimer++;
 
-        if (stateTimer == 15) {
-            if (phase == 1) {
-                fireProjectile(target);
-            } else {
-                fireProjectile(target);
-                fireProjectileOffset(target, -20);
-                fireProjectileOffset(target, 20);
+        if (stateTimer == 1) {
+            rangedVolleyIndex = 0;
+        }
+
+        if (phase == 1) {
+            if (stateTimer == 16 || stateTimer == 28) {
+                fireDarkKnightVolley(target, 5, 48, 0);
+                rangedVolleyIndex++;
+            }
+        } else {
+            if (stateTimer == 12 || stateTimer == 22 || stateTimer == 32) {
+                double centerOffset = (rangedVolleyIndex % 2 == 0) ? -6 * DEGREE : 6 * DEGREE;
+                fireDarkKnightVolley(target, 7, 72, centerOffset);
+                fireDarkKnightVolley(target, 3, 18, 0);
+                rangedVolleyIndex++;
             }
         }
 
-        if (stateTimer > 40) {
+        if (stateTimer > (phase == 1 ? 44 : 48)) {
             stateTimer = 0;
-            attackCooldown = (phase == 1) ? 120 : 80;
+            rangedVolleyIndex = 0;
+            attackCooldown = (phase == 1) ? 110 : 70;
+            currentState = State.CHASE;
+        }
+    }
+
+    private void updateBulletHell(Player target) {
+        stateTimer++;
+        bulletHellActive = true;
+
+        if (stateTimer == 1) {
+            hellSpinAngle = Math.atan2(target.worldY - worldY, target.worldX - worldX);
+        }
+
+        if (stateTimer <= 14) {
+            return;
+        }
+
+        if (stateTimer % 3 == 0) {
+            spawnRotatingSunBurst(10, hellSpinAngle, 8 * DEGREE, 7, 1, 7, HELL_RING_COLOR);
+            spawnRotatingSunBurst(10, hellSpinAngle + 18 * DEGREE, -8 * DEGREE, 7, 1, 7, HELL_CORE_COLOR);
+            hellSpinAngle += 11 * DEGREE;
+        }
+
+        if (stateTimer % 12 == 0) {
+            fireTrackingBurst(target);
+        }
+
+        if (stateTimer % 24 == 0) {
+            fireDarkKnightVolley(target, 5, 36, 0, 8, 1, 7, new Color(255, 90, 220));
+        }
+
+        if (stateTimer > 108) {
+            bulletHellActive = false;
+            stateTimer = 0;
+            attackCooldown = 150;
             currentState = State.CHASE;
         }
     }
@@ -297,22 +355,61 @@ public class Boss extends Entity {
         }
     }
 
-    private void fireProjectile(Player target) {
+    private void fireProjectileByAngle(double angleRadians) {
+        fireProjectileByAngle(angleRadians, 6, 1, 8, Color.MAGENTA);
+    }
+
+    private void fireProjectileByAngle(double angleRadians, int speed, int damage, int radius, Color color) {
         projectiles.add(new BossProjectile(
                 gamePanel,
                 worldX + gamePanel.tileSize / 2,
                 worldY + gamePanel.tileSize / 2,
-                target.worldX, target.worldY
+                angleRadians,
+                speed,
+                damage,
+                radius,
+                color
         ));
     }
 
-    private void fireProjectileOffset(Player target, int offset) {
-        projectiles.add(new BossProjectile(
-                gamePanel,
-                worldX + gamePanel.tileSize / 2,
-                worldY + gamePanel.tileSize / 2,
-                target.worldX + offset, target.worldY + offset
-        ));
+    private void fireDarkKnightVolley(Player target, int bulletCount, double spreadDegrees, double angleOffsetRadians) {
+        fireDarkKnightVolley(target, bulletCount, spreadDegrees, angleOffsetRadians, 6, 1, 8, Color.MAGENTA);
+    }
+
+    private void fireDarkKnightVolley(Player target, int bulletCount, double spreadDegrees, double angleOffsetRadians,
+                                      int speed, int damage, int radius, Color color) {
+        if (bulletCount <= 0) return;
+
+        double baseAngle = Math.atan2(
+                target.worldY - worldY,
+                target.worldX - worldX
+        ) + angleOffsetRadians;
+
+        if (bulletCount == 1) {
+            fireProjectileByAngle(baseAngle, speed, damage, radius, color);
+            return;
+        }
+
+        double startAngle = baseAngle - (spreadDegrees / 2.0) * DEGREE;
+        double angleStep = (spreadDegrees * DEGREE) / (bulletCount - 1);
+
+        for (int i = 0; i < bulletCount; i++) {
+            fireProjectileByAngle(startAngle + angleStep * i, speed, damage, radius, color);
+        }
+    }
+
+    private void spawnRotatingSunBurst(int bulletCount, double startAngle, double angleStep, int speed,
+                                       int damage, int radius, Color color) {
+        for (int i = 0; i < bulletCount; i++) {
+            fireProjectileByAngle(startAngle + angleStep * i, speed, damage, radius, color);
+        }
+    }
+
+    private void fireTrackingBurst(Player target) {
+        double baseAngle = Math.atan2(target.worldY - worldY, target.worldX - worldX);
+        fireProjectileByAngle(baseAngle, 13, 1, 6, HELL_SNIPE_COLOR);
+        fireProjectileByAngle(baseAngle - 5 * DEGREE, 12, 1, 5, HELL_SNIPE_COLOR);
+        fireProjectileByAngle(baseAngle + 5 * DEGREE, 12, 1, 5, HELL_SNIPE_COLOR);
     }
 
     private void hitPlayerMelee(Player player) {
@@ -352,6 +449,11 @@ public class Boss extends Entity {
         if (currentState == State.TELEPORT && stateTimer < 20) {
             g2.setColor(new Color(150, 0, 255, 100));
             g2.fillRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
+        }
+
+        if (currentState == State.BULLET_HELL && bulletHellActive) {
+            g2.setColor(new Color(255, 220, 120, 80));
+            g2.fillOval(screenX - 18, screenY - 18, gamePanel.tileSize + 36, gamePanel.tileSize + 36);
         }
 
         // HpBar
