@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Boss extends Entity {
+
     // Boss stage
     public int phase = 1;
     private final int mapIndex;
@@ -30,9 +31,6 @@ public class Boss extends Entity {
     private final int MELEE_RANGE = 80;   // Melee attack range
     private final int RANGED_RANGE = 400; // Remote attack range
     private final double DEGREE = Math.PI / 180.0; // Unit angle
-    private final Color HELL_RING_COLOR = new Color(255, 210, 90);
-    private final Color HELL_CORE_COLOR = new Color(255, 120, 40);
-    private final Color HELL_SNIPE_COLOR = new Color(180, 255, 255);
 
     // Projectile list
     public List<BossProjectile> projectiles = new ArrayList<>();
@@ -83,6 +81,9 @@ public class Boss extends Entity {
     }
 
     public void update() {
+        if (!isBattleActive()) {
+            return;
+        }
 
         // Change phase
         checkPhaseTransition();
@@ -140,6 +141,25 @@ public class Boss extends Entity {
         // Check collision
         collisionOn = false;
         gamePanel.collisionChecker.checkTile(this, mapIndex);
+    }
+
+    // The boss will only be activated when two players both enter the battle area.
+    private boolean isBattleActive() {
+        return isPlayerInBattleArea(gamePanel.player1) && isPlayerInBattleArea(gamePanel.player2);
+    }
+
+    private boolean isPlayerInBattleArea(Player player) {
+        if (player == null || player.currentMap != mapIndex) {
+            return false;
+        }
+
+        int centerX = player.worldX + player.solidArea.x + player.solidArea.width / 2;
+        int centerY = player.worldY + player.solidArea.y + player.solidArea.height / 2;
+        int col = centerX / gamePanel.tileSize;
+        int row = centerY / gamePanel.tileSize;
+
+        return col > 20 && col < 44 &&
+                row > 18 && row < 42;
     }
 
     private void updateIdle(Player target) {
@@ -288,8 +308,8 @@ public class Boss extends Entity {
 
         // Shooting in the form of the sun
         if (stateTimer % 3 == 0) {
-            sunSpinShot(10, hellSpinAngle, 8 * DEGREE, 5, 1, 7, HELL_RING_COLOR);
-            sunSpinShot(10, hellSpinAngle + 18 * DEGREE, -8 * DEGREE, 5, 1, 7, HELL_CORE_COLOR);
+            sunSpinShot(10, hellSpinAngle, 8 * DEGREE, 5, 1, 7, new Color(255, 210, 90));
+            sunSpinShot(10, hellSpinAngle + 18 * DEGREE, -8 * DEGREE, 5, 1, 7, new Color(255, 120, 40));
             hellSpinAngle += 30 * DEGREE; // Rotate 11 degree each time
         }
 
@@ -534,9 +554,9 @@ public class Boss extends Entity {
     // Shooting base on target's position (like tracking)
     private void fireTrackingBurst(Player target) {
         double baseAngle = Math.atan2(target.worldY - worldY, target.worldX - worldX);
-        fireProjectileByAngle(baseAngle, 10, 1, 6, HELL_SNIPE_COLOR, true);
-        fireProjectileByAngle(baseAngle - 5 * DEGREE, 9, 1, 5, HELL_SNIPE_COLOR, true);
-        fireProjectileByAngle(baseAngle + 5 * DEGREE, 9, 1, 5, HELL_SNIPE_COLOR, true);
+        fireProjectileByAngle(baseAngle, 10, 1, 6, new Color(180, 255, 255), true);
+        fireProjectileByAngle(baseAngle - 5 * DEGREE, 9, 1, 5, new Color(180, 255, 255), true);
+        fireProjectileByAngle(baseAngle + 5 * DEGREE, 9, 1, 5, new Color(180, 255, 255), true);
     }
 
     private void hitPlayerMelee(Player player) {

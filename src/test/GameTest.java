@@ -314,10 +314,12 @@ class GameTest {
         boss.worldY = 200;
         boss.phase = 1;
 
+        gamePanel.player1.currentMap = 2;
+        gamePanel.player2.currentMap = 2;
         gamePanel.player1.worldX = 550;
         gamePanel.player1.worldY = 200;
-        gamePanel.player2.worldX = 900;
-        gamePanel.player2.worldY = 900;
+        gamePanel.player2.worldX = 700;
+        gamePanel.player2.worldY = 300;
 
         repeatBossUpdate(boss, 80);
 
@@ -331,10 +333,12 @@ class GameTest {
         boss.worldY = 200;
         boss.phase = 1;
 
+        gamePanel.player1.currentMap = 2;
+        gamePanel.player2.currentMap = 2;
         gamePanel.player1.worldX = 320;
         gamePanel.player1.worldY = 200;
-        gamePanel.player2.worldX = 900;
-        gamePanel.player2.worldY = 900;
+        gamePanel.player2.worldX = 700;
+        gamePanel.player2.worldY = 300;
         int initialLife = gamePanel.player1.life;
 
         repeatBossUpdate(boss, 75);
@@ -349,10 +353,12 @@ class GameTest {
         boss.worldY = 200;
         boss.phase = 1;
 
+        gamePanel.player1.currentMap = 2;
+        gamePanel.player2.currentMap = 2;
         gamePanel.player1.worldX = 260;
         gamePanel.player1.worldY = 200;
-        gamePanel.player2.worldX = 900;
-        gamePanel.player2.worldY = 900;
+        gamePanel.player2.worldX = 700;
+        gamePanel.player2.worldY = 300;
 
         repeatBossUpdate(boss, 90);
 
@@ -370,6 +376,27 @@ class GameTest {
         );
 
         assertFalse(bossArea.intersects(playerArea));
+    }
+
+    @Test
+    void testBossInactive() {
+        Boss boss = new VirtualBoss(gamePanel, 2);
+        boss.worldX = 200;
+        boss.worldY = 200;
+        boss.phase = 1;
+
+        gamePanel.player1.currentMap = 2;
+        gamePanel.player2.currentMap = 2;
+        gamePanel.player1.worldX = 25 * gamePanel.tileSize;
+        gamePanel.player1.worldY = 25 * gamePanel.tileSize;
+        gamePanel.player2.worldX = 10 * gamePanel.tileSize;
+        gamePanel.player2.worldY = 10 * gamePanel.tileSize;
+
+        repeatBossUpdate(boss, 90);
+
+        assertEquals(200, boss.worldX);
+        assertEquals(200, boss.worldY);
+        assertEquals(0, boss.projectiles.size());
     }
 
     @Test
