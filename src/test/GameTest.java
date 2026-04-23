@@ -6,6 +6,8 @@ import Main.Camera;
 import Main.CollisionChecker;
 import Main.EventChecker;
 import gamepanel.GamePanel;
+import monster.Boss;
+import monster.BossProjectile;
 import org.junit.jupiter.api.*;
 import tile.Tile;
 
@@ -227,9 +229,9 @@ class GameTest {
 
         checker.checkEvent(gamePanel.player1);
 
-        assertEquals(1, gamePanel.player1.currentMap);
-        assertEquals(5 * gamePanel.tileSize, gamePanel.player1.worldX);
-        assertEquals(5 * gamePanel.tileSize, gamePanel.player1.worldY);
+        assertEquals(2, gamePanel.player1.currentMap);
+        assertEquals(30 * gamePanel.tileSize, gamePanel.player1.worldX);
+        assertEquals(30 * gamePanel.tileSize, gamePanel.player1.worldY);
         assertFalse(gamePanel.player1.canTouchEvent);
     }
 
@@ -241,6 +243,75 @@ class GameTest {
         assertEquals("down", e.direction);
         assertEquals(48, e.solidArea.width);
         assertEquals(48, e.solidArea.height);
+    }
+
+    @Test
+    void testBossRangedAttack() {
+        Boss boss = new VirtualBoss(gamePanel, 2);
+        boss.worldX = 200;
+        boss.worldY = 200;
+        boss.phase = 1;
+
+        gamePanel.player1.worldX = 550;
+        gamePanel.player1.worldY = 200;
+        gamePanel.player2.worldX = 900;
+        gamePanel.player2.worldY = 900;
+
+        repeatBossUpdate(boss, 80);
+
+        assertEquals(5, boss.projectiles.size());
+    }
+
+    @Test
+    void testBossDashAttackPlayer() {
+        Boss boss = new VirtualBoss(gamePanel, 2);
+        boss.worldX = 200;
+        boss.worldY = 200;
+        boss.phase = 1;
+
+        gamePanel.player1.worldX = 320;
+        gamePanel.player1.worldY = 200;
+        gamePanel.player2.worldX = 900;
+        gamePanel.player2.worldY = 900;
+        int initialLife = gamePanel.player1.life;
+
+        repeatBossUpdate(boss, 75);
+
+        assertEquals(initialLife - 2, gamePanel.player1.life);
+    }
+
+    @Test
+    void testBossProjectileHitsPlayer() {
+        gamePanel.player1.worldX = 100;
+        gamePanel.player1.worldY = 100;
+        int initialLife = gamePanel.player1.life;
+
+        BossProjectile projectile = new BossProjectile(
+                gamePanel, 80, 110, 0, 10, 1, 8, Color.MAGENTA, 0
+        );
+
+        projectile.update();
+
+        assertFalse(projectile.active);
+        assertEquals(initialLife - 1, gamePanel.player1.life);
+    }
+
+    @Test
+    void testBossProjectileBouncesOnTile() {
+        gamePanel.tileManager.tiles[1] = new Tile();
+        gamePanel.tileManager.tiles[1].collision = false;
+        gamePanel.tileManager.tiles[1].image = virtualImage(gamePanel.tileSize, gamePanel.tileSize);
+        gamePanel.tileManager.mapTileNum[2][2][0] = 1;
+
+        BossProjectile projectile = new BossProjectile(
+                gamePanel, 70, 32, 0, 6, 1, 8, Color.MAGENTA, 2
+        );
+        int startX = projectile.worldX;
+
+        projectile.update();
+
+        assertTrue(projectile.active);
+        assertTrue(projectile.worldX < startX);
     }
 
     private static KeyEvent keyEvent(int keyCode) {
@@ -384,7 +455,20 @@ class GameTest {
         }
     }
 
+    static class VirtualBoss extends Boss {
+
+        VirtualBoss(GamePanel gp, int mapIndex) {
+            super(gp, mapIndex);
+        }
+    }
+
     private static BufferedImage virtualImage(int width, int height) {
         return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    }
+
+    private static void repeatBossUpdate(Boss boss, int frames) {
+        for (int i = 0; i < frames; i++) {
+            boss.update();
+        }
     }
 }
