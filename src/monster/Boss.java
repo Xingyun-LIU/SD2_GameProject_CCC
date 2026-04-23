@@ -15,7 +15,7 @@ public class Boss extends Entity {
 
     // Boss behavior status
     private enum State {
-        IDLE, CHASE, MELEE_ATTACK, RANGED_ATTACK, BULLET_HELL, TELEPORT, PHASE_TRANSITION
+        IDLE, CHASE, MELEE_ATTACK, RANGED_ATTACK, BULLET_HELL, DASH_ATTACK, TELEPORT, PHASE_TRANSITION
     }
 
     private State currentState = State.IDLE;
@@ -29,7 +29,7 @@ public class Boss extends Entity {
     // Attack range
     private final int MELEE_RANGE = 80;   // Melee attack range
     private final int RANGED_RANGE = 400; // Remote attack range
-    private final double DEGREE = Math.PI / 180.0;
+    private final double DEGREE = Math.PI / 180.0; // Unit angle
     private final Color HELL_RING_COLOR = new Color(255, 210, 90);
     private final Color HELL_CORE_COLOR = new Color(255, 120, 40);
     private final Color HELL_SNIPE_COLOR = new Color(180, 255, 255);
@@ -40,9 +40,13 @@ public class Boss extends Entity {
     // Attack solid area (melee)
     public Rectangle meleeHitBox = new Rectangle(0, 0, 0, 0);
     private boolean meleeActive = false;
-    private int rangedVolleyIndex = 0;
+    private int rangedVolleyIndex = 0; // How many sets the attack comes
     private double hellSpinAngle = 0;
-    private boolean bulletHellActive = false;
+    private boolean bulletHellActive = false; // Mark whether the current skill is being executed
+    private double dashVelocityX = 0;
+    private double dashVelocityY = 0;
+    private boolean dashHitPlayer1 = false;
+    private boolean dashHitPlayer2 = false;
 
     // mapIndex here is used to enable projectiles collision checking.
     public Boss(GamePanel gamePanel, int mapIndex) {
@@ -103,6 +107,9 @@ public class Boss extends Entity {
             case BULLET_HELL:
                 updateBulletHell(target);
                 break;
+            case DASH_ATTACK:
+                updateDashAttack();
+                break;
             case TELEPORT:
                 updateTeleport(target);
                 break;
@@ -130,11 +137,12 @@ public class Boss extends Entity {
         }
     }
 
+    // In this state, decide whether to switch to melee, ranged, barrage, or teleport
     private void updateChase(Player target) {
         int dist = getDistance(target);
 
         // Speed up in stage two
-        speed = (phase == 1) ? 3 : 5;
+        speed = (phase == 1) ? 2 : 4;
 
         // Melee attack in melee range
         if (dist < MELEE_RANGE && attackCooldown == 0) {
@@ -145,6 +153,14 @@ public class Boss extends Entity {
 
         // In long range
         if (dist < RANGED_RANGE && attackCooldown == 0) {
+            int dashChance = (phase == 1) ? 180 : 110;
+            if (dist > MELEE_RANGE && dist < 280 && actionCounter % dashChance == 0) {
+                currentState = State.DASH_ATTACK;
+                stateTimer = 0;
+                beginDashAttack(target);
+                return;
+            }
+
             if (phase == 2 && actionCounter % 180 == 0) {
                 currentState = State.BULLET_HELL;
                 stateTimer = 0;
@@ -227,6 +243,7 @@ public class Boss extends Entity {
             }
         } else {
             if (stateTimer == 12 || stateTimer == 22 || stateTimer == 32) {
+                // Calculate the degree by rangedVolleyIndex, avoid bullet overlap
                 double centerOffset = (rangedVolleyIndex % 2 == 0) ? -6 * DEGREE : 6 * DEGREE;
                 fireDarkKnightVolley(target, 7, 72, centerOffset);
                 fireDarkKnightVolley(target, 3, 18, 0);
@@ -246,26 +263,30 @@ public class Boss extends Entity {
         stateTimer++;
         bulletHellActive = true;
 
+        // The directional angle from the Boss towards the player
         if (stateTimer == 1) {
             hellSpinAngle = Math.atan2(target.worldY - worldY, target.worldX - worldX);
         }
 
+        // Accumulate strength
         if (stateTimer <= 14) {
             return;
         }
 
+        // Shooting in the form of the sun
         if (stateTimer % 3 == 0) {
-            spawnRotatingSunBurst(10, hellSpinAngle, 8 * DEGREE, 7, 1, 7, HELL_RING_COLOR);
-            spawnRotatingSunBurst(10, hellSpinAngle + 18 * DEGREE, -8 * DEGREE, 7, 1, 7, HELL_CORE_COLOR);
-            hellSpinAngle += 11 * DEGREE;
+            sunSpinShot(10, hellSpinAngle, 8 * DEGREE, 5, 1, 7, HELL_RING_COLOR);
+            sunSpinShot(10, hellSpinAngle + 18 * DEGREE, -8 * DEGREE, 5, 1, 7, HELL_CORE_COLOR);
+            hellSpinAngle += 30 * DEGREE; // Rotate 11 degree each time
         }
 
+        // Tracking shoot
         if (stateTimer % 12 == 0) {
             fireTrackingBurst(target);
         }
 
         if (stateTimer % 24 == 0) {
-            fireDarkKnightVolley(target, 5, 36, 0, 8, 1, 7, new Color(255, 90, 220));
+            fireDarkKnightVolley(target, 5, 36, 0, 6, 1, 7, new Color(255, 90, 220));
         }
 
         if (stateTimer > 108) {
@@ -274,6 +295,32 @@ public class Boss extends Entity {
             attackCooldown = 150;
             currentState = State.CHASE;
         }
+    }
+
+    private void updateDashAttack() {
+        stateTimer++;
+
+        if (stateTimer <= 8) {
+            return;
+        }
+
+        if (stateTimer <= 22) {
+            int nextX = (int) Math.round(worldX + dashVelocityX);
+            int nextY = (int) Math.round(worldY + dashVelocityY);
+
+            if (hitsSolidTile(nextX, nextY)) {
+                finishDashAttack();
+                return;
+            }
+
+            worldX = nextX;
+            worldY = nextY;
+            hitPlayerDash(gamePanel.player1, true);
+            hitPlayerDash(gamePanel.player2, false);
+            return;
+        }
+
+        finishDashAttack();
     }
 
     private void updateTeleport(Player target) {
@@ -299,7 +346,7 @@ public class Boss extends Entity {
         // 60 frames break between stage one and stage two
         if (transitionTimer > 60) {
             transitionTimer = 0;
-            speed = 5;
+            speed = 4;
             currentState = State.CHASE;
         }
     }
@@ -357,20 +404,80 @@ public class Boss extends Entity {
         }
     }
 
-    private void fireProjectileByAngle(double angleRadians, int speed, int damage, int radius, Color color) {
-        projectiles.add(new BossProjectile(
-                gamePanel,
-                worldX + gamePanel.tileSize / 2,
-                worldY + gamePanel.tileSize / 2,
-                angleRadians,
-                speed,
-                damage,
-                radius,
-                color,
-                mapIndex
-        ));
+    // Dash attack
+    private void beginDashAttack(Player target) {
+        double dx = target.worldX - worldX;
+        double dy = target.worldY - worldY;
+        double dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist == 0) {
+            dist = 1;
+        }
+
+        double dashSpeed = (phase == 1) ? 20 : 25;
+        dashVelocityX = dx / dist * dashSpeed;
+        dashVelocityY = dy / dist * dashSpeed;
+        dashHitPlayer1 = false;
+        dashHitPlayer2 = false;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            direction = dx > 0 ? "right" : "left";
+        } else {
+            direction = dy > 0 ? "down" : "up";
+        }
     }
 
+    private void finishDashAttack() {
+        dashVelocityX = 0;
+        dashVelocityY = 0;
+        stateTimer = 0;
+        attackCooldown = (phase == 1) ? 120 : 85;
+        currentState = State.CHASE;
+    }
+
+    private boolean hitsSolidTile(int nextWorldX, int nextWorldY) {
+        int left = nextWorldX + solidArea.x;
+        int right = nextWorldX + solidArea.x + solidArea.width - 1;
+        int top = nextWorldY + solidArea.y;
+        int bottom = nextWorldY + solidArea.y + solidArea.height - 1;
+
+        return isSolidTile(left, top) ||
+                isSolidTile(right, top) ||
+                isSolidTile(left, bottom) ||
+                isSolidTile(right, bottom);
+    }
+
+    private boolean isSolidTile(int x, int y) {
+        if (x < 0 || y < 0 ||
+                x >= gamePanel.worldCol * gamePanel.tileSize ||
+                y >= gamePanel.worldRow * gamePanel.tileSize) {
+            return true;
+        }
+
+        int col = x / gamePanel.tileSize;
+        int row = y / gamePanel.tileSize;
+        int tileNum = gamePanel.tileManager.mapTileNum[mapIndex][col][row];
+        return gamePanel.tileManager.tiles[tileNum] != null &&
+                !gamePanel.tileManager.tiles[tileNum].collision;
+    }
+
+    /**
+     * Shot single projectile.
+     * From boss position, direction is angleRadians.
+     * Then add it to arraylist.
+     * */
+    private void fireProjectileByAngle(double angleRadians, int speed, int damage, int radius, Color color) {
+        projectiles.add(new BossProjectile(
+                gamePanel, worldX + gamePanel.tileSize / 2, worldY + gamePanel.tileSize / 2,
+                angleRadians, speed, damage, radius, color, mapIndex));
+    }
+
+    /**
+     * Inspiration: The Dark Knight, a boss in Soul Knight.
+     * target: The player targeted by the attack
+     * bulletCount: Count of bullet
+     * spreadDegrees: Bullets' angle of flight
+     * angleOffsetRadius: Offset in the direction of target
+     */
     private void fireDarkKnightVolley(Player target, int bulletCount, double spreadDegrees, double angleOffsetRadians) {
         fireDarkKnightVolley(target, bulletCount, spreadDegrees, angleOffsetRadians, 6, 1, 8, Color.MAGENTA);
     }
@@ -397,18 +504,20 @@ public class Boss extends Entity {
         }
     }
 
-    private void spawnRotatingSunBurst(int bulletCount, double startAngle, double angleStep, int speed,
+    // Shot projectile like a sun
+    private void sunSpinShot(int bulletCount, double startAngle, double angleStep, int speed,
                                        int damage, int radius, Color color) {
         for (int i = 0; i < bulletCount; i++) {
             fireProjectileByAngle(startAngle + angleStep * i, speed, damage, radius, color);
         }
     }
 
+    // Shooting base on target's position (like tracking)
     private void fireTrackingBurst(Player target) {
         double baseAngle = Math.atan2(target.worldY - worldY, target.worldX - worldX);
-        fireProjectileByAngle(baseAngle, 13, 1, 6, HELL_SNIPE_COLOR);
-        fireProjectileByAngle(baseAngle - 5 * DEGREE, 12, 1, 5, HELL_SNIPE_COLOR);
-        fireProjectileByAngle(baseAngle + 5 * DEGREE, 12, 1, 5, HELL_SNIPE_COLOR);
+        fireProjectileByAngle(baseAngle, 10, 1, 6, HELL_SNIPE_COLOR);
+        fireProjectileByAngle(baseAngle - 5 * DEGREE, 9, 1, 5, HELL_SNIPE_COLOR);
+        fireProjectileByAngle(baseAngle + 5 * DEGREE, 9, 1, 5, HELL_SNIPE_COLOR);
     }
 
     private void hitPlayerMelee(Player player) {
@@ -422,6 +531,34 @@ public class Boss extends Entity {
         if (meleeHitBox.intersects(playerRect)) {
             // Melee damage is higher than ranged damage
             player.life -= 2;
+        }
+    }
+
+    private void hitPlayerDash(Player player, boolean firstPlayer) {
+        if (player == null) return;
+        if (firstPlayer && dashHitPlayer1) return;
+        if (!firstPlayer && dashHitPlayer2) return;
+
+        Rectangle bossRect = new Rectangle(
+                worldX + solidArea.x,
+                worldY + solidArea.y,
+                solidArea.width,
+                solidArea.height
+        );
+        Rectangle playerRect = new Rectangle(
+                player.worldX + player.solidArea.x,
+                player.worldY + player.solidArea.y,
+                player.solidArea.width,
+                player.solidArea.height
+        );
+
+        if (bossRect.intersects(playerRect)) {
+            player.life -= 2;
+            if (firstPlayer) {
+                dashHitPlayer1 = true;
+            } else {
+                dashHitPlayer2 = true;
+            }
         }
     }
 
@@ -454,6 +591,11 @@ public class Boss extends Entity {
             if (currentState == State.BULLET_HELL && bulletHellActive) {
                 g2.setColor(new Color(255, 220, 120, 80));
                 g2.fillOval(screenX - 18, screenY - 18, gamePanel.tileSize + 36, gamePanel.tileSize + 36);
+            }
+
+            if (currentState == State.DASH_ATTACK) {
+                g2.setColor(new Color(255, 255, 255, stateTimer <= 8 ? 120 : 70));
+                g2.fillRect(screenX - 6, screenY - 6, gamePanel.tileSize + 12, gamePanel.tileSize + 12);
             }
 
             // HpBar

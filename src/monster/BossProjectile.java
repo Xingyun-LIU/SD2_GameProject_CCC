@@ -15,11 +15,11 @@ public class BossProjectile extends Entity {
     private final Color color;
 
     public BossProjectile(GamePanel gamePanel, int startX, int startY, int targetX, int targetY) {
-        this(gamePanel, startX, startY, targetX, targetY, 6, 1, 8, Color.MAGENTA, 1);
+        this(gamePanel, startX, startY, targetX, targetY, 4, 1, 8, Color.MAGENTA, 1);
     }
 
     public BossProjectile(GamePanel gamePanel, int startX, int startY, double angleRadians) {
-        this(gamePanel, startX, startY, angleRadians, 6, 1, 8, Color.MAGENTA, 1);
+        this(gamePanel, startX, startY, angleRadians, 4, 1, 8, Color.MAGENTA, 1);
     }
 
     public BossProjectile(GamePanel gamePanel, int startX, int startY, int targetX, int targetY,
