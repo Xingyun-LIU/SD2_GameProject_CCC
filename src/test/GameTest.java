@@ -343,13 +343,43 @@ class GameTest {
     }
 
     @Test
+    void testBossChaseStopPlayerCollision() {
+        Boss boss = new VirtualBoss(gamePanel, 2);
+        boss.worldX = 200;
+        boss.worldY = 200;
+        boss.phase = 1;
+
+        gamePanel.player1.worldX = 260;
+        gamePanel.player1.worldY = 200;
+        gamePanel.player2.worldX = 900;
+        gamePanel.player2.worldY = 900;
+
+        repeatBossUpdate(boss, 90);
+
+        Rectangle bossArea = new Rectangle(
+                boss.worldX + boss.originalSolidAreaX,
+                boss.worldY + boss.originalSolidAreaY,
+                boss.solidArea.width,
+                boss.solidArea.height
+        );
+        Rectangle playerArea = new Rectangle(
+                gamePanel.player1.worldX + gamePanel.player1.originalSolidAreaX,
+                gamePanel.player1.worldY + gamePanel.player1.originalSolidAreaY,
+                gamePanel.player1.solidArea.width,
+                gamePanel.player1.solidArea.height
+        );
+
+        assertFalse(bossArea.intersects(playerArea));
+    }
+
+    @Test
     void testBossProjectileHitsPlayer() {
         gamePanel.player1.worldX = 100;
         gamePanel.player1.worldY = 100;
         int initialLife = gamePanel.player1.life;
 
         BossProjectile projectile = new BossProjectile(
-                gamePanel, 80, 110, 0, 10, 1, 8, Color.MAGENTA, 0
+                gamePanel, 80, 110, 0, 10, 1, 8, Color.MAGENTA, 0, false
         );
 
         projectile.update();
@@ -366,7 +396,7 @@ class GameTest {
         gamePanel.tileManager.mapTileNum[2][2][0] = 1;
 
         BossProjectile projectile = new BossProjectile(
-                gamePanel, 70, 32, 0, 6, 1, 8, Color.MAGENTA, 2
+                gamePanel, 70, 32, 0, 6, 1, 8, Color.MAGENTA, 2, true
         );
         int startX = projectile.worldX;
 
@@ -374,6 +404,43 @@ class GameTest {
 
         assertTrue(projectile.active);
         assertTrue(projectile.worldX < startX);
+    }
+
+    @Test
+    void testBossProjectileCollisionOnTile() {
+        gamePanel.tileManager.tiles[1] = new Tile();
+        gamePanel.tileManager.tiles[1].collision = false;
+        gamePanel.tileManager.tiles[1].image = virtualImage(gamePanel.tileSize, gamePanel.tileSize);
+        gamePanel.tileManager.mapTileNum[2][2][0] = 1;
+
+        BossProjectile projectile = new BossProjectile(
+                gamePanel, 70, 32, 0, 6, 1, 8, Color.MAGENTA, 2, false
+        );
+
+        projectile.update();
+
+        assertFalse(projectile.active);
+    }
+
+    @Test
+    void testBossProjectileDisappearsAfterFiveBounces() {
+        gamePanel.tileManager.tiles[1] = new Tile();
+        gamePanel.tileManager.tiles[1].collision = false;
+        gamePanel.tileManager.tiles[1].image = virtualImage(gamePanel.tileSize, gamePanel.tileSize);
+        gamePanel.tileManager.mapTileNum[2][1][0] = 1;
+
+        BossProjectile projectile = new BossProjectile(
+                gamePanel, 24, 32, 0, 20, 1, 8, Color.MAGENTA, 2, true
+        );
+
+        for (int i = 0; i < 5; i++) {
+            assertTrue(projectile.active);
+            projectile.update();
+        }
+
+        projectile.update();
+
+        assertFalse(projectile.active);
     }
 
     private static KeyEvent keyEvent(int keyCode) {

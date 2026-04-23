@@ -13,47 +13,12 @@ public class BossProjectile extends Entity {
     private final int damage;
     private final int radius;
     private final Color color;
-
-    public BossProjectile(GamePanel gamePanel, int startX, int startY, int targetX, int targetY) {
-        this(gamePanel, startX, startY, targetX, targetY, 4, 1, 8, Color.MAGENTA, 1);
-    }
-
-    public BossProjectile(GamePanel gamePanel, int startX, int startY, double angleRadians) {
-        this(gamePanel, startX, startY, angleRadians, 4, 1, 8, Color.MAGENTA, 1);
-    }
-
-    public BossProjectile(GamePanel gamePanel, int startX, int startY, int targetX, int targetY,
-                          int speed, int damage, int radius, Color color) {
-        this(gamePanel, startX, startY, targetX, targetY, speed, damage, radius, color, 1);
-    }
-
-    public BossProjectile(GamePanel gamePanel, int startX, int startY, int targetX, int targetY,
-                          int speed, int damage, int radius, Color color, int mapIndex) {
-        super(gamePanel);
-        this.worldX = startX;
-        this.worldY = startY;
-        this.mapIndex = mapIndex;
-        this.exactX = startX;
-        this.exactY = startY;
-        this.speed = speed;
-        this.type = 3; // projectile type
-        this.damage = damage;
-        this.radius = radius;
-        this.color = color;
-        this.solidArea = new Rectangle(16 - radius, 16 - radius, radius * 2, radius * 2);
-        this.originalSolidAreaX = solidArea.x;
-        this.originalSolidAreaY = solidArea.y;
-
-        int dx = targetX - startX;
-        int dy = targetY - startY;
-        double dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist == 0) dist = 1;
-        velocityX = dx / dist * speed;
-        velocityY = dy / dist * speed;
-    }
+    private final boolean canBounce;
+    private final int maxBounces;
+    private int bounceCount = 0;
 
     public BossProjectile(GamePanel gamePanel, int startX, int startY, double angleRadians,
-                          int speed, int damage, int radius, Color color, int mapIndex) {
+                          int speed, int damage, int radius, Color color, int mapIndex, boolean canBounce) {
         super(gamePanel);
         this.worldX = startX;
         this.worldY = startY;
@@ -65,6 +30,8 @@ public class BossProjectile extends Entity {
         this.damage = damage;
         this.radius = radius;
         this.color = color;
+        this.canBounce = canBounce;
+        this.maxBounces = canBounce ? 5 : 0;
         this.solidArea = new Rectangle(16 - radius, 16 - radius, radius * 2, radius * 2);
         this.originalSolidAreaX = solidArea.x;
         this.originalSolidAreaY = solidArea.y;
@@ -73,7 +40,10 @@ public class BossProjectile extends Entity {
     }
 
     public void update() {
-        handleTileBounce();
+        handleTileCollision();
+        if (!active) {
+            return;
+        }
 
         exactX += velocityX;
         exactY += velocityY;
@@ -91,21 +61,43 @@ public class BossProjectile extends Entity {
         }
     }
 
-    // Control bounce: If a collision occurs at a corner, x and y are reversed together
-    private void handleTileBounce() {
-        boolean bounceX = hitsBounceTile(exactX + velocityX, exactY);
-        boolean bounceY = hitsBounceTile(exactX, exactY + velocityY);
+    // Bounceable projectiles reflect up to maxBounces times; the others disappear on impact.
+    private void handleTileCollision() {
+        boolean hitsX = hitsBounceTile(exactX + velocityX, exactY);
+        boolean hitsY = hitsBounceTile(exactX, exactY + velocityY);
+        boolean hitsCorner = !hitsX && !hitsY && hitsBounceTile(exactX + velocityX, exactY + velocityY);
 
-        if (bounceX) {
+        if (!hitsX && !hitsY && !hitsCorner) {
+            return;
+        }
+
+        if (!canBounce) {
+            active = false;
+            return;
+        }
+
+        registerBounce();
+        if (!active) {
+            return;
+        }
+
+        if (hitsX) {
             velocityX = -velocityX;
         }
-        if (bounceY) {
+        if (hitsY) {
             velocityY = -velocityY;
         }
 
-        if (!bounceX && !bounceY && hitsBounceTile(exactX + velocityX, exactY + velocityY)) {
+        if (!hitsX && !hitsY && hitsCorner) {
             velocityX = -velocityX;
             velocityY = -velocityY;
+        }
+    }
+
+    private void registerBounce() {
+        bounceCount++;
+        if (bounceCount > maxBounces) {
+            active = false;
         }
     }
 

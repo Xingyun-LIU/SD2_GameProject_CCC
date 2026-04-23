@@ -56,7 +56,7 @@ public class Boss extends Entity {
         this.type = 2; // monster
         this.maxLife = 20;
         this.life = maxLife;
-        this.speed = 3;
+        this.speed = 2;
 
         solidArea = new Rectangle(10, 10, 44, 44);
         originalSolidAreaX = solidArea.x;
@@ -64,6 +64,19 @@ public class Boss extends Entity {
         attackArea = new Rectangle(0, 0, 64, 64);
 
         direction = "down";
+
+        getImage();
+    }
+
+    public void getImage() {
+        up1 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        up2 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        down1 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        down2 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        left1 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        left2 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        right1 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
+        right2 = setup("/monsters/egg.png", gamePanel.tileSize, gamePanel.tileSize);
     }
 
     public void setAction() {
@@ -142,7 +155,7 @@ public class Boss extends Entity {
         int dist = getDistance(target);
 
         // Speed up in stage two
-        speed = (phase == 1) ? 2 : 4;
+        speed = (phase == 1) ? 2 : 3;
 
         // Melee attack in melee range
         if (dist < MELEE_RANGE && attackCooldown == 0) {
@@ -223,7 +236,7 @@ public class Boss extends Entity {
         if (stateTimer > 30) {
             meleeActive = false;
             stateTimer = 0;
-            attackCooldown = (phase == 1) ? 90 : 60;
+            attackCooldown = (phase == 1) ? 120 : 90;
             currentState = State.CHASE;
         }
     }
@@ -292,7 +305,7 @@ public class Boss extends Entity {
         if (stateTimer > 108) {
             bulletHellActive = false;
             stateTimer = 0;
-            attackCooldown = 150;
+            attackCooldown = 200;
             currentState = State.CHASE;
         }
     }
@@ -346,7 +359,7 @@ public class Boss extends Entity {
         // 60 frames break between stage one and stage two
         if (transitionTimer > 60) {
             transitionTimer = 0;
-            speed = 4;
+            speed = 3;
             currentState = State.CHASE;
         }
     }
@@ -385,6 +398,11 @@ public class Boss extends Entity {
         } else {
             direction = dy > 0 ? "down" : "up";
         }
+
+        collisionOn = false;
+        gamePanel.collisionChecker.checkTile(this, mapIndex);
+        gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
+        gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
 
         if (!collisionOn) {
             switch (direction) {
@@ -464,11 +482,12 @@ public class Boss extends Entity {
      * Shot single projectile.
      * From boss position, direction is angleRadians.
      * Then add it to arraylist.
-     * */
-    private void fireProjectileByAngle(double angleRadians, int speed, int damage, int radius, Color color) {
+     */
+    private void fireProjectileByAngle(double angleRadians, int speed, int damage, int radius, Color color,
+                                       boolean canBounce) {
         projectiles.add(new BossProjectile(
                 gamePanel, worldX + gamePanel.tileSize / 2, worldY + gamePanel.tileSize / 2,
-                angleRadians, speed, damage, radius, color, mapIndex));
+                angleRadians, speed, damage, radius, color, mapIndex, canBounce));
     }
 
     /**
@@ -492,7 +511,7 @@ public class Boss extends Entity {
         ) + angleOffsetRadians;
 
         if (bulletCount == 1) {
-            fireProjectileByAngle(baseAngle, speed, damage, radius, color);
+            fireProjectileByAngle(baseAngle, speed, damage, radius, color, false);
             return;
         }
 
@@ -500,24 +519,24 @@ public class Boss extends Entity {
         double angleStep = (spreadDegrees * DEGREE) / (bulletCount - 1);
 
         for (int i = 0; i < bulletCount; i++) {
-            fireProjectileByAngle(startAngle + angleStep * i, speed, damage, radius, color);
+            fireProjectileByAngle(startAngle + angleStep * i, speed, damage, radius, color, false);
         }
     }
 
     // Shot projectile like a sun
     private void sunSpinShot(int bulletCount, double startAngle, double angleStep, int speed,
-                                       int damage, int radius, Color color) {
+                             int damage, int radius, Color color) {
         for (int i = 0; i < bulletCount; i++) {
-            fireProjectileByAngle(startAngle + angleStep * i, speed, damage, radius, color);
+            fireProjectileByAngle(startAngle + angleStep * i, speed, damage, radius, color, false);
         }
     }
 
     // Shooting base on target's position (like tracking)
     private void fireTrackingBurst(Player target) {
         double baseAngle = Math.atan2(target.worldY - worldY, target.worldX - worldX);
-        fireProjectileByAngle(baseAngle, 10, 1, 6, HELL_SNIPE_COLOR);
-        fireProjectileByAngle(baseAngle - 5 * DEGREE, 9, 1, 5, HELL_SNIPE_COLOR);
-        fireProjectileByAngle(baseAngle + 5 * DEGREE, 9, 1, 5, HELL_SNIPE_COLOR);
+        fireProjectileByAngle(baseAngle, 10, 1, 6, HELL_SNIPE_COLOR, true);
+        fireProjectileByAngle(baseAngle - 5 * DEGREE, 9, 1, 5, HELL_SNIPE_COLOR, true);
+        fireProjectileByAngle(baseAngle + 5 * DEGREE, 9, 1, 5, HELL_SNIPE_COLOR, true);
     }
 
     private void hitPlayerMelee(Player player) {
@@ -565,6 +584,7 @@ public class Boss extends Entity {
     public void draw(Graphics2D g2, Main.Camera cam, int viewWidth) {
         int screenX = worldX - cam.x;
         int screenY = worldY - cam.y;
+        Image image;
 
         boolean bossVisible = !(worldX + gamePanel.tileSize <= cam.x ||
                 worldX - gamePanel.tileSize >= cam.x + viewWidth ||
@@ -572,20 +592,33 @@ public class Boss extends Entity {
                 worldY - gamePanel.tileSize >= cam.y + gamePanel.screenHeight);
 
         if (bossVisible) {
-            // phase one: red phase two: purple
-            g2.setColor(phase == 1 ? Color.RED : new Color(120, 0, 180));
+            switch (direction) {
+                case "up":
+                    image = up1;
+                    break;
+                case "left":
+                    image = left1;
+                    break;
+                case "right":
+                    image = right1;
+                    break;
+                case "down":
+                default:
+                    image = down1;
+                    break;
+            }
+
+            Composite originalComposite = g2.getComposite();
+            if (currentState == State.TELEPORT && stateTimer < 20) {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.45f));
+            }
+            g2.drawImage(image, screenX, screenY, null);
+            g2.setComposite(originalComposite);
 
             // Flashing during the second-stage transition
             if (currentState == State.PHASE_TRANSITION && transitionTimer % 10 < 5) {
-                g2.setColor(Color.WHITE);
-            }
-
-            g2.fillRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
-
-            // Transparent during teleportation
-            if (currentState == State.TELEPORT && stateTimer < 20) {
-                g2.setColor(new Color(150, 0, 255, 100));
-                g2.fillRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
+                g2.setColor(new Color(255, 255, 255, 120));
+                g2.fillOval(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
             }
 
             if (currentState == State.BULLET_HELL && bulletHellActive) {
