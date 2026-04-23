@@ -244,6 +244,68 @@ class GameTest {
         assertEquals(48, e.solidArea.width);
         assertEquals(48, e.solidArea.height);
     }
+    @Test
+    void testDamageMonster() {
+        gamePanel.buildVirtualGame();
+
+        int map = gamePanel.currentMap;
+        int index = 0;
+        VirtualMonster monster = (VirtualMonster) gamePanel.monsters[map][index];
+
+        int originalLife = monster.life;
+
+        gamePanel.player1.damageMonster(index);
+
+        assertEquals(originalLife - 1, monster.life);
+        assertTrue(monster.invincible);
+    }
+
+    @Test
+    void testDamageMonsterDead() {
+        gamePanel.buildVirtualGame();
+
+        int map = gamePanel.currentMap;
+        int index = 0;
+        VirtualMonster monster = (VirtualMonster) gamePanel.monsters[map][index];
+
+        monster.life = 1;
+        gamePanel.player1.damageMonster(index);
+
+        assertEquals(0, monster.life);
+        assertTrue(monster.dying);
+        assertTrue(monster.invincible);
+    }
+
+    @Test
+    void testPickUpObjectBrick() {
+        gamePanel.buildVirtualGame();
+
+        int map = gamePanel.currentMap;
+        int index = 0;
+
+        if (gamePanel.objects[map][index] != null) {
+            gamePanel.objects[map][index].name = "Brick";
+        }
+
+        boolean hadBrickBefore = ((VirtualPlayer) gamePanel.player1).hasBrick;
+
+        gamePanel.player1.pickUpObject(index);
+
+        assertTrue(((VirtualPlayer) gamePanel.player1).hasBrick);
+        assertNull(gamePanel.objects[map][index]);
+    }
+
+    @Test
+    void testContactMonster() {
+        gamePanel.buildVirtualGame();
+
+        VirtualPlayer player = (VirtualPlayer) gamePanel.player1;
+        int originalLife = player.life;
+
+        player.contactMonster(0);
+
+        assertEquals(originalLife - 1, player.life);
+    }
 
     @Test
     void testBossRangedAttack() {
