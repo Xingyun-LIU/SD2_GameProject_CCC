@@ -3,6 +3,8 @@ package Main;
 import Entity.Entity;
 import gamepanel.GamePanel;
 
+import java.awt.Rectangle;
+
 /**
  * This class is used of check different collision, for example,player to tile,
  * player to monster, player to npc, player to object, monster to player...
@@ -99,9 +101,24 @@ public class CollisionChecker {
                 break;
         }
 
-        // intersects() check if two rectangle crush
+        Rectangle currentEntityArea = new Rectangle(
+                entity.worldX + entity.originalSolidAreaX,
+                entity.worldY + entity.originalSolidAreaY,
+                entity.solidArea.width,
+                entity.solidArea.height
+        );
+        Rectangle currentTargetArea = new Rectangle(
+                target.worldX + target.originalSolidAreaX,
+                target.worldY + target.originalSolidAreaY,
+                target.solidArea.width,
+                target.solidArea.height
+        );
+
+        // If entities are already overlapping, allow movement that reduces overlap
         if (entity.solidArea.intersects(target.solidArea)) {
-            entity.collisionOn = true;
+            if (checkIfCanMove(currentEntityArea, entity.solidArea, currentTargetArea)) {
+                entity.collisionOn = true;
+            }
             collisionPlayer = true;
         }
 
@@ -203,9 +220,24 @@ public class CollisionChecker {
 
                 if (entity.solidArea.intersects(target[currentMap][i].solidArea)) {
 
-                    // if entity not equals to itself, set true
+                    // If entity not equals to itself, set true
                     if (target[currentMap][i] != entity) {
-                        entity.collisionOn = true;
+                        Rectangle currentEntityArea = new Rectangle(
+                                entity.worldX + entity.originalSolidAreaX,
+                                entity.worldY + entity.originalSolidAreaY,
+                                entity.solidArea.width,
+                                entity.solidArea.height
+                        );
+                        Rectangle currentTargetArea = new Rectangle(
+                                target[currentMap][i].worldX + target[currentMap][i].originalSolidAreaX,
+                                target[currentMap][i].worldY + target[currentMap][i].originalSolidAreaY,
+                                target[currentMap][i].solidArea.width,
+                                target[currentMap][i].solidArea.height
+                        );
+
+                        if (checkIfCanMove(currentEntityArea, entity.solidArea, currentTargetArea)) {
+                            entity.collisionOn = true;
+                        }
                         index = i;
                     }
                 }
@@ -218,5 +250,24 @@ public class CollisionChecker {
 
         }
         return index;
+    }
+
+    // While collision on, check whether the player is moving away from or towards the boss by
+    // check overlapping area is bigger or smaller.
+    private boolean checkIfCanMove(Rectangle currentEntityArea, Rectangle nextEntityArea, Rectangle targetArea) {
+        if (!currentEntityArea.intersects(targetArea)) {
+            return true;
+        }
+        return getOverlapArea(nextEntityArea, targetArea) >= getOverlapArea(currentEntityArea, targetArea);
+    }
+
+    // Calculate the overlapping area of solidArea
+    private int getOverlapArea(Rectangle a, Rectangle b) {
+        int overlapWidth = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x);
+        int overlapHeight = Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y);
+        if (overlapWidth <= 0 || overlapHeight <= 0) {
+            return 0;
+        }
+        return overlapWidth * overlapHeight;
     }
 }
