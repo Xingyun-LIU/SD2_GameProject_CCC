@@ -56,8 +56,11 @@ public class TileManager {
         setUpTile(14, true, "/tiles/classroom/floor.png");
 
         setUpTile(15, true, "/tiles/lab/labfloor.png");
+
         setUpTile(16,true,"/Map2/muddyRoad.png");
         setUpTile(17,true,"/Map2/marsh.png");
+        setUpTile(18,true,"/Map2/water.png");
+        setUpTile(19,true,"/Map2/grass.png");
 
     }
 
