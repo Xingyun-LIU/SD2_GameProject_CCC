@@ -11,7 +11,7 @@ public class Egg extends Entity {
     public Egg(GamePanel gp) {
         super(gp);
 
-        name = "Green Slime";
+        name = "Egg";
         type = 2;
         speed = 1;
         maxLife = 4;
@@ -59,8 +59,4 @@ public class Egg extends Entity {
         }
     }
 
-    public void test() {
-        System.out.println("Egg" + life);
-        System.out.println("Egg" + worldX + ", " + worldY);
-    }
 }
