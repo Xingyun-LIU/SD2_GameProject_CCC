@@ -2,6 +2,7 @@ package Main;
 
 import gamepanel.GamePanel;
 import monster.Bird1;
+import monster.Boss;
 import monster.Egg;
 import npc.Bro;
 import npc.Gan;
@@ -55,5 +56,8 @@ public class Setter {
         gamePanel.monsters[0][2].worldX = 42 * gamePanel.tileSize;
         gamePanel.monsters[0][2].worldY = 45 * gamePanel.tileSize;
 
+        gamePanel.monsters[2][0] = new Boss(gamePanel,2);
+        gamePanel.monsters[2][0].worldX = 32 * gamePanel.tileSize;
+        gamePanel.monsters[2][0].worldY = 32 * gamePanel.tileSize;
     }
 }
