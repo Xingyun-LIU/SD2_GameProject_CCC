@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public GamePanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
-        key = new KeyHandler(this, gameFrame);
+        key = new KeyHandler(this, gameFrame, false, false);
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
