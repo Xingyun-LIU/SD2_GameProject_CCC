@@ -49,13 +49,14 @@ public class UI {
         graphics2D.setFont(monospaced);
         graphics2D.setColor(Color.black);
 
-        //pausing state
+        // Pausing State
         if (gamePanel.gameState == gamePanel.pausing) {
             drawPauseState();
         }
 
-        if (gamePanel.gameState == gamePanel.dialogState){
-            drawDialog();
+        // Dialog State
+        if (gamePanel.gameState == gamePanel.dialogState && gamePanel.activeGan != null) {
+            drawDialog(gamePanel.activeGan, gamePanel.dialogPlayer);
         }
     }
 
