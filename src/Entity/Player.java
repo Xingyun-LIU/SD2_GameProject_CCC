@@ -167,7 +167,7 @@ public class Player extends Entity {
             // Check monster collision
             int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters, currentMap);
             damageMonster(monsterIndex);
-            int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+            int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc,currentMap);
             if (npcIndex != 999 && gamePanel.npc[currentMap][npcIndex] instanceof Gan) {
                 Gan gan = (Gan) gamePanel.npc[currentMap][npcIndex];
                 gan.takeDamage();
@@ -386,21 +386,6 @@ public class Player extends Entity {
             }
         }
 
-        // Player1
-        if (this == gamePanel.player1) {
-            if (key.p1NextItemPressed) {
-                nextItem();
-                key.p1NextItemPressed = false;
-            }
-        }
-
-        // Player2
-        if (this == gamePanel.player2) {
-            if (key.p2NextItemPressed) {
-                nextItem();
-                key.p2NextItemPressed = false;
-            }
-        }
 
     }
 
