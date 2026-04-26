@@ -143,10 +143,19 @@ public class UI {
     // HUD for 2 players
     public void drawPlayerHUD(Object player, boolean isLeft) {
 
-        int x = gamePanel.tileSize / 2;
+        int x ;
         int y = gamePanel.tileSize;
 
         Player p = (Player) player;
+
+
+        if (isLeft) {
+            // left half screen (from left edge to center)
+            x = gamePanel.tileSize / 2;
+        } else {
+            // right half screen (from center to right edge)
+            x = gamePanel.screenWidth / 2 + gamePanel.tileSize / 2;
+        }
 
         for (int i = 0; i < p.maxLife; i++) {
             graphics2D.setColor(i < p.life ? Color.RED : Color.GRAY);

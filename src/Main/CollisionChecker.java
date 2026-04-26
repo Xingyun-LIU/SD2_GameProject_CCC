@@ -104,7 +104,6 @@ public class CollisionChecker {
             entity.collisionOn = true;
             collisionPlayer = true;
         }
-
         // Set back to default value
         entity.solidArea.x = entity.originalSolidAreaX;
         entity.solidArea.y = entity.originalSolidAreaY;
