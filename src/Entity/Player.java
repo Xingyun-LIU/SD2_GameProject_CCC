@@ -59,7 +59,7 @@ public class Player extends Entity {
 
         //Player States
         speed = 4;
-        maxLife = 6;
+        maxLife = 10;
         life = maxLife;
 
     }
@@ -139,7 +139,6 @@ public class Player extends Entity {
             spriteNum = 2;
 
             // When all attack happened, reset the solidArea and check collision.
-
             // Save the current position.
             int currentWorldX = worldX;
             int currentWorldY = worldY;
@@ -315,13 +314,6 @@ public class Player extends Entity {
                 gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
             }
         }
-
-//        // Check for collisions between players
-//        if (p1) {
-//            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
-//        } else {
-//            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
-//        }
 
         // Temporarily sync gamePanel.currentMap so old checkObject logic uses the right map
         int previousMap = gamePanel.currentMap;
