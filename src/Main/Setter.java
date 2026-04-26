@@ -1,8 +1,10 @@
 package Main;
 
 import gamepanel.GamePanel;
+import monster.Bird1;
 import monster.Egg;
 import npc.Bro;
+import npc.Gan;
 import object.Brick;
 
 /**This class is used to load the objects, npc, and monsters into the game after the map loading.
@@ -32,6 +34,10 @@ public class Setter {
         gamePanel.npc[0][0] = new Bro(gamePanel);
         gamePanel.npc[0][0].worldX = 35 * gamePanel.tileSize;
         gamePanel.npc[0][0].worldY = 40 * gamePanel.tileSize;
+
+        gamePanel.npc[0][1] = new Gan(gamePanel);
+        gamePanel.npc[0][1].worldX = 33 * gamePanel.tileSize;
+        gamePanel.npc[0][1].worldY = 40 * gamePanel.tileSize;
     }
 
     // Set monsters initial position: monster[monsterNumber][index]
@@ -40,5 +46,14 @@ public class Setter {
         gamePanel.monsters[0][0] = new Egg(gamePanel);
         gamePanel.monsters[0][0].worldX = 35 * gamePanel.tileSize;
         gamePanel.monsters[0][0].worldY = 48 * gamePanel.tileSize;
+
+        gamePanel.monsters[0][1] = new Bird1(gamePanel);
+        gamePanel.monsters[0][1].worldX = 40 * gamePanel.tileSize;
+        gamePanel.monsters[0][1].worldY = 45 * gamePanel.tileSize;
+
+        gamePanel.monsters[0][2] = new Bird1(gamePanel);
+        gamePanel.monsters[0][2].worldX = 42 * gamePanel.tileSize;
+        gamePanel.monsters[0][2].worldY = 45 * gamePanel.tileSize;
+
     }
 }
