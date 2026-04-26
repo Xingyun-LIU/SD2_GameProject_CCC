@@ -8,6 +8,7 @@ import Entity.Entity;
 import Entity.Player;
 import inventory.Item;
 import inventory.Inventory;
+import npc.Gan;
 
 public class UI {
 
@@ -52,6 +53,40 @@ public class UI {
         if (gamePanel.gameState == gamePanel.pausing) {
             drawPauseState();
         }
+        if (gamePanel.gameState == gamePanel.dialogState && gamePanel.activeGan != null) {
+            drawDialog(gamePanel.activeGan, gamePanel.dialogPlayer);
+        }
+    }
+
+    public void drawDialog(Gan gan, Player player) {
+        int boxW = 700, boxH = 300;
+        int boxX = gamePanel.screenWidth / 2 - boxW / 2;
+        int boxY = gamePanel.screenHeight / 2 - boxH / 2;
+
+        graphics2D.setColor(new Color(0, 0, 0, 210));
+        graphics2D.fillRoundRect(boxX, boxY, boxW, boxH, 20, 20);
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setStroke(new BasicStroke(2));
+        graphics2D.drawRoundRect(boxX, boxY, boxW, boxH, 20, 20);
+
+        graphics2D.setFont(monospaced.deriveFont(Font.BOLD, 22f));
+        graphics2D.setColor(Color.YELLOW);
+        graphics2D.drawString(gan.question, boxX + 30, boxY + 50);
+
+        graphics2D.setFont(monospaced.deriveFont(Font.PLAIN, 20f));
+        int optionY = boxY + 100;
+        for (int i = 0; i < gan.options.length; i++) {
+            graphics2D.setColor(i == gan.selectedOption ? Color.GREEN : Color.WHITE);
+            graphics2D.drawString((i == gan.selectedOption ? "> " : "  ") + gan.options[i], boxX + 40, optionY);
+            optionY += 35;
+        }
+
+        graphics2D.setFont(monospaced.deriveFont(Font.ITALIC, 16f));
+        graphics2D.setColor(Color.LIGHT_GRAY);
+        String hint = (player == gamePanel.player1)
+                ? "W/S to select   F to confirm"
+                : "UP/DOWN to select   Numpad0 to confirm";
+        graphics2D.drawString(hint, boxX + 30, boxY + boxH - 20);
     }
 
     public void drawPauseState() {

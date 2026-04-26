@@ -4,6 +4,7 @@ import Entity.Entity;
 import Entity.Player;
 import Main.*;
 import animation.OpeningAnimationPanel;
+import npc.Gan;
 import tile.Map;
 import tile.TileManager;
 
@@ -40,6 +41,9 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playing = 1;
     public final int pausing = 2;
     public final int mapState = 3;
+    public final int dialogState = 4;
+    public Gan activeGan = null;
+    public Player dialogPlayer = null;
 
     // Player
     public Player player1;

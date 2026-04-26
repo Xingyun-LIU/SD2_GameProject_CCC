@@ -60,7 +60,7 @@ public class TileManager {
         setUpTile(16,true,"/Map2/muddyRoad.png");
         setUpTile(17,true,"/Map2/marsh.png");
         setUpTile(18,true,"/Map2/water.png");
-        setUpTile(19,true,"/Map2/grass.png");
+        setUpTile(19,false,"/Map2/grass.png");
 
     }
 

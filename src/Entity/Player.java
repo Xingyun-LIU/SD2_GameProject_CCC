@@ -3,6 +3,7 @@ package Entity;
 import Main.Camera;
 import Main.KeyHandler;
 import gamepanel.GamePanel;
+import npc.Gan;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -12,7 +13,7 @@ public class Player extends Entity {
     public boolean p1;
 
     // State
-    boolean invincible = false;
+    public boolean invincible = false;
     public boolean hasBrick = false;
 
     // EventChecker
@@ -165,6 +166,12 @@ public class Player extends Entity {
             // Check monster collision
             int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
             damageMonster(monsterIndex);
+            int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+            if (npcIndex != 999 && gamePanel.npc[currentMap][npcIndex] instanceof Gan) {
+                Gan gan = (Gan) gamePanel.npc[currentMap][npcIndex];
+                gan.takeDamage();
+                if (!gan.alive) gamePanel.npc[currentMap][npcIndex] = null;
+            }
 
             // Reset to the original data.
             worldX = currentWorldX;
@@ -207,7 +214,19 @@ public class Player extends Entity {
     }
 
     public void interactNPC(int i) {
-
+        if (i != 999) {
+            Entity target = gamePanel.npc[currentMap][i];
+            if (target instanceof Gan) {
+                Gan gan = (Gan) target;
+                boolean interactPressed = p1 ? gamePanel.key.f : gamePanel.key.numpad0;
+                if (interactPressed && gan.isPlayerInFront(this)) {
+                    gamePanel.activeGan = gan;
+                    gamePanel.dialogPlayer = this;
+                    gamePanel.gameState = gamePanel.dialogState;
+                    gan.startTalking();
+                }
+            }
+        }
     }
 
     public void contactMonster(int i) {
