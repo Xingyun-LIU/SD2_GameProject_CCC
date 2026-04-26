@@ -8,6 +8,7 @@ import Main.EventChecker;
 import gamepanel.GamePanel;
 import monster.Boss;
 import monster.BossProjectile;
+import npc.Gan;
 import org.junit.jupiter.api.*;
 import tile.Tile;
 
@@ -305,6 +306,26 @@ class GameTest {
         player.contactMonster(0);
 
         assertEquals(originalLife - 1, player.life);
+    }
+    @Test
+    void testGanWrongAnswer_playerLosesLife() {
+        VirtualGan gan = new VirtualGan(gamePanel);
+        gamePanel.npc[0][1] = gan;
+        int originalLife = gamePanel.player1.life;
+        gan.startTalking();
+        gan.selectedOption = (gan.correctAnswer + 1) % gan.options.length;
+        gan.confirm(gamePanel.player1);
+        assertEquals(originalLife - 1, gamePanel.player1.life);
+    }
+
+    @Test
+    void testGanTakeDamage_ganDies() {
+        VirtualGan gan = new VirtualGan(gamePanel);
+        gan.takeDamage();
+        gan.invincible = false;
+        gan.takeDamage();
+        assertFalse(gan.alive);
+        assertTrue(gan.dying);
     }
 
     @Test
@@ -608,6 +629,18 @@ class GameTest {
             type = 2;
             maxLife = 3;
             life = 3;
+        }
+    }
+    static class VirtualGan extends Gan {
+        VirtualGan(GamePanel gp) {
+            super(gp);
+        }
+
+        @Override
+        public void getImage() {
+            BufferedImage img = new BufferedImage(gamePanel.tileSize, gamePanel.tileSize, BufferedImage.TYPE_INT_ARGB);
+            up1 = down1 = left1 = right1 = img;
+            up2 = down2 = left2 = right2 = img;
         }
     }
 
