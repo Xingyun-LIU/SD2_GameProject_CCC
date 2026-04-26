@@ -20,7 +20,7 @@ public class Entity {
 
     public int worldX;
     public int worldY;
-
+    public inventory.Item item;// The item that the entity can pick up, null if no item.
     // State
     public String name;
     public int type; // player = 0, npc = 1, monster = 2
@@ -34,7 +34,7 @@ public class Entity {
     public boolean hpBarOn = false;
 
     // Counter
-    int invincibleCounter = 0;
+    public int invincibleCounter = 0;
     public int spriteCounter = 0;
     public int actionCounter = 0;
     public int hpBarCounter = 0;
@@ -77,10 +77,10 @@ public class Entity {
         setAction();
 
         collisionOn = false;
-        gamePanel.collisionChecker.checkTile(this);
+        gamePanel.collisionChecker.checkTile(this, gamePanel.currentMap);
         gamePanel.collisionChecker.checkObject(this, false);
-        gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
-        gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.npc, gamePanel.currentMap);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters, gamePanel.currentMap);
 
         // The npc or monster collision with player
         boolean collisionPlayer1 = gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
@@ -180,9 +180,6 @@ public class Entity {
     }
 
     // This class represents an item that can be picked up by the player.
-    public class Item {
-        public Image image;
-    }
     public Item[] inventory = new Item[5];
     public int selectedItem = 0;
 
@@ -204,29 +201,64 @@ public class Entity {
 
     }
 
-    public void pickUpItem(Item item) {
+    public void pickUpItem(Entity itemEntity) {
+         Item item = itemEntity.item;
 
-        //first check if there is empty slot in inventory
-        for (int i = 0; i < inventory.length; i++) {
-            if (inventory[i] == null) {
-                inventory[i] = item;
-                return;
+            //first check if there is empty slot in inventory
+
+            for (int i = 0; i < inventory.length; i++) {
+                if (inventory[i] == null) {
+                    inventory[i] = item;
+                    itemEntity.alive = false;
+                    // Mark the item as picked up
+
+                    return;
+                }
             }
-        }
+
 
         // If inventory is full, drop the currently selected item
         dropItem(selectedItem);
 
         // Add the new item to the now-empty slot
         inventory[selectedItem] = item;
+        itemEntity.alive = false;
     }
 
     public void dropItem(int index) {
 
         if (inventory[index] == null) return;
 
-        Item dropped = inventory[index];
+        Item itemToDrop = inventory[index];
         inventory[index] = null;
+
+        //create a new item entity in the world at the player's position
+        int dropX = this.worldX;
+        int dropY = this.worldY;
+
+        // adjust drop position based on player's direction to avoid dropping on top of the player
+        switch(direction) {
+            case "up":    dropY -= gamePanel.tileSize; break;
+            case "down":  dropY += gamePanel.tileSize; break;
+            case "left":  dropX -= gamePanel.tileSize; break;
+            case "right": dropX += gamePanel.tileSize; break;
+        }
+        //replace with actual method to add item entity to the world
+        spawnDroppedItem(itemToDrop, dropX, dropY);
+    }
+
+    private void spawnDroppedItem(Item item, int x, int y) {
+        OBJ_Brick droppedBrick = new OBJ_Brick(gamePanel);
+        droppedBrick.worldX = x;
+        droppedBrick.worldY = y;
+
+        // Add the dropped item to the game world (e.g., add to an array of objects)
+        for(int i = 0; i < gamePanel.objects[gamePanel.currentMap].length; i++) {
+            if(gamePanel.objects[gamePanel.currentMap][i] == null) {
+                gamePanel.objects[gamePanel.currentMap][i] = droppedBrick;
+                break;
+            }
+        }
     }
 
 }

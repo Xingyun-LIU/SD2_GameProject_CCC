@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- *This class is used to generate the whole map.
+ * This class is used to generate the whole map.
  * 1. Maintain an array of Tile, store all types of tiles in it, and set their index
  * 2. Read the map.txt file and put the index into a two-dimensional array
  * 3.According to the player's screenX and screenY calculate where each tile should be drawn
@@ -32,6 +32,7 @@ public class TileManager {
         getTileImage();
         loadMap("/maps/world0.txt", 0);
         loadMap("/maps/world1.txt", 1);
+        loadMap("/maps/bossWorld.txt", 2);
     }
 
     //Put tiles into array
@@ -111,7 +112,9 @@ public class TileManager {
         }
     }
 
-    /** Split draw tiles in viewWidth by camera, tiles will not be drawn out of camera*/
+    /**
+     * Split draw tiles in viewWidth by camera, tiles will not be drawn out of camera
+     */
     public void draw(Graphics2D g2, Camera cam, int viewWidth, int currentMap) {
 
         int worldCol = 0;

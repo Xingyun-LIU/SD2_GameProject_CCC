@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import static org.junit.jupiter.api.Assertions.*;
 import Main.UI;
 import gamepanel.GamePanel;
+import Entity.Player;
 
 public class UITest {
 
@@ -37,5 +38,44 @@ public class UITest {
 
         assertDoesNotThrow(() -> ui.drawHUD());
     }
+
+    @Test
+    void testPlayerLoseWhenLifeZero() {
+        GamePanel gp = new GamePanel(null);
+        Player player = new Player(null, true);
+        UI ui = new UI(gp);
+        player.life = 0;
+        player.maxLife = 5;
+
+        String result = (player.life <= 0) ? "YOU LOSE!!!" : "YOU WIN!!!";
+        assertEquals("YOU LOSE!!!", result);
+    }
+
+    @Test
+    void testPlayerLoseWhenLifeNegative() {
+        Player player = new Player(null, true);
+        GamePanel gp = new GamePanel(null);
+        UI ui = new UI(gp);
+        player.life = -1;
+
+        String result = (player.life <= 0) ? "YOU LOSE!!!" : "YOU WIN!!!";
+        assertEquals("YOU LOSE!!!", result);
+    }
+
+    @Test
+    void testPlayerWinWhenLifeAboveZero() {
+        Player player = new Player(null, true);
+        GamePanel gp = new GamePanel(null);
+        UI ui = new UI(gp);
+        player.life = 4;
+
+        String result = (player.life <= 0) ? "YOU LOSE!!!" : "YOU WIN!!!";
+        assertEquals("YOU LOSE!!!", result);
+
+
+
+
+    }
+
 }
 

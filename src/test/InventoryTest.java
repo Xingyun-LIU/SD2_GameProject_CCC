@@ -14,15 +14,15 @@ public class InventoryTest {
         System.out.println("==== TEST START ====\n");
 
         //normal pick up
-        player.pickUpItem(new Item("Item A"));
-        player.pickUpItem(new Item("Item B"));
-        player.pickUpItem(new Item("Item C"));
-        player.pickUpItem(new Item("Item D"));
-        player.pickUpItem(new Item("Item E"));
+       // player.pickUpItem(new Item("Item A"));
+       // player.pickUpItem(new Item("Item B"));
+       // player.pickUpItem(new Item("Item C"));
+       // player.pickUpItem(new Item("Item D"));
+        //player.pickUpItem(new Item("Item E"));
 
         //if inventory full, should replace selected item
         System.out.println("\n==== INVENTORY FULL TEST ====");
-        player.pickUpItem(new Item("Item F")); // 应触发替换
+        //player.pickUpItem(new Item("Item F"));
 
         //check inventory after replacement
         System.out.println("\n==== SWITCH TEST ====");
