@@ -55,18 +55,19 @@ public class Bird1 extends Entity {
         }
     }
 
-
     private Player getNearestPlayer() {
         Player p1 = gamePanel.player1;
         Player p2 = gamePanel.player2;
 
-        if (p1 == null) return p2;
-        if (p2 == null) return p1;
+        // Only think about the player that on the same map.
+        boolean p1Valid = (p1 != null && p1.currentMap == this.currentMap);
+        boolean p2Valid = (p2 != null && p2.currentMap == this.currentMap);
 
-        double dist1 = distance(p1);
-        double dist2 = distance(p2);
+        if (!p1Valid && !p2Valid) return null; // 没有玩家在同一地图
+        if (!p1Valid) return p2;
+        if (!p2Valid) return p1;
 
-        return (dist1 <= dist2) ? p1 : p2;
+        return (distance(p1) <= distance(p2)) ? p1 : p2;
     }
 
     private double distance(Player p) {
