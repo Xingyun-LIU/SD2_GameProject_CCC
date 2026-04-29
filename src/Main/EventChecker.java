@@ -57,6 +57,10 @@ public class EventChecker {
                 teleport(player, 0, 37, 43);
             } else if (touch(player, 0, 37, 44, "any")) {
                 teleport(player, 2, 32, 59);
+            } else if (touch(player, 0, 42, 56, "any")) {
+                teleport(player, 1, 30, 3);
+            } else if (touch(player, 1, 28, 61, "any")) {
+                teleport(player, 2, 32, 5);
             }
         }
 
