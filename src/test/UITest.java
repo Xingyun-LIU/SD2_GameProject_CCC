@@ -71,6 +71,10 @@ public class UITest {
 
         String result = (player.life <= 0) ? "YOU LOSE!!!" : "YOU WIN!!!";
         assertEquals("YOU LOSE!!!", result);
+
+
+
+
     }
 
 }

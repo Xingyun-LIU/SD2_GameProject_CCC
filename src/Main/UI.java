@@ -8,6 +8,7 @@ import Entity.Entity;
 import Entity.Player;
 import inventory.Item;
 import inventory.Inventory;
+import npc.Gan;
 
 public class UI {
 
@@ -48,18 +49,46 @@ public class UI {
         graphics2D.setFont(monospaced);
         graphics2D.setColor(Color.black);
 
-        //pausing state
+        // Pausing State
         if (gamePanel.gameState == gamePanel.pausing) {
             drawPauseState();
         }
 
-        //draw HUD for playing and game over state
-        drawHUD();
-
-        //if game over, draw result messages
-        if (gamePanel.gameState == gamePanel.gameOverState) {
-            drawResultMessages();
+        // Dialog State
+        if (gamePanel.gameState == gamePanel.dialogState && gamePanel.activeGan != null) {
+            drawDialog(gamePanel.activeGan, gamePanel.dialogPlayer);
         }
+    }
+
+    public void drawDialog(Gan gan, Player player) {
+        int boxW = 700, boxH = 300;
+        int boxX = gamePanel.screenWidth / 2 - boxW / 2;
+        int boxY = gamePanel.screenHeight / 2 - boxH / 2;
+
+        graphics2D.setColor(new Color(0, 0, 0, 210));
+        graphics2D.fillRoundRect(boxX, boxY, boxW, boxH, 20, 20);
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setStroke(new BasicStroke(2));
+        graphics2D.drawRoundRect(boxX, boxY, boxW, boxH, 20, 20);
+
+        graphics2D.setFont(monospaced.deriveFont(Font.BOLD, 22f));
+        graphics2D.setColor(Color.YELLOW);
+        graphics2D.drawString(gan.question, boxX + 30, boxY + 50);
+
+        graphics2D.setFont(monospaced.deriveFont(Font.PLAIN, 20f));
+        int optionY = boxY + 100;
+        for (int i = 0; i < gan.options.length; i++) {
+            graphics2D.setColor(i == gan.selectedOption ? Color.GREEN : Color.WHITE);
+            graphics2D.drawString((i == gan.selectedOption ? "> " : "  ") + gan.options[i], boxX + 40, optionY);
+            optionY += 35;
+        }
+
+        graphics2D.setFont(monospaced.deriveFont(Font.ITALIC, 16f));
+        graphics2D.setColor(Color.LIGHT_GRAY);
+        String hint = (player == gamePanel.player1)
+                ? "W/S to select   F to confirm"
+                : "UP/DOWN to select   Numpad0 to confirm";
+        graphics2D.drawString(hint, boxX + 30, boxY + boxH - 20);
     }
 
     public void drawPauseState() {
@@ -143,19 +172,14 @@ public class UI {
     // HUD for 2 players
     public void drawPlayerHUD(Object player, boolean isLeft) {
 
-        int x ;
+        int x = gamePanel.tileSize / 2;
         int y = gamePanel.tileSize;
 
         Player p = (Player) player;
 
-
-        if (isLeft) {
-            // left half screen (from left edge to center)
-            x = gamePanel.tileSize / 2;
-        } else {
-            // right half screen (from center to right edge)
-            x = gamePanel.screenWidth / 2 + gamePanel.tileSize / 2;
-        }
+//        graphics2D.setFont(monospaced);
+//        graphics2D.setColor(Color.WHITE);
+//        graphics2D.drawString(isLeft ? "P1 HP: " + p.life : "P2 HP: " + p.life, x, y);
 
         for (int i = 0; i < p.maxLife; i++) {
             graphics2D.setColor(i < p.life ? Color.RED : Color.GRAY);
@@ -163,37 +187,9 @@ public class UI {
             x += 25;
         }
 
-    }
-
-    private void drawResultMessages() {
-        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 60F));
-
-        //calculate center positions for both players
-        int leftCenterX = gamePanel.screenWidth / 4;
-        int rightCenterX = (gamePanel.screenWidth / 4) * 3;
-        int centerY = gamePanel.screenHeight / 2;
-
-        //player 1 (left screen)
-        if (gamePanel.player1.life <= 0) {
-            drawCenteredText("YOU LOSE!!!", Color.RED, leftCenterX, centerY);
-        } else {
-            drawCenteredText("YOU WIN!!!", Color.YELLOW, leftCenterX, centerY);
-        }
-
-        //player 2 (right screen)
-        if (gamePanel.player2.life <= 0) {
-            drawCenteredText("YOU LOSE!!!", Color.RED, rightCenterX, centerY);
-        } else {
-            drawCenteredText("YOU WIN!!!", Color.YELLOW, rightCenterX, centerY);
-        }
-    }
-
-    private void drawCenteredText(String text, Color color, int centerX, int y) {
-        graphics2D.setColor(Color.BLACK);
-        int x = centerX - (int)graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth() / 2;
-        graphics2D.drawString(text, x + 3, y + 3);
-
-        graphics2D.setColor(color);
-        graphics2D.drawString(text, x, y);
+//        graphics2D.setColor(Color.WHITE);
+//        graphics2D.setFont(monospaced);
+//        int textY = y + gamePanel.tileSize;
+//        graphics2D.drawString(isLeft ? "P1 Score: 5" : "P2 Score: 5", x, textY);
     }
 }

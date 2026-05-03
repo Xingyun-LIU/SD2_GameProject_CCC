@@ -19,6 +19,7 @@ public class Entity {
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public BufferedImage upAttack1, upAttack2, downAttack1, downAttack2, leftAttack1, leftAttack2, rightAttack1, rightAttack2;
 
+    public int currentMap = 0;
     public int worldX;
     public int worldY;
     public inventory.Item item;// The item that the entity can pick up, null if no item.
@@ -35,7 +36,7 @@ public class Entity {
     public boolean hpBarOn = false;
 
     // Counter
-    int invincibleCounter = 0;
+    public int invincibleCounter = 0;
     public int spriteCounter = 0;
     public int actionCounter = 0;
     public int hpBarCounter = 0;
@@ -78,10 +79,10 @@ public class Entity {
         setAction();
 
         collisionOn = false;
-        gamePanel.collisionChecker.checkTile(this);
+        gamePanel.collisionChecker.checkTile(this, gamePanel.currentMap);
         gamePanel.collisionChecker.checkObject(this, false);
-        gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
-        gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.npc, gamePanel.currentMap);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters, gamePanel.currentMap);
 
         // The npc or monster collision with player
         boolean collisionPlayer1 = gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);

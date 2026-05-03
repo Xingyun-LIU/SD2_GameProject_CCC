@@ -3,6 +3,7 @@ package Entity;
 import Main.Camera;
 import Main.KeyHandler;
 import gamepanel.GamePanel;
+import npc.Gan;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,7 +14,7 @@ public class Player extends Entity {
     public boolean p1;
 
     // State
-    boolean invincible = false;
+    public boolean invincible = false;
     public boolean hasBrick = false;
 
     // EventChecker
@@ -58,7 +59,7 @@ public class Player extends Entity {
 
         //Player States
         speed = 4;
-        maxLife = 6;
+        maxLife = 10;
         life = maxLife;
 
     }
@@ -164,8 +165,14 @@ public class Player extends Entity {
             solidArea.height = attackArea.height;
 
             // Check monster collision
-            int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+            int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters, currentMap);
             damageMonster(monsterIndex);
+            int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc,currentMap);
+            if (npcIndex != 999 && gamePanel.npc[currentMap][npcIndex] instanceof Gan) {
+                Gan gan = (Gan) gamePanel.npc[currentMap][npcIndex];
+                gan.takeDamage();
+                if (!gan.alive) gamePanel.npc[currentMap][npcIndex] = null;
+            }
 
             // Reset to the original data.
             worldX = currentWorldX;
@@ -183,13 +190,13 @@ public class Player extends Entity {
 
     public void damageMonster(int i) {
         if (i != 999) {
-            if (!gamePanel.monsters[gamePanel.currentMap][i].invincible) {
+            if (!gamePanel.monsters[currentMap][i].invincible) {
                 gamePanel.monsters[currentMap][i].life -= 1;
                 System.out.println(gamePanel.monsters[currentMap][i].life);
                 gamePanel.monsters[currentMap][i].invincible = true;
 
-                if (gamePanel.monsters[gamePanel.currentMap][i].life <= 0) {
-                    gamePanel.monsters[gamePanel.currentMap][i].dying = true;
+                if (gamePanel.monsters[currentMap][i].life <= 0) {
+                    gamePanel.monsters[currentMap][i].dying = true;
                 }
             }
         }
@@ -198,9 +205,9 @@ public class Player extends Entity {
     // Pick up objects
     public void pickUpObject(int i) {
         if (i != 999) {
-            if (gamePanel.objects[gamePanel.currentMap][i] != null) {
-                if (gamePanel.objects[gamePanel.currentMap][i].name.equals("Brick")) {
-                    gamePanel.objects[gamePanel.currentMap][i] = null;
+            if (gamePanel.objects[currentMap][i] != null) {
+                if (gamePanel.objects[currentMap][i].name.equals("Brick")) {
+                    gamePanel.objects[currentMap][i] = null;
                     hasBrick = true;
                 }
             }
@@ -208,7 +215,19 @@ public class Player extends Entity {
     }
 
     public void interactNPC(int i) {
-
+        if (i != 999) {
+            Entity target = gamePanel.npc[currentMap][i];
+            if (target instanceof Gan) {
+                Gan gan = (Gan) target;
+                boolean interactPressed = p1 ? gamePanel.key.f : gamePanel.key.numpad0;
+                if (interactPressed && gan.isPlayerInFront(this)) {
+                    gamePanel.activeGan = gan;
+                    gamePanel.dialogPlayer = this;
+                    gamePanel.gameState = gamePanel.dialogState;
+                    gan.startTalking();
+                }
+            }
+        }
     }
 
     public void contactMonster(int i) {
@@ -284,18 +303,29 @@ public class Player extends Entity {
 
         // Check tile collision
         collisionOn = false;
-        gamePanel.collisionChecker.checkTile(this);
+        gamePanel.collisionChecker.checkTile(this, currentMap);
 
-        // Check for collisions between players
+        // Check player collision only when both players are in the same map
         if (p1) {
-            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
+            if (this.currentMap == gamePanel.player2.currentMap) {
+                gamePanel.collisionChecker.checkPlayer(this, gamePanel.player2);
+            }
         } else {
-            gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
+            if (this.currentMap == gamePanel.player1.currentMap) {
+                gamePanel.collisionChecker.checkPlayer(this, gamePanel.player1);
+            }
         }
+
+        // Temporarily sync gamePanel.currentMap so old checkObject logic uses the right map
+        int previousMap = gamePanel.currentMap;
+        gamePanel.currentMap = this.currentMap;
 
         //check object collision
         int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
         pickUpObject(objectIndex);
+
+        // Restore
+        gamePanel.currentMap = previousMap;
 
         for (int i = 0; i < gamePanel.objects[gamePanel.currentMap].length; i++) {
 
@@ -311,12 +341,12 @@ public class Player extends Entity {
 
 
         //check npc collision
-        int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+        int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc, currentMap);
         interactNPC(npcIndex);
         attack();
 
         //check monster collision
-        int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters);
+        int monsterIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.monsters, currentMap);
         contactMonster(monsterIndex);
 
         // Check event
@@ -362,21 +392,6 @@ public class Player extends Entity {
             }
         }
 
-        // Player1
-        if (this == gamePanel.player1) {
-            if (key.p1NextItemPressed) {
-                nextItem();
-                key.p1NextItemPressed = false;
-            }
-        }
-
-        // Player2
-        if (this == gamePanel.player2) {
-            if (key.p2NextItemPressed) {
-                nextItem();
-                key.p2NextItemPressed = false;
-            }
-        }
 
     }
 

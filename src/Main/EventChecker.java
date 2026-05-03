@@ -9,7 +9,7 @@ import java.awt.*;
  * This class is used to check event triggered by player.
  * It will implement a small point (rectangle) in the middle of the event tile,
  * when the player's solidArea touch the event area, the event will happen.
- * */
+ */
 public class EventChecker {
 
     GamePanel gamePanel;
@@ -36,7 +36,9 @@ public class EventChecker {
         }
     }
 
-    /** Check the type of event that player is triggered*/
+    /**
+     * Check the type of event that player is triggered
+     */
     public void checkEvent(Player player) {
 
         //  Player must move one tile size away from event tile, can trigger the event again
@@ -49,10 +51,11 @@ public class EventChecker {
         }
 
         if (player.canTouchEvent) {
-            if (touch(player, 0, 37, 43, "any")) {
-                teleport(player, 1, 5, 5);
-            } else if (touch(player, 1, 5, 5, "any")) {
-                teleport(player, 0, 37, 43);
+
+            if (touch(player, 0, 42, 56, "any")) {
+                teleport(player, 1, 30, 3);
+            } else if (touch(player, 1, 28, 61, "any")) {
+                teleport(player, 2, 32, 5);
             }
         }
 

@@ -4,6 +4,7 @@ import Entity.Entity;
 import Entity.Player;
 import Main.*;
 import animation.OpeningAnimationPanel;
+import npc.Gan;
 import tile.Map;
 import tile.TileManager;
 
@@ -40,7 +41,9 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playing = 1;
     public final int pausing = 2;
     public final int mapState = 3;
-    public final int gameOverState = 4;
+    public final int dialogState = 4;
+    public Gan activeGan = null;
+    public Player dialogPlayer = null;
 
     // Player
     public Player player1;
@@ -68,7 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public GamePanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
-        key = new KeyHandler(this, gameFrame, false, false);
+        key = new KeyHandler(this, gameFrame);
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
@@ -140,10 +143,6 @@ public class GamePanel extends JPanel implements Runnable {
             // player
             player1.update(key);
             player2.update(key);
-            // Check if player life is 0, if yes, change to game over state
-            if (player1.life <= 0 || player2.life <= 0) {
-                gameState = gameOverState;
-            }
 
             cam1.follow(player1);
             cam2.follow(player2);
@@ -200,9 +199,13 @@ public class GamePanel extends JPanel implements Runnable {
         //Draw the map
         tileManager.draw(graphics2D, cam, viewWidth, currentMap);
 
-        //Draw the player
-        player1.draw(graphics2D, cam);
-        player2.draw(graphics2D, cam);
+        // Draw player
+        if (player1.currentMap == currentMap) {
+            player1.draw(graphics2D, cam);
+        }
+        if (player2.currentMap == currentMap) {
+            player2.draw(graphics2D, cam);
+        }
 
         // Add entities to the list
         for (int i = 0; i < npc[1].length; i++) {
