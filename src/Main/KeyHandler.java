@@ -134,6 +134,9 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_J) j = false;
         if (code == KeyEvent.VK_NUMPAD1) numpad1 = false;
 
+        if (code == KeyEvent.VK_F) f = false;
+        if (code == KeyEvent.VK_NUMPAD0) numpad0 = false;
+
         if (code == KeyEvent.VK_2) {
             p1NextItemPressed = false;
         }
