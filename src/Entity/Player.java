@@ -7,7 +7,6 @@ import npc.Gan;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import Main.KeyHandler;
 
 public class Player extends Entity {
 
@@ -391,9 +390,27 @@ public class Player extends Entity {
                 invincibleCounter = 0;
             }
         }
+        // Player1
+        if (this == gamePanel.player1) {
+            if (key.p1NextItemPressed) {
+                nextItem();
+                key.p1NextItemPressed = false;
+            }
+        }
+
+        // Player2
+        if (this == gamePanel.player2) {
+            if (key.p2NextItemPressed) {
+                nextItem();
+                key.p2NextItemPressed = false;
+            }
+        }
 
 
     }
+
+
+
 
     public void draw(Graphics2D graphics2D, Camera camera) {
 

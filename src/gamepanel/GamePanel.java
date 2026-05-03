@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int pausing = 2;
     public final int mapState = 3;
     public final int dialogState = 4;
+    public final int gameOverState = 5;
     public Gan activeGan = null;
     public Player dialogPlayer = null;
 
@@ -71,7 +72,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public GamePanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
-        key = new KeyHandler(this, gameFrame);
+        key = new KeyHandler(this, gameFrame,false,false);
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
@@ -143,6 +144,10 @@ public class GamePanel extends JPanel implements Runnable {
             // player
             player1.update(key);
             player2.update(key);
+            // Check if player life is 0, if yes, change to game over state
+            if (player1.life <= 0 || player2.life <= 0) {
+                gameState = gameOverState;
+            }
 
             cam1.follow(player1);
             cam2.follow(player2);

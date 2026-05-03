@@ -15,10 +15,16 @@ public class KeyHandler implements KeyListener {
     public boolean up, down, left, right;
     public boolean j, numpad1;
     public boolean f,numpad0;
+    // Player1
+    public boolean p1NextItemPressed= false;
+    // Player2
+    public boolean p2NextItemPressed= false;
 
-    public KeyHandler(GamePanel gamePanel, GameFrame gameFrame) {
+    public KeyHandler(GamePanel gamePanel, GameFrame gameFrame, boolean p1NextItemPressed, boolean p2NextItemPressed) {
         this.gamePanel = gamePanel;
         this.gameFrame = gameFrame;
+        this.p1NextItemPressed = p1NextItemPressed;
+        this.p2NextItemPressed = p2NextItemPressed;
     }
 
     public void keyPressed(KeyEvent e) {
@@ -68,6 +74,7 @@ public class KeyHandler implements KeyListener {
             }
 
         }
+
         //dialog state
         else if (gamePanel.gameState == gamePanel.dialogState) {
             Gan gan = gamePanel.activeGan;
@@ -94,7 +101,21 @@ public class KeyHandler implements KeyListener {
             }
         }
 
+        //switch item
+        // Player1 press 2 to switch
+        if (code == KeyEvent.VK_2) {
+            p1NextItemPressed = true;
+        }
+
+        // Player2 press K to switch
+        if (code == KeyEvent.VK_K) {
+            p2NextItemPressed = true;
+        }
+
+
     }
+
+
 
     public void keyReleased(KeyEvent e) {
 
@@ -113,12 +134,24 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_J) j = false;
         if (code == KeyEvent.VK_NUMPAD1) numpad1 = false;
 
-        if (code == KeyEvent.VK_F) f = false;
-        if (code == KeyEvent.VK_NUMPAD0) numpad0 = false;
+        if (code == KeyEvent.VK_2) {
+            p1NextItemPressed = false;
+        }
+
+        if (code == KeyEvent.VK_K) {
+            p2NextItemPressed = false;
+        }
 
     }
 
     public void keyTyped(KeyEvent e) {
     }
 
-}
+
+
+
+
+    }
+
+
+

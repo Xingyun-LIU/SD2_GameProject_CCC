@@ -54,11 +54,22 @@ public class UI {
             drawPauseState();
         }
 
+        //draw HUD for playing and game over state
+        drawHUD();
+
+        //if game over, draw result messages
+        if (gamePanel.gameState == gamePanel.gameOverState) {
+            drawResultMessages();
+        }
+
         // Dialog State
         if (gamePanel.gameState == gamePanel.dialogState && gamePanel.activeGan != null) {
             drawDialog(gamePanel.activeGan, gamePanel.dialogPlayer);
         }
     }
+
+
+
 
     public void drawDialog(Gan gan, Player player) {
         int boxW = 700, boxH = 300;
@@ -176,6 +187,13 @@ public class UI {
         int y = gamePanel.tileSize;
 
         Player p = (Player) player;
+        if (isLeft) {
+            // left half screen (from left edge to center)
+            x = gamePanel.tileSize / 2;
+        } else {
+            // right half screen (from center to right edge)
+            x = gamePanel.screenWidth / 2 + gamePanel.tileSize / 2;
+        }
 
 //        graphics2D.setFont(monospaced);
 //        graphics2D.setColor(Color.WHITE);
@@ -192,4 +210,37 @@ public class UI {
 //        int textY = y + gamePanel.tileSize;
 //        graphics2D.drawString(isLeft ? "P1 Score: 5" : "P2 Score: 5", x, textY);
     }
+
+    private void drawResultMessages() {
+        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 60F));
+
+        //calculate center positions for both players
+        int leftCenterX = gamePanel.screenWidth / 4;
+        int rightCenterX = (gamePanel.screenWidth / 4) * 3;
+        int centerY = gamePanel.screenHeight / 2;
+
+        //player 1 (left screen)
+        if (gamePanel.player1.life <= 0) {
+            drawCenteredText("YOU LOSE!!!", Color.RED, leftCenterX, centerY);
+        } else {
+            drawCenteredText("YOU WIN!!!", Color.YELLOW, leftCenterX, centerY);
+        }
+
+        //player 2 (right screen)
+        if (gamePanel.player2.life <= 0) {
+            drawCenteredText("YOU LOSE!!!", Color.RED, rightCenterX, centerY);
+        } else {
+            drawCenteredText("YOU WIN!!!", Color.YELLOW, rightCenterX, centerY);
+        }
+    }
+
+    private void drawCenteredText(String text, Color color, int centerX, int y) {
+        graphics2D.setColor(Color.BLACK);
+        int x = centerX - (int)graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth() / 2;
+        graphics2D.drawString(text, x + 3, y + 3);
+
+        graphics2D.setColor(color);
+        graphics2D.drawString(text, x, y);
+    }
+
 }
