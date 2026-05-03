@@ -7,7 +7,6 @@ import npc.Gan;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import Main.KeyHandler;
 
 public class Player extends Entity {
 
@@ -59,7 +58,7 @@ public class Player extends Entity {
 
         //Player States
         speed = 4;
-        maxLife = 10;
+        maxLife = 6;
         life = maxLife;
 
     }
@@ -324,6 +323,9 @@ public class Player extends Entity {
         int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
         pickUpObject(objectIndex);
 
+        // Restore
+        gamePanel.currentMap = previousMap;
+
         for (int i = 0; i < gamePanel.objects[gamePanel.currentMap].length; i++) {
 
             Entity obj = gamePanel.objects[gamePanel.currentMap][i];
@@ -336,9 +338,6 @@ public class Player extends Entity {
             }
         }
 
-
-        // Restore
-        gamePanel.currentMap = previousMap;
 
         //check npc collision
         int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc, currentMap);
@@ -408,7 +407,11 @@ public class Player extends Entity {
             }
         }
 
+
     }
+
+
+
 
     public void draw(Graphics2D graphics2D, Camera camera) {
 
