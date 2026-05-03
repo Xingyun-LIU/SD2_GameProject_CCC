@@ -85,6 +85,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setUpGame() {
 
+
         player1 = new Player(this, true);
         player2 = new Player(this, false);
 

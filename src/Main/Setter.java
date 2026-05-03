@@ -7,6 +7,8 @@ import monster.Egg;
 import npc.Bro;
 import npc.Gan;
 import object.Brick;
+import Entity.OBJ_Brick;
+import inventory.ITM_Brick;
 
 /**
  * This class is used to load the objects, npc, and monsters into the game after the map loading.
@@ -28,6 +30,15 @@ public class Setter {
         gamePanel.objects[0][0] = new Brick(gamePanel);
         gamePanel.objects[0][0].worldX = 35 * gamePanel.tileSize;
         gamePanel.objects[0][0].worldY = 37 * gamePanel.tileSize;
+
+        int map = 0;
+
+        OBJ_Brick brick = new OBJ_Brick(gamePanel);
+        brick.worldX = 5 * gamePanel.tileSize;
+        brick.worldY = 6 * gamePanel.tileSize;
+        brick.item = new ITM_Brick();
+
+        gamePanel.objects[map][0] = brick;
     }
 
     // Set npc initial position: npc[npcNumber][index]

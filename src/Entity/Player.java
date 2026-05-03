@@ -139,6 +139,7 @@ public class Player extends Entity {
             spriteNum = 2;
 
             // When all attack happened, reset the solidArea and check collision.
+
             // Save the current position.
             int currentWorldX = worldX;
             int currentWorldY = worldY;
@@ -323,6 +324,19 @@ public class Player extends Entity {
         int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
         pickUpObject(objectIndex);
 
+        for (int i = 0; i < gamePanel.objects[gamePanel.currentMap].length; i++) {
+
+            Entity obj = gamePanel.objects[gamePanel.currentMap][i];
+
+            if (obj != null && obj.item != null) {
+
+                if (this.solidArea.intersects(obj.solidArea)) {
+                    pickUpItem(obj);
+                }
+            }
+        }
+
+
         // Restore
         gamePanel.currentMap = previousMap;
 
@@ -378,6 +392,21 @@ public class Player extends Entity {
             }
         }
 
+        // Player1
+        if (this == gamePanel.player1) {
+            if (key.p1NextItemPressed) {
+                nextItem();
+                key.p1NextItemPressed = false;
+            }
+        }
+
+        // Player2
+        if (this == gamePanel.player2) {
+            if (key.p2NextItemPressed) {
+                nextItem();
+                key.p2NextItemPressed = false;
+            }
+        }
 
     }
 
