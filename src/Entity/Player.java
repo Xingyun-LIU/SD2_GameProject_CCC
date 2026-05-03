@@ -425,6 +425,7 @@ public class Player extends Entity {
 
         switch (direction) {
 
+
             //set different picture when moving different direction
             case "up":
                 if (!attacking) {
