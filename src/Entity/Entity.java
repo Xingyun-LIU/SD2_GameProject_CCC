@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import inventory.Item;
+import inventory.ITM_Brick;
 
 public class Entity {
 
@@ -201,6 +202,17 @@ public class Entity {
 
     }
 
+    private void removeObjectFromWorld(Entity obj) {
+
+        for (int i = 0; i < gamePanel.objects[gamePanel.currentMap].length; i++) {
+            if (gamePanel.objects[gamePanel.currentMap][i] == obj) {
+                gamePanel.objects[gamePanel.currentMap][i] = null;
+                break;
+            }
+        }
+    }
+
+
     public void pickUpItem(Entity itemEntity) {
          Item item = itemEntity.item;
 
@@ -209,7 +221,7 @@ public class Entity {
             for (int i = 0; i < inventory.length; i++) {
                 if (inventory[i] == null) {
                     inventory[i] = item;
-                    itemEntity.alive = false;
+                    removeObjectFromWorld(itemEntity);
                     // Mark the item as picked up
 
                     return;
@@ -248,17 +260,29 @@ public class Entity {
     }
 
     private void spawnDroppedItem(Item item, int x, int y) {
-        OBJ_Brick droppedBrick = new OBJ_Brick(gamePanel);
-        droppedBrick.worldX = x;
-        droppedBrick.worldY = y;
 
-        // Add the dropped item to the game world (e.g., add to an array of objects)
-        for(int i = 0; i < gamePanel.objects[gamePanel.currentMap].length; i++) {
-            if(gamePanel.objects[gamePanel.currentMap][i] == null) {
-                gamePanel.objects[gamePanel.currentMap][i] = droppedBrick;
+        //determine the type of item and create corresponding entity
+        Entity dropped = null;
+
+        if (item instanceof ITM_Brick) {
+            dropped = new OBJ_Brick(gamePanel);
+        }
+        // else if (item instanceof ITM_Key) { dropped = new OBJ_Key(gamePanel); }
+
+        if (dropped == null) return;
+
+        dropped.worldX = x;
+        dropped.worldY = y;
+        dropped.item = item;
+        dropped.alive = true;
+
+        for (int i = 0; i < gamePanel.objects[gamePanel.currentMap].length; i++) {
+            if (gamePanel.objects[gamePanel.currentMap][i] == null) {
+                gamePanel.objects[gamePanel.currentMap][i] = dropped;
                 break;
             }
         }
     }
+
 
 }

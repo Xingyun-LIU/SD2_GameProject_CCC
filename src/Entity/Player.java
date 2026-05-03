@@ -297,6 +297,19 @@ public class Player extends Entity {
         int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
         pickUpObject(objectIndex);
 
+        for (int i = 0; i < gamePanel.objects[gamePanel.currentMap].length; i++) {
+
+            Entity obj = gamePanel.objects[gamePanel.currentMap][i];
+
+            if (obj != null && obj.item != null) {
+
+                if (this.solidArea.intersects(obj.solidArea)) {
+                    pickUpItem(obj);
+                }
+            }
+        }
+
+
         //check npc collision
         int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
         interactNPC(npcIndex);
